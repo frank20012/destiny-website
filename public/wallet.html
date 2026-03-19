@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth Wallet</title>
+  <link rel="stylesheet" href="wallet.css" />
+</head>
+<body>
+  <div class="wallet-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="#">Orders</a>
+        <a href="wallet.html" class="active">Wallet</a>
+        <a href="#">Transactions</a>
+        <a href="#">API</a>
+        <a href="#">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Wallet</h1>
+          <p>Manage your balance and funding activity</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="top-btn">Fund Wallet</button>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="wallet-overview">
+        <div class="balance-card card">
+          <p>Available Balance</p>
+          <h2>$1,250.00</h2>
+          <span>Last updated a few seconds ago</span>
+        </div>
+
+        <div class="mini-card card">
+          <p>Total Funded</p>
+          <h3>$3,800</h3>
+        </div>
+
+        <div class="mini-card card">
+          <p>Total Spent</p>
+          <h3>$2,550</h3>
+        </div>
+
+        <div class="mini-card card">
+          <p>Pending Funding</p>
+          <h3>$120</h3>
+        </div>
+      </section>
+
+      <section class="wallet-grid">
+        <div class="fund-card card">
+          <div class="section-title">
+            <h2>Add Funds</h2>
+            <p>Choose an amount and preferred payment method</p>
+          </div>
+
+          <form class="fund-form">
+            <div class="input-group">
+              <label for="amount">Amount</label>
+              <input type="number" id="amount" placeholder="Enter amount" />
+            </div>
+
+            <div class="quick-amounts">
+              <button type="button" class="amount-btn">$10</button>
+              <button type="button" class="amount-btn">$25</button>
+              <button type="button" class="amount-btn">$50</button>
+              <button type="button" class="amount-btn">$100</button>
+            </div>
+
+            <div class="input-group">
+              <label>Payment Method</label>
+              <div class="payment-grid">
+                <label class="payment-option">
+                  <input type="radio" name="payment" checked />
+                  <span>Bank Transfer</span>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="payment" />
+                  <span>Card Payment</span>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="payment" />
+                  <span>USSD</span>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="payment" />
+                  <span>Crypto</span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Proceed to Fund</button>
+          </form>
+        </div>
+
+        <div class="summary-card card">
+          <div class="section-title">
+            <h2>Funding Summary</h2>
+          </div>
+
+          <div class="summary-list">
+            <div class="summary-item">
+              <span>Minimum funding</span>
+              <strong>$10.00</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Processing time</span>
+              <strong>Instant</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Wallet status</span>
+              <strong>Active</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Payment support</span>
+              <strong>24/7</strong>
+            </div>
+          </div>
+
+          <div class="notice-box">
+            <h4>Need help?</h4>
+            <p>
+              If your funding does not reflect immediately, check your transaction
+              history or contact support.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="history-section">
+        <div class="history-card card">
+          <div class="section-title">
+            <h2>Recent Funding History</h2>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#WLT-1024</td>
+                  <td>Bank Transfer</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$500.00</td>
+                  <td>Today</td>
+                </tr>
+                <tr>
+                  <td>#WLT-1025</td>
+                  <td>Card Payment</td>
+                  <td><span class="status pending">Pending</span></td>
+                  <td>$120.00</td>
+                  <td>Today</td>
+                </tr>
+                <tr>
+                  <td>#WLT-1026</td>
+                  <td>USSD</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$300.00</td>
+                  <td>Yesterday</td>
+                </tr>
+                <tr>
+                  <td>#WLT-1027</td>
+                  <td>Crypto</td>
+                  <td><span class="status processing">Processing</span></td>
+                  <td>$200.00</td>
+                  <td>Yesterday</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

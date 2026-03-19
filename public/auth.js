@@ -40,7 +40,6 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-/* ---------------- SIGN UP VALIDATION ---------------- */
 const signupForm = document.getElementById("signupForm");
 
 if (signupForm) {
@@ -105,16 +104,16 @@ if (signupForm) {
     }
 
     if (isFormValid) {
-      message.textContent = "Sign up successful";
+      message.textContent = "Sign up successful. Redirecting to sign in...";
       message.classList.add("success");
 
-      // Example redirect later:
-      // window.location.href = "signin.html";
+      setTimeout(() => {
+        window.location.href = "signin.html";
+      }, 1200);
     }
   });
 }
 
-/* ---------------- SIGN IN VALIDATION ---------------- */
 const signinForm = document.getElementById("signinForm");
 
 if (signinForm) {
@@ -150,16 +149,16 @@ if (signinForm) {
     }
 
     if (isFormValid) {
-      message.textContent = "Sign in successful";
+      message.textContent = "Sign in successful. Redirecting to dashboard...";
       message.classList.add("success");
 
-      // Example redirect later:
-      // window.location.href = "dashboard.html";
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1200);
     }
   });
 }
 
-/* ---------------- LIVE CLEARING ---------------- */
 document.querySelectorAll("input").forEach((input) => {
   input.addEventListener("input", () => {
     clearState(input);

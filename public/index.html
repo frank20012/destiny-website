@@ -3,11 +3,304 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Website</title>
+  <title>WaveAuth - Digital Services Platform</title>
+  <link rel="stylesheet" href="home.css" />
 </head>
 <body>
-  <h1>Welcome</h1>
-  <p><a href="signup.html">Go to Sign Up</a></p>
-  <p><a href="signin.html">Go to Sign In</a></p>
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="logo">WaveAuth</a>
+
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="signin.html" class="btn btn-outline">Login</a>
+        <a href="signup.html" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-section" id="home">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <span class="hero-badge">Fast • Modern • Reliable</span>
+          <h1>
+            Premium digital services with a clean platform experience.
+          </h1>
+          <p>
+            Manage your account, explore services, monitor activity, and access
+            everything you need from one simple dashboard built for speed and ease.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="signup.html" class="btn btn-primary">Join Now</a>
+            <a href="signin.html" class="btn btn-secondary">Sign In</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <h3>24/7</h3>
+              <p>Support</p>
+            </div>
+            <div class="stat">
+              <h3>Fast</h3>
+              <p>Delivery</p>
+            </div>
+            <div class="stat">
+              <h3>Secure</h3>
+              <p>Access</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <div class="mini-brand">WA</div>
+              <div>
+                <h4>Platform Overview</h4>
+                <span>Live dashboard preview</span>
+              </div>
+            </div>
+
+            <div class="balance-card">
+              <p>Account Balance</p>
+              <h2>$1,250.00</h2>
+            </div>
+
+            <div class="mini-grid">
+              <div class="mini-box">
+                <h5>Services</h5>
+                <p>120+</p>
+              </div>
+              <div class="mini-box">
+                <h5>Orders</h5>
+                <p>38</p>
+              </div>
+              <div class="mini-box">
+                <h5>API</h5>
+                <p>Ready</p>
+              </div>
+              <div class="mini-box">
+                <h5>Status</h5>
+                <p>Active</p>
+              </div>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-item">
+                <span class="dot success"></span>
+                <p>New order placed successfully</p>
+              </div>
+              <div class="activity-item">
+                <span class="dot info"></span>
+                <p>Wallet funding confirmed</p>
+              </div>
+              <div class="activity-item">
+                <span class="dot purple"></span>
+                <p>API access enabled</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section" id="services">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-tag">Our Services</span>
+          <h2>Everything you need in one platform</h2>
+          <p>
+            Explore a flexible service platform with user-friendly tools,
+            instant access, and account management features.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">01</div>
+            <h3>Account Dashboard</h3>
+            <p>
+              View your balance, recent activity, and platform tools from one dashboard.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">02</div>
+            <h3>Service Marketplace</h3>
+            <p>
+              Browse available services with clear categories, pricing, and delivery flow.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">03</div>
+            <h3>Wallet Funding</h3>
+            <p>
+              Add funds and manage your transactions in a simple and organized way.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">04</div>
+            <h3>API Access</h3>
+            <p>
+              Integrate supported platform actions into your own systems with API support.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-tag">How It Works</span>
+          <h2>Simple process from signup to service use</h2>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <span class="step-number">01</span>
+            <h3>Create an account</h3>
+            <p>Register through the signup page and access your user dashboard.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">02</span>
+            <h3>Fund your wallet</h3>
+            <p>Add funds so you can place orders and use platform features easily.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">03</span>
+            <h3>Select a service</h3>
+            <p>Choose from available services and review the details before submitting.</p>
+          </div>
+
+          <div class="step-card">
+            <span class="step-number">04</span>
+            <h3>Track activity</h3>
+            <p>Monitor your orders, transaction history, and account updates in real time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-section">
+      <div class="container trust-grid">
+        <div class="trust-text">
+          <span class="section-tag">Why Choose Us</span>
+          <h2>Built for speed, clarity, and scalability</h2>
+          <p>
+            The platform is designed to feel modern, lightweight, and easy to use,
+            whether your users are on desktop or mobile.
+          </p>
+        </div>
+
+        <div class="trust-cards">
+          <div class="trust-card">
+            <h3>Modern Interface</h3>
+            <p>Clean layout with smooth sections and user-friendly navigation.</p>
+          </div>
+          <div class="trust-card">
+            <h3>Responsive Design</h3>
+            <p>Optimized for phones, tablets, and desktop devices.</p>
+          </div>
+          <div class="trust-card">
+            <h3>Clear User Flow</h3>
+            <p>Simple signup, sign-in, wallet, and order process.</p>
+          </div>
+          <div class="trust-card">
+            <h3>Expandable Backend</h3>
+            <p>Ready for Express, PostgreSQL, dashboard logic, and APIs later.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-heading">
+          <span class="section-tag">FAQ</span>
+          <h2>Frequently asked questions</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>How do I get started?</h3>
+            <p>Create an account, sign in, and follow the dashboard flow.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Can I manage my orders from the dashboard?</h3>
+            <p>Yes, the dashboard is designed to show orders, activity, and account information.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Will API support be available?</h3>
+            <p>Yes, the site structure is being designed to support API integration later.</p>
+          </div>
+
+          <div class="faq-item">
+            <h3>Is the website mobile responsive?</h3>
+            <p>Yes, the layout is built to adapt across screen sizes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container cta-box">
+        <h2>Ready to launch your platform?</h2>
+        <p>Start with a professional homepage and modern auth flow.</p>
+        <a href="signup.html" class="btn btn-primary">Create Account</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-grid">
+      <div>
+        <h3>WaveAuth</h3>
+        <p>
+          A modern digital platform template built for account access,
+          service management, and scalable web experiences.
+        </p>
+      </div>
+
+      <div>
+        <h4>Quick Links</h4>
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#faq">FAQ</a>
+      </div>
+
+      <div>
+        <h4>Account</h4>
+        <a href="signup.html">Sign Up</a>
+        <a href="signin.html">Sign In</a>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <p>support@waveauth.com</p>
+        <p>+234 000 000 0000</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 WaveAuth. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>

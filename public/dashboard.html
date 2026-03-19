@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="active">Dashboard</a>
+        <a href="#">Services</a>
+        <a href="#">Orders</a>
+        <a href="#">Wallet</a>
+        <a href="#">Transactions</a>
+        <a href="#">API</a>
+        <a href="#">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Welcome back, Franklyn</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="top-btn">Fund Wallet</button>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="overview-grid">
+        <div class="balance-card card">
+          <p>Available Balance</p>
+          <h2>$1,250.00</h2>
+          <span>Updated just now</span>
+        </div>
+
+        <div class="mini-card card">
+          <p>Total Orders</p>
+          <h3>38</h3>
+        </div>
+
+        <div class="mini-card card">
+          <p>Active Services</p>
+          <h3>12</h3>
+        </div>
+
+        <div class="mini-card card">
+          <p>API Status</p>
+          <h3>Enabled</h3>
+        </div>
+      </section>
+
+      <section class="quick-actions">
+        <div class="section-title">
+          <h2>Quick Actions</h2>
+        </div>
+
+        <div class="action-grid">
+          <div class="action-card card">
+            <h3>Browse Services</h3>
+            <p>View all available services and categories.</p>
+            <a href="#">Open</a>
+          </div>
+
+          <div class="action-card card">
+            <h3>Fund Wallet</h3>
+            <p>Add money to your account wallet quickly.</p>
+            <a href="#">Add Funds</a>
+          </div>
+
+          <div class="action-card card">
+            <h3>View Orders</h3>
+            <p>Track your pending and completed orders.</p>
+            <a href="#">See Orders</a>
+          </div>
+
+          <div class="action-card card">
+            <h3>API Access</h3>
+            <p>Manage keys and access integration tools.</p>
+            <a href="#">Manage API</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <div class="table-card card">
+          <div class="section-title">
+            <h2>Recent Orders</h2>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Service</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#1024</td>
+                  <td>Service Package A</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$45.00</td>
+                </tr>
+                <tr>
+                  <td>#1025</td>
+                  <td>Service Package B</td>
+                  <td><span class="status pending">Pending</span></td>
+                  <td>$20.00</td>
+                </tr>
+                <tr>
+                  <td>#1026</td>
+                  <td>Service Package C</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$80.00</td>
+                </tr>
+                <tr>
+                  <td>#1027</td>
+                  <td>Service Package D</td>
+                  <td><span class="status processing">Processing</span></td>
+                  <td>$65.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="activity-card card">
+          <div class="section-title">
+            <h2>Recent Transactions</h2>
+          </div>
+
+          <div class="activity-list">
+            <div class="activity-item">
+              <div>
+                <h4>Wallet Funding</h4>
+                <p>Today, 10:45 AM</p>
+              </div>
+              <span class="amount positive">+$500</span>
+            </div>
+
+            <div class="activity-item">
+              <div>
+                <h4>Order Payment</h4>
+                <p>Today, 09:30 AM</p>
+              </div>
+              <span class="amount negative">-$45</span>
+            </div>
+
+            <div class="activity-item">
+              <div>
+                <h4>Order Payment</h4>
+                <p>Yesterday, 04:20 PM</p>
+              </div>
+              <span class="amount negative">-$20</span>
+            </div>
+
+            <div class="activity-item">
+              <div>
+                <h4>Wallet Funding</h4>
+                <p>Yesterday, 01:15 PM</p>
+              </div>
+              <span class="amount positive">+$300</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
