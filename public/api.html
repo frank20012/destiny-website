@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth API</title>
+  <link rel="stylesheet" href="panel.css" />
+  <link rel="stylesheet" href="api.css" />
+</head>
+<body>
+  <div class="api-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="orders.html">Orders</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="api.html" class="active">API</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>API Access</h1>
+          <p>Integrate platform services into your own applications</p>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="#" class="top-btn">Generate Key</a>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="api-overview">
+        <div class="overview-card highlight-card">
+          <p>API Status</p>
+          <h2>Active</h2>
+          <span>Connected and ready for requests</span>
+        </div>
+
+        <div class="overview-card">
+          <p>Total Requests</p>
+          <h3>12,840</h3>
+        </div>
+
+        <div class="overview-card">
+          <p>Success Rate</p>
+          <h3>99.2%</h3>
+        </div>
+
+        <div class="overview-card">
+          <p>Rate Limit</p>
+          <h3>500/min</h3>
+        </div>
+      </section>
+
+      <section class="api-main-grid">
+        <div class="left-column">
+          <div class="api-key-card card">
+            <div class="section-title">
+              <h2>API Key</h2>
+              <p>Use this key to authenticate your requests</p>
+            </div>
+
+            <div class="key-box">
+              <code>wa_live_3fd92k1m8x4qv9z0ab12</code>
+              <button>Copy</button>
+            </div>
+
+            <div class="key-note">
+              <h4>Important</h4>
+              <p>Keep your API key secure. Do not expose it publicly in frontend code.</p>
+            </div>
+          </div>
+
+          <div class="endpoints-card card">
+            <div class="section-title">
+              <h2>Popular Endpoints</h2>
+              <p>Core endpoints for service access and account activity</p>
+            </div>
+
+            <div class="endpoint-list">
+              <div class="endpoint-item">
+                <div class="endpoint-head">
+                  <span class="method get">GET</span>
+                  <code>/api/v1/services</code>
+                </div>
+                <p>Fetch all available services and categories.</p>
+              </div>
+
+              <div class="endpoint-item">
+                <div class="endpoint-head">
+                  <span class="method post">POST</span>
+                  <code>/api/v1/orders</code>
+                </div>
+                <p>Create a new service order from your account.</p>
+              </div>
+
+              <div class="endpoint-item">
+                <div class="endpoint-head">
+                  <span class="method get">GET</span>
+                  <code>/api/v1/orders</code>
+                </div>
+                <p>Retrieve your recent and active orders.</p>
+              </div>
+
+              <div class="endpoint-item">
+                <div class="endpoint-head">
+                  <span class="method post">POST</span>
+                  <code>/api/v1/wallet/fund</code>
+                </div>
+                <p>Initiate a wallet funding request.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="integration-card card">
+            <div class="section-title">
+              <h2>Integration Steps</h2>
+              <p>Basic flow for connecting your app to the platform</p>
+            </div>
+
+            <div class="steps-list">
+              <div class="step-item">
+                <span>01</span>
+                <div>
+                  <h4>Generate your API key</h4>
+                  <p>Create and copy your unique key from the dashboard.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <span>02</span>
+                <div>
+                  <h4>Read the endpoint structure</h4>
+                  <p>Review supported routes, methods, and payload formats.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <span>03</span>
+                <div>
+                  <h4>Send authenticated requests</h4>
+                  <p>Attach your key to each request securely from your backend.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <span>04</span>
+                <div>
+                  <h4>Monitor responses</h4>
+                  <p>Track results, errors, and request usage inside your account.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="usage-card card">
+            <div class="section-title">
+              <h2>Usage Summary</h2>
+            </div>
+
+            <div class="usage-list">
+              <div class="usage-item">
+                <span>Today</span>
+                <strong>1,248 requests</strong>
+              </div>
+              <div class="usage-item">
+                <span>This week</span>
+                <strong>5,940 requests</strong>
+              </div>
+              <div class="usage-item">
+                <span>Failed requests</span>
+                <strong>18</strong>
+              </div>
+              <div class="usage-item">
+                <span>Average response</span>
+                <strong>220 ms</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="sample-card card">
+            <div class="section-title">
+              <h2>Sample Request</h2>
+            </div>
+
+            <pre><code>fetch("/api/v1/services", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  }
+});</code></pre>
+          </div>
+
+          <div class="cta-card card">
+            <h3>Need full documentation?</h3>
+            <p>Review the complete developer guide, parameters, and response formats.</p>
+            <a href="#" class="doc-btn">Open Docs</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

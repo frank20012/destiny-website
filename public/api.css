@@ -1,0 +1,269 @@
+.api-overview {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.overview-card {
+  padding: 24px 20px;
+  border-radius: 22px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.highlight-card {
+  background: linear-gradient(135deg, rgba(59,130,246,0.24), rgba(139,92,246,0.18));
+}
+
+.overview-card p {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.highlight-card p,
+.highlight-card span {
+  color: #dbeafe;
+}
+
+.overview-card h2 {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+
+.overview-card h3 {
+  font-size: 28px;
+}
+
+.overview-card span {
+  font-size: 14px;
+}
+
+.api-main-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 18px;
+}
+
+.left-column,
+.right-column {
+  display: grid;
+  gap: 18px;
+}
+
+.api-key-card,
+.endpoints-card,
+.integration-card,
+.usage-card,
+.sample-card,
+.cta-card {
+  padding: 22px;
+}
+
+.doc-btn,
+.key-box button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.doc-btn:hover,
+.key-box button:hover {
+  transform: translateY(-2px);
+}
+
+.key-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.key-box code {
+  flex: 1;
+  min-width: 220px;
+  color: #dbeafe;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.key-note {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+.key-note h4 {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.key-note p,
+.endpoint-item p,
+.step-item p,
+.cta-card p {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.endpoint-list,
+.steps-list,
+.usage-list {
+  display: grid;
+  gap: 14px;
+}
+
+.endpoint-item,
+.usage-item {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+.endpoint-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.endpoint-head code {
+  color: #eaf2fb;
+  font-size: 14px;
+}
+
+.method {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.method.get {
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+}
+
+.method.post {
+  background: rgba(59, 130, 246, 0.16);
+  color: #93c5fd;
+}
+
+.step-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+
+.step-item span {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.step-item h4 {
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.usage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.usage-item span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.usage-item strong {
+  font-size: 15px;
+}
+
+.sample-card pre {
+  overflow-x: auto;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.sample-card code {
+  color: #dbeafe;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.cta-card h3 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.cta-card p {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1150px) {
+  .api-overview {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .api-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .api-overview {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .overview-card h2 {
+    font-size: 30px;
+  }
+
+  .overview-card h3 {
+    font-size: 24px;
+  }
+
+  .usage-item,
+  .key-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

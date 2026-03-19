@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth Orders</title>
+  <link rel="stylesheet" href="panel.css" />
+  <link rel="stylesheet" href="orders.css" />
+</head>
+<body>
+  <div class="orders-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="service.html">Services</a>
+        <a href="orders.html" class="active">Orders</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="api.html">API</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Orders</h1>
+          <p>Track service orders and monitor current statuses</p>
+        </div>
+
+        <div class="topbar-actions">
+          <a href="services.html" class="top-btn">Place New Order</a>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="orders-overview">
+        <div class="overview-card highlight-card">
+          <p>Total Orders</p>
+          <h2>128</h2>
+          <span>Across all service categories</span>
+        </div>
+
+        <div class="overview-card">
+          <p>Completed</p>
+          <h3>92</h3>
+        </div>
+
+        <div class="overview-card">
+          <p>Pending</p>
+          <h3>21</h3>
+        </div>
+
+        <div class="overview-card">
+          <p>Processing</p>
+          <h3>15</h3>
+        </div>
+      </section>
+
+      <section class="orders-main-grid">
+        <div class="orders-table-card card">
+          <div class="table-header">
+            <div>
+              <h2>Order History</h2>
+              <p>View all recent and active orders</p>
+            </div>
+
+            <div class="table-actions">
+              <input type="text" placeholder="Search order ID..." />
+              <select>
+                <option>All Status</option>
+                <option>Completed</option>
+                <option>Pending</option>
+                <option>Processing</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Service</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#ORD-1001</td>
+                  <td>Starter Access Package</td>
+                  <td>Standard</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$12.00</td>
+                  <td>Today</td>
+                </tr>
+                <tr>
+                  <td>#ORD-1002</td>
+                  <td>Growth Service Plan</td>
+                  <td>Popular</td>
+                  <td><span class="status pending">Pending</span></td>
+                  <td>$25.00</td>
+                  <td>Today</td>
+                </tr>
+                <tr>
+                  <td>#ORD-1003</td>
+                  <td>API Integration Access</td>
+                  <td>API</td>
+                  <td><span class="status processing">Processing</span></td>
+                  <td>$60.00</td>
+                  <td>Yesterday</td>
+                </tr>
+                <tr>
+                  <td>#ORD-1004</td>
+                  <td>Business Workflow Service</td>
+                  <td>Business</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$45.00</td>
+                  <td>Yesterday</td>
+                </tr>
+                <tr>
+                  <td>#ORD-1005</td>
+                  <td>Standard User Package</td>
+                  <td>Standard</td>
+                  <td><span class="status cancelled">Cancelled</span></td>
+                  <td>$18.00</td>
+                  <td>2 days ago</td>
+                </tr>
+                <tr>
+                  <td>#ORD-1006</td>
+                  <td>Advanced Operations Plan</td>
+                  <td>Advanced</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$75.00</td>
+                  <td>2 days ago</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <div class="activity-card card">
+            <div class="section-title">
+              <h2>Recent Activity</h2>
+            </div>
+
+            <div class="activity-list">
+              <div class="activity-item">
+                <div>
+                  <h4>Order #ORD-1002</h4>
+                  <p>Marked as pending</p>
+                </div>
+                <span class="mini-badge pending-text">Pending</span>
+              </div>
+
+              <div class="activity-item">
+                <div>
+                  <h4>Order #ORD-1003</h4>
+                  <p>Currently processing</p>
+                </div>
+                <span class="mini-badge processing-text">Processing</span>
+              </div>
+
+              <div class="activity-item">
+                <div>
+                  <h4>Order #ORD-1004</h4>
+                  <p>Completed successfully</p>
+                </div>
+                <span class="mini-badge success-text">Done</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Order Summary</h2>
+            </div>
+
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Most used service</span>
+                <strong>Growth Plan</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Last completed</span>
+                <strong>#ORD-1004</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Pending value</span>
+                <strong>$85.00</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Success rate</span>
+                <strong>94%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
