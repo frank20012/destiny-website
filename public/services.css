@@ -1,6 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
+  --bg: #f5f7fb;
+  --bg-2: #eef2f8;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-2: rgba(255, 255, 255, 0.95);
+  --border: rgba(15, 23, 42, 0.08);
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #3b82f6;
+  --secondary: #8b5cf6;
+  --shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+  --success: #22c55e;
+}
+
+body.dark-mode {
   --bg: #07131f;
   --bg-2: #0d1b2a;
   --surface: rgba(255, 255, 255, 0.06);
@@ -8,10 +22,7 @@
   --border: rgba(255, 255, 255, 0.1);
   --text: #ffffff;
   --muted: #b9c6d3;
-  --primary: #3b82f6;
-  --secondary: #8b5cf6;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  --success: #22c55e;
 }
 
 * {
@@ -28,10 +39,11 @@ body {
   font-family: 'Inter', sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.18), transparent 30%),
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.1), transparent 30%),
     linear-gradient(135deg, var(--bg), var(--bg-2));
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -48,8 +60,8 @@ a {
   top: 0;
   z-index: 1000;
   backdrop-filter: blur(16px);
-  background: rgba(7, 19, 31, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border-bottom: 1px solid var(--border);
 }
 
 .nav-container {
@@ -61,7 +73,7 @@ a {
 }
 
 .logo {
-  color: #fff;
+  color: var(--text);
   font-size: 24px;
   font-weight: 800;
 }
@@ -81,7 +93,7 @@ a {
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: #fff;
+  color: var(--text);
 }
 
 .nav-actions {
@@ -90,7 +102,8 @@ a {
   gap: 12px;
 }
 
-.btn {
+.btn,
+.theme-toggle-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -99,26 +112,37 @@ a {
   font-size: 14px;
   font-weight: 700;
   transition: 0.25s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.theme-toggle-btn {
+  min-width: 48px;
+  padding: 13px 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff;
-  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.22);
+  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.18);
 }
 
 .btn-primary:hover,
 .btn-secondary:hover,
 .btn-outline:hover,
 .card-btn:hover,
-.filter-btn:hover {
+.filter-btn:hover,
+.theme-toggle-btn:hover {
   transform: translateY(-2px);
 }
 
 .btn-outline,
 .btn-secondary {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  background: var(--surface);
   border: 1px solid var(--border);
 }
 
@@ -138,9 +162,9 @@ a {
   display: inline-block;
   padding: 10px 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--surface);
   border: 1px solid var(--border);
-  color: #dbeafe;
+  color: var(--primary);
   font-size: 13px;
   font-weight: 700;
 }
@@ -196,7 +220,7 @@ a {
 .summary-item {
   padding: 16px 18px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
   border: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -226,8 +250,8 @@ a {
   padding: 12px 18px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
   font-weight: 600;
   transition: 0.25s ease;
@@ -235,6 +259,7 @@ a {
 
 .filter-btn.active {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
   border-color: transparent;
 }
 
@@ -273,6 +298,7 @@ a {
   border: 1px solid var(--border);
   backdrop-filter: blur(12px);
   transition: 0.25s ease;
+  box-shadow: var(--shadow);
 }
 
 .service-card:hover,
@@ -281,7 +307,7 @@ a {
 }
 
 .service-card.featured {
-  background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.14));
+  background: linear-gradient(135deg, rgba(59,130,246,0.14), rgba(139,92,246,0.1));
 }
 
 .card-top {
@@ -295,11 +321,11 @@ a {
 .service-type {
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   font-size: 12px;
   font-weight: 700;
-  color: #dbeafe;
+  color: var(--primary);
 }
 
 .service-price {
@@ -325,7 +351,7 @@ a {
 }
 
 .service-card ul li {
-  color: #dce7f2;
+  color: var(--text);
   font-size: 14px;
   margin-bottom: 10px;
   padding-left: 18px;
@@ -373,6 +399,7 @@ a {
   background: var(--surface);
   border: 1px solid var(--border);
   transition: 0.25s ease;
+  box-shadow: var(--shadow);
 }
 
 .pricing-note-card h3 {
@@ -394,8 +421,9 @@ a {
   text-align: center;
   padding: 58px 24px;
   border-radius: 30px;
-  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.18));
+  background: linear-gradient(135deg, rgba(59,130,246,0.14), rgba(139,92,246,0.12));
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .cta-box h2 {
@@ -418,8 +446,8 @@ a {
 
 .site-footer {
   padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  background: rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .footer-grid {
@@ -443,7 +471,7 @@ a {
 }
 
 .footer-grid a:hover {
-  color: #fff;
+  color: var(--text);
 }
 
 .footer-bottom {
@@ -499,7 +527,8 @@ a {
     gap: 8px;
   }
 
-  .btn {
+  .btn,
+  .theme-toggle-btn {
     padding: 11px 16px;
     font-size: 13px;
   }
