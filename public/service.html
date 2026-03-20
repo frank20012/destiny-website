@@ -8,25 +8,37 @@
 </head>
 <body>
   <div class="sidebar-overlay"></div>
-  <header class="site-header">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">WaveAuth</a>
 
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="service.html" class="active">Services</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="#">Pricing</a>
-        <a href="#">Contact</a>
-      </nav>
+    <header class="site-header">
+  <div class="container nav-container">
+    <a href="index.html" class="logo">WaveAuth</a>
 
-      <div class="nav-actions">
-        <button class="theme-toggle-btn" type="button">🌙</button>
-        <a href="signin.html" class="btn btn-outline">Login</a>
-        <a href="signup.html" class="btn btn-primary">Get Started</a>
-      </div>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="services.html" class="active">Services</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#">Pricing</a>
+      <a href="#">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="mobile-menu-btn" type="button">☰</button>
+      <button class="theme-toggle-btn" type="button">🌙</button>
+      <a href="signin.html" class="btn btn-outline">Login</a>
+      <a href="signup.html" class="btn btn-primary">Get Started</a>
     </div>
-  </header>
+  </div>
+
+  <div class="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="services.html">Services</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#">Pricing</a>
+    <a href="#">Contact</a>
+    <a href="signin.html">Login</a>
+    <a href="signup.html">Get Started</a>
+  </div>
+</header>
 
   <main>
     <section class="services-hero">
@@ -273,5 +285,6 @@
   </footer>
   <script src="panel.js"></script>
   <script src="theme.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>
