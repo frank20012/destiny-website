@@ -24,6 +24,9 @@
   color: #dbeafe;
   font-size: 14px;
 }
+.stat-number {
+  font-variant-numeric: tabular-nums;
+}
 
 .mini-card {
   padding: 24px 20px;

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Services - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+      <nav class="sidebar-nav">
+        <a href="admin.html">Admin Overview</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-orders.html">Admin Orders</a>
+        <a href="admin-transactions.html">Admin Transactions</a>
+        <a href="admin-services.html" class="active">Admin Services</a>
+        <a href="dashboard.html">User Dashboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Services</h1>
+          <p>Manage service offerings, pricing, and service status</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button" id="openAddServiceModalBtn">Add Service</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card">
+          <p>Total Services</p>
+          <h2 class="stat-number" data-target="18">0</h2>
+          <span>All available platform services</span>
+        </div>
+
+        <div class="overview-card card">
+          <p>Active Services</p>
+          <h3 class="stat-number" data-target="15">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Draft Services</p>
+          <h3 class="stat-number" data-target="2">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Disabled Services</p>
+          <h3 class="stat-number" data-target="1">0</h3>
+        </div>
+      </section>
+
+      <section class="admin-table-section reveal">
+        <div class="admin-table-card card">
+          <div class="table-header">
+            <div>
+              <h2>Services List</h2>
+              <p>Search and filter all platform services</p>
+            </div>
+
+            <div class="table-actions">
+              <input type="text" id="adminServiceSearchInput" placeholder="Search service name..." />
+              <select id="adminServiceCategoryFilter">
+                <option value="all">All Categories</option>
+                <option value="standard">Standard</option>
+                <option value="popular">Popular</option>
+                <option value="business">Business</option>
+                <option value="api">API</option>
+                <option value="advanced">Advanced</option>
+              </select>
+              <select id="adminServiceStatusFilter">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="draft">Draft</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Service ID</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminServicesTableBody">
+                <tr data-category="standard" data-status="active">
+                  <td>#SRV-1001</td>
+                  <td>Starter Access Package</td>
+                  <td>Standard</td>
+                  <td>$12.00</td>
+                  <td><span class="status completed">Active</span></td>
+                </tr>
+                <tr data-category="popular" data-status="active">
+                  <td>#SRV-1002</td>
+                  <td>Growth Service Plan</td>
+                  <td>Popular</td>
+                  <td>$25.00</td>
+                  <td><span class="status completed">Active</span></td>
+                </tr>
+                <tr data-category="business" data-status="active">
+                  <td>#SRV-1003</td>
+                  <td>Business Workflow Service</td>
+                  <td>Business</td>
+                  <td>$45.00</td>
+                  <td><span class="status completed">Active</span></td>
+                </tr>
+                <tr data-category="api" data-status="draft">
+                  <td>#SRV-1004</td>
+                  <td>API Integration Access</td>
+                  <td>API</td>
+                  <td>$60.00</td>
+                  <td><span class="status pending">Draft</span></td>
+                </tr>
+                <tr data-category="advanced" data-status="disabled">
+                  <td>#SRV-1005</td>
+                  <td>Advanced Operations Plan</td>
+                  <td>Advanced</td>
+                  <td>$75.00</td>
+                  <td><span class="status cancelled">Disabled</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="table-empty-message" id="adminServicesEmptyMessage">No matching services found.</p>
+
+          <div class="table-pagination" id="adminServicesPagination">
+            <button type="button" id="adminServicesPrevBtn">Previous</button>
+            <span id="adminServicesPageInfo">Page 1 of 1</span>
+            <button type="button" id="adminServicesNextBtn">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stats.js"></script>
+  <script src="/index.js/admin-services.js"></script>
+</body>
+</html>

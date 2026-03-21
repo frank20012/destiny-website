@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Transactions - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/loader.css" />
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+</head>
+<body>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots"><span></span><span></span><span></span></div>
+      <div class="loader-text">Loading WaveAuth...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+      <nav class="sidebar-nav">
+        <a href="admin.html">Admin Overview</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-orders.html">Admin Orders</a>
+        <a href="admin-transactions.html" class="active">Admin Transactions</a>
+        <a href="dashboard.html">User Dashboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Transactions</h1>
+          <p>Track credits, debits, and failed platform transactions</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button">Export Transactions</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card">
+          <p>Total Transaction Value</p>
+          <h2 class="stat-number" data-target="6420" data-prefix="$">0</h2>
+          <span>Combined platform movement</span>
+        </div>
+        <div class="overview-card card">
+          <p>Credits</p>
+          <h3 class="stat-number" data-target="3800" data-prefix="$">0</h3>
+        </div>
+        <div class="overview-card card">
+          <p>Debits</p>
+          <h3 class="stat-number" data-target="2550" data-prefix="$">0</h3>
+        </div>
+        <div class="overview-card card">
+          <p>Failed</p>
+          <h3 class="stat-number" data-target="70" data-prefix="$">0</h3>
+        </div>
+      </section>
+
+      <section class="admin-table-section reveal">
+        <div class="admin-table-card card">
+          <div class="table-header">
+            <div>
+              <h2>Transactions List</h2>
+              <p>Search and filter all transactions</p>
+            </div>
+
+            <div class="table-actions">
+              <input type="text" id="adminTransactionSearchInput" placeholder="Search reference or description..." />
+              <select id="adminTransactionTypeFilter">
+                <option value="all">All Types</option>
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+              </select>
+              <select id="adminTransactionStatusFilter">
+                <option value="all">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="adminTransactionsTableBody">
+                <tr data-type="credit" data-status="completed">
+                  <td>#TRX-3001</td>
+                  <td>Credit</td>
+                  <td>Wallet Funding via Bank Transfer</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$500.00</td>
+                </tr>
+                <tr data-type="debit" data-status="completed">
+                  <td>#TRX-3002</td>
+                  <td>Debit</td>
+                  <td>Order Payment - Growth Service Plan</td>
+                  <td><span class="status completed">Completed</span></td>
+                  <td>$25.00</td>
+                </tr>
+                <tr data-type="debit" data-status="pending">
+                  <td>#TRX-3003</td>
+                  <td>Debit</td>
+                  <td>Order Payment - API Access</td>
+                  <td><span class="status pending">Pending</span></td>
+                  <td>$60.00</td>
+                </tr>
+                <tr data-type="credit" data-status="failed">
+                  <td>#TRX-3004</td>
+                  <td>Credit</td>
+                  <td>Wallet Funding via Crypto</td>
+                  <td><span class="status failed">Failed</span></td>
+                  <td>$200.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="table-empty-message" id="adminTransactionsEmptyMessage">No matching transactions found.</p>
+
+          <div class="table-pagination" id="adminTransactionsPagination">
+            <button type="button" id="adminTransactionsPrevBtn">Previous</button>
+            <span id="adminTransactionsPageInfo">Page 1 of 1</span>
+            <button type="button" id="adminTransactionsNextBtn">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/loader.js"></script>
+  <script src="/index.js/reveal.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stats.js"></script>
+  <script src="/index.js/admin-transactions.js"></script>
+</body>
+</html>

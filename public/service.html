@@ -6,8 +6,22 @@
   <title>WaveAuth Services</title>
   <link rel="stylesheet" href="/style.css/services.css" />
   <link rel="stylesheet" href="/style.css/panel.css">
+  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
 <body>
+  <div class="loader-wrapper">
+  <div class="loader-box">
+    <div class="loader-logo">W</div>
+    <div class="loader-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="loader-text">Loading WaveAuth...</div>
+  </div>
+</div>
   <div class="sidebar-overlay"></div>
 
     <header class="site-header">
@@ -34,15 +48,15 @@
     <a href="index.html">Home</a>
     <a href="services.html">Services</a>
     <a href="dashboard.html">Dashboard</a>
-    <a href="#">Pricing</a>
-    <a href="#">Contact</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="contact.html">Contact</a>
     <a href="signin.html">Login</a>
     <a href="signup.html">Get Started</a>
   </div>
 </header>
 
   <main>
-    <section class="services-hero">
+    <section class="services-hero reveal">
       <div class="container services-hero-grid">
         <div class="hero-text">
           <span class="badge">All Services</span>
@@ -83,20 +97,21 @@
       </div>
     </section>
 
-    <section class="filters-section">
+    <section class="filters-section reveal">
+       
       <div class="container">
         <div class="filter-bar">
-          <button class="filter-btn active">All</button>
-          <button class="filter-btn">Popular</button>
-          <button class="filter-btn">Business</button>
-          <button class="filter-btn">Verification</button>
-          <button class="filter-btn">API</button>
-          <button class="filter-btn">Automation</button>
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="popular">Popular</button>
+          <button class="filter-btn" data-filter="business">Business</button>
+          <button class="filter-btn" data-filter="api">API</button>
+          <button class="filter-btn" data-filter="standard">Standard</button>
+          <button class="filter-btn" data-filter="advanced">Advanced</button>
         </div>
       </div>
     </section>
 
-    <section class="services-list-section">
+    <section class="services-list-section reveal">
       <div class="container">
         <div class="section-heading">
           <span class="section-tag">Available Services</span>
@@ -108,7 +123,7 @@
         </div>
 
         <div class="services-grid">
-          <article class="service-card featured">
+          <article class="service-card featured reveal" data-category="popular">
             <div class="card-top">
               <span class="service-type">Featured</span>
               <span class="service-price">$12.00</span>
@@ -125,7 +140,7 @@
             <a href="#" class="card-btn">Select Service</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card reveal" data-category="popular">
             <div class="card-top">
               <span class="service-type">Popular</span>
               <span class="service-price">$25.00</span>
@@ -142,7 +157,7 @@
             <a href="#" class="card-btn">Select Service</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card reveal" data-category="business">
             <div class="card-top">
               <span class="service-type">Business</span>
               <span class="service-price">$45.00</span>
@@ -159,7 +174,7 @@
             <a href="#" class="card-btn">Select Service</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card reveal" data-category="api">
             <div class="card-top">
               <span class="service-type">API</span>
               <span class="service-price">$60.00</span>
@@ -176,7 +191,7 @@
             <a href="#" class="card-btn">Select Service</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card reveal" data-category="standard">
             <div class="card-top">
               <span class="service-type">Standard</span>
               <span class="service-price">$18.00</span>
@@ -193,7 +208,7 @@
             <a href="#" class="card-btn">Select Service</a>
           </article>
 
-          <article class="service-card">
+          <article class="service-card reveal reveal" data-category="advanced">
             <div class="card-top">
               <span class="service-type">Advanced</span>
               <span class="service-price">$75.00</span>
@@ -213,7 +228,7 @@
       </div>
     </section>
 
-    <section class="pricing-note-section">
+    <section class="pricing-note-section reveal">
       <div class="container pricing-note-grid">
         <div class="pricing-note-card">
           <h3>Transparent Pricing</h3>
@@ -238,7 +253,7 @@
       </div>
     </section>
 
-    <section class="cta-section">
+    <section class="cta-section reveal">
       <div class="container cta-box">
         <h2>Ready to use a service?</h2>
         <p>Create an account or sign in to continue to your dashboard.</p>
@@ -287,5 +302,9 @@
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/theme.js"></script>
   <script src="/index.js/nav.js"></script>
+  <script src="/index.js/loader.js"></script>
+  <script src="/index.js/reveal.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/service.js"></script>
 </body>
 </html>

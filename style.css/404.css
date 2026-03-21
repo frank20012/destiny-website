@@ -1,0 +1,47 @@
+.not-found-page {
+  min-height: calc(100vh - 82px);
+  display: grid;
+  place-items: center;
+  padding: 60px 0 90px;
+}
+
+.not-found-box {
+  text-align: center;
+  max-width: 760px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  padding: 60px 28px;
+  box-shadow: var(--shadow);
+}
+
+.not-found-box h1 {
+  font-size: 64px;
+  margin-top: 20px;
+  margin-bottom: 16px;
+}
+
+.not-found-box p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 auto 28px;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 780px) {
+  .not-found-box h1 {
+    font-size: 38px;
+  }
+
+  .not-found-box {
+    padding: 42px 20px;
+  }
+}

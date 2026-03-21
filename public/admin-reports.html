@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Reports - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+  <link rel="stylesheet" href="/style.css/admin-reports.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+      <nav class="sidebar-nav">
+        <a href="admin.html">Admin Overview</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-orders.html">Admin Orders</a>
+        <a href="admin-transaction.html">Admin Transactions</a>
+        <a href="admin-services.html">Admin Services</a>
+        <a href="admin-reports.html" class="active">Admin Reports</a>
+        <a href="dashboard.html">User Dashboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Reports</h1>
+          <p>Revenue, growth, usage trends, and platform performance overview</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button" id="exportReportsBtn">Export Reports</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card">
+          <p>Total Revenue</p>
+          <h2 class="stat-number" data-target="18450" data-prefix="$">0</h2>
+          <span>All-time platform revenue</span>
+        </div>
+
+        <div class="overview-card card">
+          <p>Monthly Revenue</p>
+          <h3 class="stat-number" data-target="6240" data-prefix="$">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>New Users</p>
+          <h3 class="stat-number" data-target="148">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Conversion Rate</p>
+          <h3 class="stat-number" data-target="78.4" data-suffix="%" data-decimals="1">0%</h3>
+        </div>
+      </section>
+
+      <section class="reports-grid reveal">
+        <div class="report-card card">
+          <div class="section-title">
+            <h2>Revenue Summary</h2>
+            <p>Quick breakdown of recent earnings</p>
+          </div>
+
+          <div class="report-list">
+            <div class="report-item">
+              <span>Today</span>
+              <strong>$420.00</strong>
+            </div>
+            <div class="report-item">
+              <span>This Week</span>
+              <strong>$1,860.00</strong>
+            </div>
+            <div class="report-item">
+              <span>This Month</span>
+              <strong>$6,240.00</strong>
+            </div>
+            <div class="report-item">
+              <span>Last Month</span>
+              <strong>$5,780.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-card card">
+          <div class="section-title">
+            <h2>User Growth</h2>
+            <p>Signup activity snapshot</p>
+          </div>
+
+          <div class="report-list">
+            <div class="report-item">
+              <span>Today</span>
+              <strong>34 users</strong>
+            </div>
+            <div class="report-item">
+              <span>This Week</span>
+              <strong>86 users</strong>
+            </div>
+            <div class="report-item">
+              <span>This Month</span>
+              <strong>148 users</strong>
+            </div>
+            <div class="report-item">
+              <span>Active Rate</span>
+              <strong>87%</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="reports-grid reveal">
+        <div class="report-card wide-card card">
+          <div class="section-title">
+            <h2>Top Performing Services</h2>
+            <p>Services generating the highest volume</p>
+          </div>
+
+          <div class="service-performance-list">
+            <div class="service-performance-item">
+              <div class="service-meta">
+                <h4>Growth Service Plan</h4>
+                <p>Most purchased plan this month</p>
+              </div>
+              <strong>482 orders</strong>
+            </div>
+
+            <div class="service-performance-item">
+              <div class="service-meta">
+                <h4>Business Workflow Service</h4>
+                <p>Strong business usage trend</p>
+              </div>
+              <strong>311 orders</strong>
+            </div>
+
+            <div class="service-performance-item">
+              <div class="service-meta">
+                <h4>API Integration Access</h4>
+                <p>Developer-focused plan growth</p>
+              </div>
+              <strong>196 orders</strong>
+            </div>
+
+            <div class="service-performance-item">
+              <div class="service-meta">
+                <h4>Starter Access Package</h4>
+                <p>Popular among new users</p>
+              </div>
+              <strong>154 orders</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-card card">
+          <div class="section-title">
+            <h2>System Report</h2>
+            <p>Current platform status</p>
+          </div>
+
+          <div class="report-list">
+            <div class="report-item">
+              <span>Website Status</span>
+              <strong>Online</strong>
+            </div>
+            <div class="report-item">
+              <span>API Health</span>
+              <strong>Stable</strong>
+            </div>
+            <div class="report-item">
+              <span>Pending Tickets</span>
+              <strong>8</strong>
+            </div>
+            <div class="report-item">
+              <span>Error Reports</span>
+              <strong>3</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-table-section reveal">
+        <div class="admin-table-card card">
+          <div class="section-title">
+            <h2>Monthly Overview Table</h2>
+            <p>High-level performance across recent months</p>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Revenue</th>
+                  <th>New Users</th>
+                  <th>Orders</th>
+                  <th>Transactions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>January</td>
+                  <td>$4,820</td>
+                  <td>102</td>
+                  <td>612</td>
+                  <td>1,104</td>
+                </tr>
+                <tr>
+                  <td>February</td>
+                  <td>$5,280</td>
+                  <td>118</td>
+                  <td>694</td>
+                  <td>1,260</td>
+                </tr>
+                <tr>
+                  <td>March</td>
+                  <td>$6,240</td>
+                  <td>148</td>
+                  <td>812</td>
+                  <td>1,486</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stats.js"></script>
+  <script src="/index.js/admin-reports.js"></script>
+</body>
+</html>

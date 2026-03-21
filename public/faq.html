@@ -5,8 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WaveAuth FAQ</title>
   <link rel="stylesheet" href="/style.css/faq.css" />
+  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
 <body>
+  <div class="loader-wrapper">
+  <div class="loader-box">
+    <div class="loader-logo">W</div>
+    <div class="loader-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="loader-text">Loading WaveAuth...</div>
+  </div>
+</div>
   <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="logo">WaveAuth</a>
@@ -37,7 +51,7 @@
   </header>
 
   <main>
-    <section class="hero-section">
+    <section class="hero-section reveal">
       <div class="container hero-content">
         <span class="badge">Help Center</span>
         <h1>Frequently asked questions</h1>
@@ -48,77 +62,92 @@
       </div>
     </section>
 
-    <section class="faq-section">
-      <div class="container">
-        <div class="faq-grid">
-          <div class="faq-card">
-            <h3>How do I create an account?</h3>
-            <p>
-              Go to the sign up page, fill in your details, and submit the form
-              to create your account.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>How do I sign in?</h3>
-            <p>
-              Use the sign in page with your registered email and password to
-              access your dashboard.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>How do I fund my wallet?</h3>
-            <p>
-              Open the wallet page, choose your amount, select a payment method,
-              and proceed with funding.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>Where can I see my orders?</h3>
-            <p>
-              Your orders page contains your order history, statuses, and recent
-              activity.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>Can I use the API?</h3>
-            <p>
-              Yes. The API page provides your key, usage summary, and endpoint
-              examples for integration.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>Does the site support dark mode?</h3>
-            <p>
-              Yes. The platform supports light and dark themes, with light mode
-              set as the default.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>Can I update my account details?</h3>
-            <p>
-              Yes. Open the settings page to edit your profile, security, and
-              account preferences.
-            </p>
-          </div>
-
-          <div class="faq-card">
-            <h3>Is the platform mobile responsive?</h3>
-            <p>
-              Yes. The pages are designed to adapt to desktop, tablet, and
-              mobile screens.
-            </p>
-          </div>
+      <section class="faq-section reveal">
+  <div class="container">
+    <div class="faq-accordion">
+      <div class="faq-item active">
+        <button class="faq-question" type="button">
+          <span>How do I create an account?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Go to the sign up page, fill in your details, and submit the form
+            to create your account.
+          </p>
         </div>
       </div>
-    </section>
 
-    <section class="cta-section">
+      <div class="faq-item">
+        <button class="faq-question" type="button">
+          <span>How do I sign in?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Use the sign in page with your registered email and password to
+            access your dashboard.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" type="button">
+          <span>How do I fund my wallet?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Open the wallet page, choose your amount, select a payment method,
+            and proceed with funding.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" type="button">
+          <span>Where can I see my orders?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Your orders page contains your order history, statuses, and recent
+            activity.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" type="button">
+          <span>Can I use the API?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Yes. The API page provides your key, usage summary, and endpoint
+            examples for integration.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" type="button">
+          <span>Does the site support dark mode?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">
+          <p>
+            Yes. The platform supports light and dark themes, with light mode
+            set as the default.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <section class="cta-section reveal">
       <div class="container cta-box">
         <h2>Still need help?</h2>
         <p>Reach out through the contact page and we’ll guide you.</p>
@@ -160,5 +189,9 @@
 
   <script src="/index.js/theme.js"></script>
   <script src="/index.js/nav.js"></script>
+  <script src="/index.js/loader.js"></script>
+  <script src="/index.js/reveal.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/faq.js"></script>
 </body>
 </html>

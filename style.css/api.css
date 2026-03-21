@@ -267,3 +267,6 @@
     align-items: flex-start;
   }
 }
+.stat-number {
+  font-variant-numeric: tabular-nums;
+}

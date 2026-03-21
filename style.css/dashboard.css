@@ -159,3 +159,6 @@ tbody td {
     grid-template-columns: 1fr;
   }
 }
+.stat-number {
+  font-variant-numeric: tabular-nums;
+}

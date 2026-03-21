@@ -6,8 +6,23 @@
   <title>WaveAuth Transactions</title>
   <link rel="stylesheet" href="/style.css/panel.css">
   <link rel="stylesheet" href="/style.css/transactions.css" />
+  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
+
 <body>
+  <div class="loader-wrapper">
+  <div class="loader-box">
+    <div class="loader-logo">W</div>
+    <div class="loader-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="loader-text">Loading WaveAuth...</div>
+  </div>
+</div>
   <div class="sidebar-overlay"></div>
   <div class="transactions-layout">
     <aside class="sidebar">
@@ -43,30 +58,30 @@
         </div>
       </header>
 
-      <section class="transactions-overview">
+      <section class="transactions-overview reveal">
         <div class="overview-card highlight-card">
           <p>Total Transaction Value</p>
-          <h2>$6,420</h2>
+          <h2 class="stat-number" data-target="6420" data-prefix="$">0</h2>
           <span>All-time platform activity</span>
         </div>
 
         <div class="overview-card">
           <p>Credits</p>
-          <h3>$3,800</h3>
+          <h3 class="stat-number" data-target="3800" data-prefix="$">0</h3>
         </div>
 
         <div class="overview-card">
           <p>Debits</p>
-          <h3>$2,550</h3>
+          <h3 class="stat-number" data-target="2550" data-prefix="$">0</h3>
         </div>
 
         <div class="overview-card">
           <p>Pending</p>
-          <h3>$70</h3>
+          <h3 class="stat-number" data-target="70" data-prefix="$">0</h3>
         </div>
       </section>
 
-      <section class="transactions-main-grid">
+      <section class="transactions-main-grid reveal">
         <div class="transactions-table-card card">
           <div class="table-header">
             <div>
@@ -75,13 +90,13 @@
             </div>
 
             <div class="table-actions">
-              <input type="text" placeholder="Search reference..." />
-              <select>
+              <input type="text"  id="transactionSearchInput" placeholder="Search reference..." />
+              <select id="transactionTypeFilter">
                 <option>All Types</option>
                 <option>Credit</option>
                 <option>Debit</option>
               </select>
-              <select>
+              <select id="transactionStatusFilter">
                 <option>All Status</option>
                 <option>Completed</option>
                 <option>Pending</option>
@@ -102,8 +117,9 @@
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
+                
+                            <tbody id="transactionsTableBody">
+                <tr data-type="credit" data-status="completed">
                   <td>#TRX-3001</td>
                   <td>Credit</td>
                   <td>Wallet Funding via Bank Transfer</td>
@@ -111,7 +127,7 @@
                   <td class="amount positive">+$500.00</td>
                   <td>Today</td>
                 </tr>
-                <tr>
+                <tr data-type="debit" data-status="completed">
                   <td>#TRX-3002</td>
                   <td>Debit</td>
                   <td>Order Payment - Growth Service Plan</td>
@@ -119,7 +135,7 @@
                   <td class="amount negative">-$25.00</td>
                   <td>Today</td>
                 </tr>
-                <tr>
+                <tr data-type="debit" data-status="pending">
                   <td>#TRX-3003</td>
                   <td>Debit</td>
                   <td>Order Payment - API Access</td>
@@ -127,7 +143,7 @@
                   <td class="amount negative">-$60.00</td>
                   <td>Yesterday</td>
                 </tr>
-                <tr>
+                <tr data-type="credit" data-status="completed">
                   <td>#TRX-3004</td>
                   <td>Credit</td>
                   <td>Wallet Funding via Card</td>
@@ -135,7 +151,7 @@
                   <td class="amount positive">+$300.00</td>
                   <td>Yesterday</td>
                 </tr>
-                <tr>
+                <tr data-type="debit" data-status="completed">
                   <td>#TRX-3005</td>
                   <td>Debit</td>
                   <td>Order Payment - Business Workflow Service</td>
@@ -143,7 +159,7 @@
                   <td class="amount negative">-$45.00</td>
                   <td>2 days ago</td>
                 </tr>
-                <tr>
+                <tr data-type="credit" data-status="failed">
                   <td>#TRX-3006</td>
                   <td>Credit</td>
                   <td>Wallet Funding via Crypto</td>
@@ -154,6 +170,12 @@
               </tbody>
             </table>
           </div>
+          <p class="table-empty-message" id="transactionsEmptyMessage">No matching transactions found.</p>
+          <div class="table-pagination" id="transactionsPagination">
+  <button type="button" id="transactionsPrevBtn">Previous</button>
+  <span id="transactionsPageInfo">Page 1 of 1</span>
+  <button type="button" id="transactionsNextBtn">Next</button>
+</div>
         </div>
 
         <div class="side-panel">
@@ -218,5 +240,10 @@
     </main>
   </div>
   <script src="/index.js/panel.js"></script>
+  <script src="/index.js/loader.js"></script>
+  <script src="/index.js/reveal.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stat.js"></script>
+  <script src="/index.js/transaction.js"></script>
 </body>
 </html>

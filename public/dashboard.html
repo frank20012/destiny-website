@@ -6,8 +6,22 @@
   <title>WaveAuth Dashboard</title>
   <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/dashboard.css" />
+  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
 <body>
+  <div class="loader-wrapper">
+  <div class="loader-box">
+    <div class="loader-logo">W</div>
+    <div class="loader-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="loader-text">Loading WaveAuth...</div>
+  </div>
+</div>
   <div class="sidebar-overlay"></div>
   <div class="dashboard-layout">
     <aside class="sidebar">
@@ -17,6 +31,7 @@
         <a href="dashboard.html" class="active">Dashboard</a>
         <a href="service.html">Services</a>
         <a href="orders.html">Orders</a>
+        <a href="admin.html">Admin</a>
         <a href="wallet.html">Wallet</a>
         <a href="transactions.html">Transactions</a>
         <a href="api.html">API</a>
@@ -43,21 +58,21 @@
         </div>
       </header>
 
-      <section class="overview-grid">
+      <section class="overview-grid reveal">
         <div class="balance-card card">
           <p>Available Balance</p>
-          <h2>$1,250.00</h2>
+          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2">$0.00</h2>
           <span>Updated just now</span>
         </div>
 
         <div class="mini-card card">
           <p>Total Orders</p>
-          <h3>38</h3>
+          <h3 class="stat-number" data-target="38">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>Active Services</p>
-          <h3>12</h3>
+          <h3 class="stat-number" data-target="12">0</h3>
         </div>
 
         <div class="mini-card card">
@@ -66,7 +81,7 @@
         </div>
       </section>
 
-      <section class="quick-actions">
+      <section class="quick-actions reveal">
         <div class="section-title">
           <h2>Quick Actions</h2>
         </div>
@@ -98,7 +113,7 @@
         </div>
       </section>
 
-      <section class="content-grid">
+      <section class="content-grid reveal">
         <div class="table-card card">
           <div class="section-title">
             <h2>Recent Orders</h2>
@@ -187,5 +202,9 @@
     </main>
   </div>
   <script src="/index.js/panel.js"></script>
+  <script src="/index.js/loader.js"></script>
+  <script src="/index.js/reveal.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stat.js"></script>
 </body>
 </html>
