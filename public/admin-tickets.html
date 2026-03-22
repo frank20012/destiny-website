@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Tickets - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+      <nav class="sidebar-nav">
+        <a href="admin.html">Admin Overview</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-orders.html">Admin Orders</a>
+        <a href="admin-transactions.html">Admin Transactions</a>
+        <a href="admin-services.html">Admin Services</a>
+        <a href="admin-reports.html">Admin Reports</a>
+        <a href="admin-settings.html">Admin Settings</a>
+        <a href="admin-tickets.html" class="active">Admin Tickets</a>
+        <a href="dashboard.html">User Dashboard</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Tickets</h1>
+          <p>Review user support requests and monitor issue resolution</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button" id="exportTicketsBtn">Export Tickets</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-overview-grid">
+        <div class="overview-card highlight-card card">
+          <p>Total Tickets</p>
+          <h2 class="stat-number" data-target="48">0</h2>
+          <span>All support requests</span>
+        </div>
+
+        <div class="overview-card card">
+          <p>Open</p>
+          <h3 class="stat-number" data-target="14">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>In Review</p>
+          <h3 class="stat-number" data-target="9">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Resolved</p>
+          <h3 class="stat-number" data-target="25">0</h3>
+        </div>
+      </section>
+
+      <section class="admin-table-section">
+        <div class="admin-table-card card">
+          <div class="table-header">
+            <div>
+              <h2>Tickets List</h2>
+              <p>Search and filter user support tickets</p>
+            </div>
+
+            <div class="table-actions">
+              <input type="text" id="adminTicketSearchInput" placeholder="Search ticket ID or subject..." />
+              <select id="adminTicketStatusFilter">
+                <option value="all">All Status</option>
+                <option value="open">Open</option>
+                <option value="review">In Review</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>User</th>
+                  <th>Subject</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody id="adminTicketsTableBody">
+                <tr data-status="open">
+                  <td>#TCK-1001</td>
+                  <td>Franklyn</td>
+                  <td>Wallet funding delay</td>
+                  <td>Wallet</td>
+                  <td><span class="status pending">Open</span></td>
+                  <td><span class="priority high">High</span></td>
+                </tr>
+                <tr data-status="review">
+                  <td>#TCK-1002</td>
+                  <td>Jane</td>
+                  <td>Order still processing</td>
+                  <td>Orders</td>
+                  <td><span class="status processing">In Review</span></td>
+                  <td><span class="priority medium">Medium</span></td>
+                </tr>
+                <tr data-status="resolved">
+                  <td>#TCK-1003</td>
+                  <td>Michael</td>
+                  <td>Transaction not reflected</td>
+                  <td>Transactions</td>
+                  <td><span class="status completed">Resolved</span></td>
+                  <td><span class="priority low">Low</span></td>
+                </tr>
+                <tr data-status="open">
+                  <td>#TCK-1004</td>
+                  <td>Amaka</td>
+                  <td>Cannot sign in</td>
+                  <td>Account</td>
+                  <td><span class="status pending">Open</span></td>
+                  <td><span class="priority high">High</span></td>
+                </tr>
+                <tr data-status="review">
+                  <td>#TCK-1005</td>
+                  <td>Chris</td>
+                  <td>API key issue</td>
+                  <td>API</td>
+                  <td><span class="status processing">In Review</span></td>
+                  <td><span class="priority medium">Medium</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="table-empty-message" id="adminTicketsEmptyMessage">No matching tickets found.</p>
+
+          <div class="table-pagination" id="adminTicketsPagination">
+            <button type="button" id="adminTicketsPrevBtn">Previous</button>
+            <span id="adminTicketsPageInfo">Page 1 of 1</span>
+            <button type="button" id="adminTicketsNextBtn">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/stat.js"></script>
+  <script src="/index.js/admin-ticket.js"></script>
+</body>
+</html>

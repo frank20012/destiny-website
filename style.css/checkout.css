@@ -1,0 +1,150 @@
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
+}
+
+.checkout-form-card,
+.summary-card {
+  padding: 22px;
+}
+
+.checkout-summary-column {
+  display: grid;
+  gap: 18px;
+}
+
+.checkout-form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #e5eef8;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.payment-options {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.payment-option input {
+  accent-color: var(--primary);
+}
+
+.primary-btn {
+  width: 100%;
+}
+
+.summary-list {
+  display: grid;
+  gap: 14px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.summary-item span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.summary-item strong {
+  font-size: 15px;
+}
+
+.total-item {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.mini-link,
+.secondary-link {
+  color: #9cc8ff;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.mini-link {
+  display: inline-block;
+  margin-top: 16px;
+}
+
+.helper-text {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.helper-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 1100px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

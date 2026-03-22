@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth Checkout</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/checkout.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="checkout-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html" class="active">Services</a>
+        <a href="orders.html">Orders</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="api.html">API</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Checkout</h1>
+          <p>Review your selected service and place your order</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="checkout-grid">
+        <div class="checkout-form-card card">
+          <div class="section-title">
+            <h2>Order Details</h2>
+            <p>Fill in the information needed for this service request</p>
+          </div>
+
+          <form id="checkoutForm" class="checkout-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label for="serviceName">Service</label>
+                <input type="text" id="serviceName" value="Growth Service Plan" readonly />
+              </div>
+
+              <div class="input-group">
+                <label for="serviceCategory">Category</label>
+                <input type="text" id="serviceCategory" value="Popular" readonly />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label for="targetValue">Target / Identifier</label>
+                <input type="text" id="targetValue" placeholder="Enter required target info" />
+              </div>
+
+              <div class="input-group">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" value="1" min="1" />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="orderNote">Order Note</label>
+              <textarea id="orderNote" rows="5" placeholder="Add extra information if needed"></textarea>
+            </div>
+
+            <div class="input-group">
+              <label>Payment Source</label>
+              <div class="payment-options">
+                <label class="payment-option">
+                  <input type="radio" name="paymentSource" value="wallet" checked />
+                  <span>Wallet Balance</span>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="paymentSource" value="card" />
+                  <span>Card Payment</span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Place Order</button>
+          </form>
+        </div>
+
+        <div class="checkout-summary-column">
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Order Summary</h2>
+            </div>
+
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Service Price</span>
+                <strong>$25.00</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Processing Fee</span>
+                <strong>$0.00</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Estimated Delivery</span>
+                <strong>Fast</strong>
+              </div>
+
+              <div class="summary-item total-item">
+                <span>Total</span>
+                <strong>$25.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Wallet Snapshot</h2>
+            </div>
+
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Available Balance</span>
+                <strong>$1,250.00</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Pending Charges</span>
+                <strong>$60.00</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Status</span>
+                <strong>Ready</strong>
+              </div>
+            </div>
+
+            <a href="wallet.html" class="mini-link">Fund wallet instead</a>
+          </div>
+
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Need Help?</h2>
+            </div>
+
+            <p class="helper-text">
+              Review the details carefully before placing your order. You can also
+              return to the services page to choose another package.
+            </p>
+
+            <div class="helper-actions">
+              <a href="services.html" class="secondary-link">Back to Services</a>
+              <a href="orders.html" class="secondary-link">View Orders</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/checkout.js"></script>
+</body>
+</html>

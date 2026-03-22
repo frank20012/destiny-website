@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Settings - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+  <link rel="stylesheet" href="/style.css/admin-settings.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+      <nav class="sidebar-nav">
+        <a href="admin.html">Admin Overview</a>
+        <a href="admin-users.html">Users</a>
+        <a href="admin-orders.html">Admin Orders</a>
+        <a href="admin-transactions.html">Admin Transactions</a>
+        <a href="admin-services.html">Admin Services</a>
+        <a href="admin-reports.html">Admin Reports</a>
+        <a href="admin-settings.html" class="active">Admin Settings</a>
+        <a href="dashboard.html">User Dashboard</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Settings</h1>
+          <p>Manage branding, maintenance, notifications, and system controls</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button" id="saveAdminSettingsBtn">Save All</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="settings-grid reveal">
+        <div class="left-column">
+          <div class="card form-card">
+            <div class="section-title">
+              <h2>Branding</h2>
+              <p>Control the visible platform identity</p>
+            </div>
+
+            <form class="settings-form" id="adminBrandingForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="platformName">Platform Name</label>
+                  <input type="text" id="platformName" value="WaveAuth" />
+                </div>
+
+                <div class="input-group">
+                  <label for="supportEmail">Support Email</label>
+                  <input type="email" id="supportEmail" value="support@waveauth.com" />
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="adminTagline">Tagline</label>
+                <input type="text" id="adminTagline" value="Modern digital services platform" />
+              </div>
+
+              <div class="input-group">
+                <label for="adminFooterText">Footer Text</label>
+                <input type="text" id="adminFooterText" value="© 2026 WaveAuth. All rights reserved." />
+              </div>
+
+              <button type="submit" class="primary-btn">Save Branding</button>
+            </form>
+          </div>
+
+          <div class="card form-card">
+            <div class="section-title">
+              <h2>API and Security</h2>
+              <p>Manage system protection and integration controls</p>
+            </div>
+
+            <form class="settings-form" id="adminSecurityForm">
+              <div class="form-row">
+                <div class="input-group">
+                  <label for="rateLimit">API Rate Limit</label>
+                  <input type="text" id="rateLimit" value="500/min" />
+                </div>
+
+                <div class="input-group">
+                  <label for="sessionTimeout">Session Timeout</label>
+                  <input type="text" id="sessionTimeout" value="30 minutes" />
+                </div>
+              </div>
+
+              <div class="toggle-list">
+                <label class="toggle-item">
+                  <div>
+                    <h4>Enable API Access</h4>
+                    <p>Allow the platform API to accept requests.</p>
+                  </div>
+                  <input type="checkbox" checked />
+                </label>
+
+                <label class="toggle-item">
+                  <div>
+                    <h4>Require Admin 2FA</h4>
+                    <p>Require two-factor authentication for admin access.</p>
+                  </div>
+                  <input type="checkbox" checked />
+                </label>
+
+                <label class="toggle-item">
+                  <div>
+                    <h4>Login Attempt Protection</h4>
+                    <p>Rate-limit repeated failed admin logins.</p>
+                  </div>
+                  <input type="checkbox" checked />
+                </label>
+              </div>
+
+              <button type="submit" class="primary-btn">Save Security</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="right-column">
+          <div class="card summary-card">
+            <div class="section-title">
+              <h2>System Controls</h2>
+            </div>
+
+            <div class="toggle-list">
+              <label class="toggle-item">
+                <div>
+                  <h4>Maintenance Mode</h4>
+                  <p>Temporarily limit public platform access.</p>
+                </div>
+                <input type="checkbox" />
+              </label>
+
+              <label class="toggle-item">
+                <div>
+                  <h4>New User Registration</h4>
+                  <p>Allow or pause new account signups.</p>
+                </div>
+                <input type="checkbox" checked />
+              </label>
+
+              <label class="toggle-item">
+                <div>
+                  <h4>Email Notifications</h4>
+                  <p>Send system updates and platform notifications.</p>
+                </div>
+                <input type="checkbox" checked />
+              </label>
+
+              <label class="toggle-item">
+                <div>
+                  <h4>Transaction Alerts</h4>
+                  <p>Notify admin when failed or suspicious payments occur.</p>
+                </div>
+                <input type="checkbox" checked />
+              </label>
+            </div>
+          </div>
+
+          <div class="card summary-card">
+            <div class="section-title">
+              <h2>Platform Summary</h2>
+            </div>
+
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Current Mode</span>
+                <strong>Production</strong>
+              </div>
+              <div class="summary-item">
+                <span>API Status</span>
+                <strong>Enabled</strong>
+              </div>
+              <div class="summary-item">
+                <span>Maintenance</span>
+                <strong>Off</strong>
+              </div>
+              <div class="summary-item">
+                <span>Admin Accounts</span>
+                <strong>2</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="card danger-card">
+            <div class="section-title">
+              <h2>Danger Zone</h2>
+              <p>Use these actions carefully</p>
+            </div>
+
+            <div class="danger-actions">
+              <button class="secondary-btn" type="button" id="restartSystemBtn">Restart System</button>
+              <button class="danger-btn" type="button" id="shutdownPublicAccessBtn">Disable Public Access</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/admin-settings.js"></script>
+</body>
+</html>

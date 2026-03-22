@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveAuth Tickets</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/tickets.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="tickets-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="orders.html">Orders</a>
+        <a href="wallet.html">Wallet</a>
+        <a href="transactions.html">Transactions</a>
+        <a href="tickets.html" class="active">Tickets</a>
+        <a href="api.html">API</a>
+        <a href="settings.html">Settings</a>
+        <a href="signin.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Support Tickets</h1>
+          <p>Create and track issues related to your account and services</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <div class="profile-box">
+            <div class="avatar">F</div>
+            <span>Franklyn</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="tickets-grid">
+        <div class="ticket-form-card card">
+          <div class="section-title">
+            <h2>Create Ticket</h2>
+            <p>Tell us the problem you are facing</p>
+          </div>
+
+          <form id="ticketForm" class="ticket-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label for="ticketSubject">Subject</label>
+                <input type="text" id="ticketSubject" placeholder="Enter ticket subject" />
+              </div>
+
+              <div class="input-group">
+                <label for="ticketCategory">Category</label>
+                <select id="ticketCategory">
+                  <option value="">Select category</option>
+                  <option value="orders">Orders</option>
+                  <option value="wallet">Wallet</option>
+                  <option value="transactions">Transactions</option>
+                  <option value="account">Account</option>
+                  <option value="api">API</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label for="ticketPriority">Priority</label>
+                <select id="ticketPriority">
+                  <option value="">Select priority</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="ticketReference">Reference ID</label>
+                <input type="text" id="ticketReference" placeholder="Optional order/transaction ID" />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="ticketMessage">Message</label>
+              <textarea id="ticketMessage" rows="6" placeholder="Describe your issue clearly"></textarea>
+            </div>
+
+            <button type="submit" class="primary-btn">Submit Ticket</button>
+          </form>
+        </div>
+
+        <div class="ticket-summary-column">
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Ticket Summary</h2>
+            </div>
+
+            <div class="summary-list">
+              <div class="summary-item">
+                <span>Open Tickets</span>
+                <strong>3</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Resolved Tickets</span>
+                <strong>8</strong>
+              </div>
+
+              <div class="summary-item">
+                <span>Avg. Response</span>
+                <strong>Fast</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-card card">
+            <div class="section-title">
+              <h2>Support Tips</h2>
+            </div>
+
+            <p class="helper-text">
+              Add a correct order ID, transaction reference, or service name so support can help you faster.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tickets-table-section">
+        <div class="tickets-table-card card">
+          <div class="section-title">
+            <h2>Recent Tickets</h2>
+            <p>Your latest submitted issues</p>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Subject</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#TCK-1001</td>
+                  <td>Wallet funding delay</td>
+                  <td>Wallet</td>
+                  <td><span class="status pending">Open</span></td>
+                  <td><span class="priority high">High</span></td>
+                  <td>Today</td>
+                </tr>
+                <tr>
+                  <td>#TCK-1002</td>
+                  <td>Order still processing</td>
+                  <td>Orders</td>
+                  <td><span class="status processing">In Review</span></td>
+                  <td><span class="priority medium">Medium</span></td>
+                  <td>Yesterday</td>
+                </tr>
+                <tr>
+                  <td>#TCK-1003</td>
+                  <td>Transaction not reflected</td>
+                  <td>Transactions</td>
+                  <td><span class="status completed">Resolved</span></td>
+                  <td><span class="priority low">Low</span></td>
+                  <td>2 days ago</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/tickets.js"></script>
+</body>
+</html>
