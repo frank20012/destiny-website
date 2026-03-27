@@ -4,11 +4,12 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import serviceRoutes from "./routes/service.routes.js";
-import orderRoutes from "./routes/order.routes.js";
+// import orderRoutes from "./routes/order.routes.js";
 import walletRoutes from "./routes/wallet.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import otpOrderRoutes from "./routes/otpOrder.routes.js";
 
 import notFound from "./middlewares/notfound.middleware.js";
 import errorHandler from "./middlewares/error.middleware.js";
@@ -26,7 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/services", serviceRoutes);
-app.use("/api/orders", orderRoutes);
+app.use("/api/orders", otpOrderRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/tickets", ticketRoutes);

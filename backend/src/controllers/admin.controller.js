@@ -1,3 +1,6 @@
 export const getAdminOverview = (req, res) => {
-  res.json({ message: "Get admin overview controller" });
+  res.status(200).json({
+    message: "Admin overview fetched successfully",
+    admin: req.user
+  });
 };
