@@ -1,6 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.js";
+import Wallet from "../models/wallet.js";
 import generateToken from "../utils/generateToken.js";
+
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isStrongPassword = (password) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -9,6 +14,18 @@ export const registerUser = async (req, res, next) => {
     if (!firstName || !lastName || !email || !password) {
       res.status(400);
       throw new Error("All fields are required");
+    }
+
+    if (!isValidEmail(email)) {
+      res.status(400);
+      throw new Error("Please enter a valid email address");
+    }
+
+    if (!isStrongPassword(password)) {
+      res.status(400);
+      throw new Error(
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number"
+      );
     }
 
     const existingUser = await User.findOne({ email });
@@ -26,6 +43,11 @@ export const registerUser = async (req, res, next) => {
       lastName,
       email,
       password: hashedPassword
+    });
+
+    await Wallet.create({
+      user: user._id,
+      balance: 0
     });
 
     res.status(201).json({
@@ -51,6 +73,11 @@ export const loginUser = async (req, res, next) => {
     if (!email || !password) {
       res.status(400);
       throw new Error("Email and password are required");
+    }
+
+    if (!isValidEmail(email)) {
+      res.status(400);
+      throw new Error("Please enter a valid email address");
     }
 
     const user = await User.findOne({ email });

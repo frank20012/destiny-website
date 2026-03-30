@@ -112,121 +112,20 @@
     </section>
 
     <section class="services-list-section reveal">
-      <div class="container">
-        <div class="section-heading">
-          <span class="section-tag">Available Services</span>
-          <h2>Choose a service that matches your workflow</h2>
-          <p>
-            Each service is presented with clear pricing, quick descriptions,
-            and direct action buttons for a smoother user experience.
-          </p>
-        </div>
+  <div class="container">
+    <div class="section-heading">
+      <span class="section-tag">Available Services</span>
+      <h2>Choose a virtual number service</h2>
+      <p>Browse available OTP and virtual number services by country and type.</p>
+    </div>
 
-        <div class="services-grid">
-          <article class="service-card featured reveal" data-category="popular">
-            <div class="card-top">
-              <span class="service-type">Featured</span>
-              <span class="service-price">$12.00</span>
-            </div>
-            <h3>Starter Access Package</h3>
-            <p>
-              A basic service package for users who want a simple and fast setup experience.
-            </p>
-            <ul>
-              <li>Quick access setup</li>
-              <li>Simple onboarding flow</li>
-              <li>Dashboard support</li>
-            </ul>
-            <a href="checkout.html" class="card-btn">Select Service</a>
-          </article>
+    <div class="services-grid" id="servicesGrid"></div>
 
-          <article class="service-card reveal" data-category="popular">
-            <div class="card-top">
-              <span class="service-type">Popular</span>
-              <span class="service-price">$25.00</span>
-            </div>
-            <h3>Growth Service Plan</h3>
-            <p>
-              A flexible package for users who need more tools, speed, and account options.
-            </p>
-            <ul>
-              <li>Expanded access</li>
-              <li>More platform tools</li>
-              <li>Priority processing</li>
-            </ul>
-            <a href="#" class="card-btn">Select Service</a>
-          </article>
-
-          <article class="service-card reveal" data-category="business">
-            <div class="card-top">
-              <span class="service-type">Business</span>
-              <span class="service-price">$45.00</span>
-            </div>
-            <h3>Business Workflow Service</h3>
-            <p>
-              A business-ready option for teams and users needing stronger account management.
-            </p>
-            <ul>
-              <li>Business dashboard</li>
-              <li>Transaction history</li>
-              <li>Better service control</li>
-            </ul>
-            <a href="#" class="card-btn">Select Service</a>
-          </article>
-
-          <article class="service-card reveal" data-category="api">
-            <div class="card-top">
-              <span class="service-type">API</span>
-              <span class="service-price">$60.00</span>
-            </div>
-            <h3>API Integration Access</h3>
-            <p>
-              Connect platform actions to external tools with API-ready support and structure.
-            </p>
-            <ul>
-              <li>Developer-ready setup</li>
-              <li>Scalable integration</li>
-              <li>API key control</li>
-            </ul>
-            <a href="#" class="card-btn">Select Service</a>
-          </article>
-
-          <article class="service-card reveal" data-category="standard">
-            <div class="card-top">
-              <span class="service-type">Standard</span>
-              <span class="service-price">$18.00</span>
-            </div>
-            <h3>Standard User Package</h3>
-            <p>
-              A balanced option for general users who need everyday access to core services.
-            </p>
-            <ul>
-              <li>Core platform tools</li>
-              <li>Fast account use</li>
-              <li>Clear pricing</li>
-            </ul>
-            <a href="#" class="card-btn">Select Service</a>
-          </article>
-
-          <article class="service-card reveal reveal" data-category="advanced">
-            <div class="card-top">
-              <span class="service-type">Advanced</span>
-              <span class="service-price">$75.00</span>
-            </div>
-            <h3>Advanced Operations Plan</h3>
-            <p>
-              Designed for users who need broader capabilities and stronger workflow management.
-            </p>
-            <ul>
-              <li>Advanced service access</li>
-              <li>Higher usage flexibility</li>
-              <li>Optimized workflow</li>
-            </ul>
-            <a href="#" class="card-btn">Select Service</a>
-          </article>
-        </div>
-      </div>
-    </section>
+    <p class="table-empty-message" id="servicesEmptyMessage" style="display: none;">
+      No matching services found.
+    </p>
+  </div>
+</section>
 
     <section class="pricing-note-section reveal">
       <div class="container pricing-note-grid">

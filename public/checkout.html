@@ -51,53 +51,40 @@
             <p>Fill in the information needed for this service request</p>
           </div>
 
-          <form id="checkoutForm" class="checkout-form">
-            <div class="form-row">
-              <div class="input-group">
-                <label for="serviceName">Service</label>
-                <input type="text" id="serviceName" value="Growth Service Plan" readonly />
-              </div>
+             <form id="checkoutForm" class="checkout-form">
+  <div class="form-row">
+    <div class="input-group">
+      <label for="serviceName">Service</label>
+      <input type="text" id="serviceName" readonly />
+    </div>
 
-              <div class="input-group">
-                <label for="serviceCategory">Category</label>
-                <input type="text" id="serviceCategory" value="Popular" readonly />
-              </div>
-            </div>
+    <div class="input-group">
+      <label for="serviceCategory">Category</label>
+      <input type="text" id="serviceCategory" readonly />
+    </div>
+  </div>
 
-            <div class="form-row">
-              <div class="input-group">
-                <label for="targetValue">Target / Identifier</label>
-                <input type="text" id="targetValue" placeholder="Enter required target info" />
-              </div>
+  <div class="form-row">
+    <div class="input-group">
+      <label for="targetValue">Target / Identifier</label>
+      <input type="text" id="targetValue" placeholder="Enter required target info" />
+    </div>
 
-              <div class="input-group">
-                <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" value="1" min="1" />
-              </div>
-            </div>
+    <div class="input-group">
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" value="1" min="1" />
+    </div>
+  </div>
 
-            <div class="input-group">
-              <label for="orderNote">Order Note</label>
-              <textarea id="orderNote" rows="5" placeholder="Add extra information if needed"></textarea>
-            </div>
+  <div class="input-group">
+    <label for="orderNote">Order Note</label>
+    <textarea id="orderNote" rows="5" placeholder="Add extra information if needed"></textarea>
+  </div>
 
-            <div class="input-group">
-              <label>Payment Source</label>
-              <div class="payment-options">
-                <label class="payment-option">
-                  <input type="radio" name="paymentSource" value="wallet" checked />
-                  <span>Wallet Balance</span>
-                </label>
+  <button type="submit" class="primary-btn">Place Order</button>
+  <p class="form-message" id="checkoutMessage"></p>
+</form>
 
-                <label class="payment-option">
-                  <input type="radio" name="paymentSource" value="card" />
-                  <span>Card Payment</span>
-                </label>
-              </div>
-            </div>
-
-            <button type="submit" class="primary-btn">Place Order</button>
-          </form>
         </div>
 
         <div class="checkout-summary-column">
@@ -107,26 +94,26 @@
             </div>
 
             <div class="summary-list">
-              <div class="summary-item">
-                <span>Service Price</span>
-                <strong>$25.00</strong>
-              </div>
+  <div class="summary-item">
+    <span>Service Price</span>
+    <strong id="summaryServicePrice">$0.00</strong>
+  </div>
 
-              <div class="summary-item">
-                <span>Processing Fee</span>
-                <strong>$0.00</strong>
-              </div>
+  <div class="summary-item">
+    <span>Processing Fee</span>
+    <strong>$0.00</strong>
+  </div>
 
-              <div class="summary-item">
-                <span>Estimated Delivery</span>
-                <strong>Fast</strong>
-              </div>
+  <div class="summary-item">
+    <span>Estimated Delivery</span>
+    <strong id="summaryDeliveryType">-</strong>
+  </div>
 
-              <div class="summary-item total-item">
-                <span>Total</span>
-                <strong>$25.00</strong>
-              </div>
-            </div>
+  <div class="summary-item total-item">
+    <span>Total</span>
+    <strong id="summaryTotalPrice">$0.00</strong>
+  </div>
+</div>
           </div>
 
           <div class="summary-card card">
@@ -134,22 +121,17 @@
               <h2>Wallet Snapshot</h2>
             </div>
 
-            <div class="summary-list">
-              <div class="summary-item">
-                <span>Available Balance</span>
-                <strong>$1,250.00</strong>
-              </div>
+           <div class="summary-list">
+  <div class="summary-item">
+    <span>Available Balance</span>
+    <strong id="walletBalance">$0.00</strong>
+  </div>
 
-              <div class="summary-item">
-                <span>Pending Charges</span>
-                <strong>$60.00</strong>
-              </div>
-
-              <div class="summary-item">
-                <span>Status</span>
-                <strong>Ready</strong>
-              </div>
-            </div>
+  <div class="summary-item">
+    <span>Status</span>
+    <strong id="walletStatus">-</strong>
+  </div>
+</div>
 
             <a href="wallet.html" class="mini-link">Fund wallet instead</a>
           </div>

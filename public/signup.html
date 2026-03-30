@@ -64,31 +64,38 @@
 
         <form class="auth-form" id="signupForm">
   <div class="input-group">
-    <label for="fullname">Full Name</label>
-    <input type="text" id="fullname" placeholder="Franklyn Madu" />
+    <label for="fullname">First Name</label>
+    <input type="text" id="signupFirstName" placeholder="Enter your first name" />
     <small class="error-text"></small>
   </div>
+
+  <div class="input-group">
+  <label for="fullname">Last Name</label>
+  <input type="text" id="signupLastName" placeholder="Enter your last name" />
+  <small class="error-text"></small>
+</div>
 
   <div class="input-group">
     <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="you@example.com" />
+    <input type="email" id="signupEmail" placeholder="Enter your email" />
     <small class="error-text"></small>
   </div>
 
   <div class="input-group">
-    <label for="password">Password</label>
+    <label for="signupPassword">Password</label>
     <div class="password-box">
-      <input type="password" id="password" placeholder="Enter your password" />
-      <button type="button" class="toggle-password" onclick="togglePassword('password', this)">Show</button>
+      <input type="password" id="signupPassword" placeholder="Create a password" minlength="8" />
+      <button type="button" class="toggle-password" data-target="signupPassword">Show</button>
     </div>
+    <small class="input-hint">Use at least 8 characters, including uppercase, lowercase, and a number.</small>
     <small class="error-text"></small>
   </div>
 
   <div class="input-group">
     <label for="confirmPassword">Confirm Password</label>
     <div class="password-box">
-      <input type="password" id="confirmPassword" placeholder="Confirm password" />
-      <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', this)">Show</button>
+      <input type="password" id="signupConfirmPassword" placeholder="Confirm password" />
+      <button type="button" class="toggle-password" data-target="signupConfirmPassword">Show</button>
     </div>
     <small class="error-text"></small>
   </div>

@@ -1,166 +1,173 @@
-function togglePassword(inputId, button) {
-  const input = document.getElementById(inputId);
-
-  if (input.type === "password") {
-    input.type = "text";
-    button.textContent = "Hide";
-  } else {
-    input.type = "password";
-    button.textContent = "Show";
-  }
-}
-
-function setError(input, message) {
-  const inputGroup = input.closest(".input-group");
-  const errorText = inputGroup.querySelector(".error-text");
-
-  input.classList.remove("input-success");
-  input.classList.add("input-error");
-  errorText.textContent = message;
-}
-
-function setSuccess(input) {
-  const inputGroup = input.closest(".input-group");
-  const errorText = inputGroup.querySelector(".error-text");
-
-  input.classList.remove("input-error");
-  input.classList.add("input-success");
-  errorText.textContent = "";
-}
-
-function clearState(input) {
-  const inputGroup = input.closest(".input-group");
-  const errorText = inputGroup.querySelector(".error-text");
-
-  input.classList.remove("input-error", "input-success");
-  errorText.textContent = "";
-}
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+const API_BASE_URL = "http://localhost:5000";
 
 const signupForm = document.getElementById("signupForm");
-
-if (signupForm) {
-  signupForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const fullName = document.getElementById("fullname");
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const confirmPassword = document.getElementById("confirmPassword");
-    const terms = document.getElementById("terms");
-    const message = document.getElementById("signupMessage");
-
-    let isFormValid = true;
-    message.textContent = "";
-    message.className = "form-message";
-
-    if (fullName.value.trim() === "") {
-      setError(fullName, "Full name is required");
-      isFormValid = false;
-    } else if (fullName.value.trim().length < 3) {
-      setError(fullName, "Full name must be at least 3 characters");
-      isFormValid = false;
-    } else {
-      setSuccess(fullName);
-    }
-
-    if (email.value.trim() === "") {
-      setError(email, "Email is required");
-      isFormValid = false;
-    } else if (!isValidEmail(email.value.trim())) {
-      setError(email, "Enter a valid email address");
-      isFormValid = false;
-    } else {
-      setSuccess(email);
-    }
-
-    if (password.value.trim() === "") {
-      setError(password, "Password is required");
-      isFormValid = false;
-    } else if (password.value.length < 6) {
-      setError(password, "Password must be at least 6 characters");
-      isFormValid = false;
-    } else {
-      setSuccess(password);
-    }
-
-    if (confirmPassword.value.trim() === "") {
-      setError(confirmPassword, "Please confirm your password");
-      isFormValid = false;
-    } else if (confirmPassword.value !== password.value) {
-      setError(confirmPassword, "Passwords do not match");
-      isFormValid = false;
-    } else {
-      setSuccess(confirmPassword);
-    }
-
-    if (!terms.checked) {
-      message.textContent = "You must agree to the Terms & Conditions";
-      message.classList.add("error");
-      isFormValid = false;
-    }
-
-    if (isFormValid) {
-      message.textContent = "Sign up successful. Redirecting to sign in...";
-      message.classList.add("success");
-
-      setTimeout(() => {
-        window.location.href = "signin.html";
-      }, 1200);
-    }
-  });
-}
-
 const signinForm = document.getElementById("signinForm");
 
-if (signinForm) {
-  signinForm.addEventListener("submit", function (e) {
+const showMessage = (elementId, text, type = "error") => {
+  const messageEl = document.getElementById(elementId);
+  if (!messageEl) return;
+
+  messageEl.textContent = text;
+  messageEl.className = `form-message ${type}`;
+};
+
+const clearMessage = (elementId) => {
+  const messageEl = document.getElementById(elementId);
+  if (!messageEl) return;
+
+  messageEl.textContent = "";
+  messageEl.className = "form-message";
+};
+
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isStrongPassword = (password) => {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  return passwordRegex.test(password);
+};
+
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const message = document.getElementById("signinMessage");
+    clearMessage("signupMessage");
 
-    let isFormValid = true;
-    message.textContent = "";
-    message.className = "form-message";
+    const firstName = document.getElementById("signupFirstName")?.value.trim();
+    const lastName = document.getElementById("signupLastName")?.value.trim();
+    const email = document.getElementById("signupEmail")?.value.trim();
+    const password = document.getElementById("signupPassword")?.value.trim();
+    const confirmPassword = document.getElementById("signupConfirmPassword")?.value.trim();
 
-    if (email.value.trim() === "") {
-      setError(email, "Email is required");
-      isFormValid = false;
-    } else if (!isValidEmail(email.value.trim())) {
-      setError(email, "Enter a valid email address");
-      isFormValid = false;
-    } else {
-      setSuccess(email);
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      showMessage("signupMessage", "All fields are required.");
+      return;
     }
 
-    if (password.value.trim() === "") {
-      setError(password, "Password is required");
-      isFormValid = false;
-    } else if (password.value.length < 6) {
-      setError(password, "Password must be at least 6 characters");
-      isFormValid = false;
-    } else {
-      setSuccess(password);
+    if (!isValidEmail(email)) {
+      showMessage("signupMessage", "Enter a valid email address.");
+      return;
     }
 
-    if (isFormValid) {
-      message.textContent = "Sign in successful. Redirecting to dashboard...";
-      message.classList.add("success");
+    if (!isStrongPassword(password)) {
+      showMessage(
+        "signupMessage",
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number."
+      );
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage("signupMessage", "Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      showMessage("signupMessage", "Account created successfully.", "success");
 
       setTimeout(() => {
         window.location.href = "dashboard.html";
-      }, 1200);
+      }, 1000);
+    } catch (error) {
+      showMessage("signupMessage", error.message || "Something went wrong.");
     }
   });
 }
 
-document.querySelectorAll("input").forEach((input) => {
-  input.addEventListener("input", () => {
-    clearState(input);
+if (signinForm) {
+  signinForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    clearMessage("signinMessage");
+
+    const email = document.getElementById("signinEmail")?.value.trim();
+    const password = document.getElementById("signinPassword")?.value.trim();
+
+    if (!email || !password) {
+      showMessage("signinMessage", "Email and password are required.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showMessage("signinMessage", "Enter a valid email address.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      showMessage("signinMessage", "Login successful.", "success");
+
+      setTimeout(() => {
+        if (data.user.role === "admin") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      }, 1000);
+    } catch (error) {
+      showMessage("signinMessage", error.message || "Something went wrong.");
+    }
+  });
+}
+
+const togglePasswordButtons = document.querySelectorAll(".toggle-password");
+
+togglePasswordButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const targetInputId = button.getAttribute("data-target");
+    const passwordInput = document.getElementById(targetInputId);
+
+    if (!passwordInput) return;
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      button.textContent = "Hide";
+    } else {
+      passwordInput.type = "password";
+      button.textContent = "Show";
+    }
   });
 });

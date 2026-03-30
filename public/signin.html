@@ -64,15 +64,15 @@
         <form class="auth-form" id="signinForm">
   <div class="input-group">
     <label for="email">Email Address</label>
-    <input type="email" id="email" placeholder="you@example.com" />
+    <input type="email" id="signinEmail" placeholder="Enter your email" />
     <small class="error-text"></small>
   </div>
 
   <div class="input-group">
-    <label for="password">Password</label>
+    <label for="signinPassword">Password</label>
     <div class="password-box">
-      <input type="password" id="password" placeholder="Enter your password" />
-      <button type="button" class="toggle-password" onclick="togglePassword('password', this)">Show</button>
+      <input type="password" id="signinPassword" placeholder="Enter your password" />
+      <button type="button" class="toggle-password" data-target="signinPassword">Show</button>
     </div>
     <small class="error-text"></small>
   </div>
@@ -86,6 +86,7 @@
   </div>
 
   <button type="submit" class="btn-primary">Sign In</button>
+
 
   <p class="form-message" id="signinMessage"></p>
 

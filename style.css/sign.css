@@ -493,3 +493,23 @@ body {
     right: 14px;
   }
 }
+.form-message {
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  min-height: 20px;
+}
+.form-message.success {
+  color: #15803d;
+}
+.form-message.error {
+  color: #b91c1c;
+}
+.input-hint {
+  display: block;
+  margin-top: 7px;
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}

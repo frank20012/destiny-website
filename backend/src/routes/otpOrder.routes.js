@@ -1,9 +1,17 @@
 import express from "express";
+import protect from "../middlewares/auth.middleware.js";
+import {
+  cancelOtpOrder,
+  createOtpOrder,
+  getMyOtpOrders,
+  getSingleOtpOrder
+} from "../controllers/otpOrder.controller.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.json({ message: "OTP orders route ready" });
-});
+router.post("/", protect, createOtpOrder);
+router.get("/", protect, getMyOtpOrders);
+router.get("/:id", protect, getSingleOtpOrder);
+router.patch("/:id/cancel", protect, cancelOtpOrder);
 
 export default router;

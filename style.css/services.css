@@ -589,3 +589,14 @@ a {
 .mobile-menu-btn:hover {
   transform: translateY(-2px);
 }
+.table-empty-message {
+  display: none;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
