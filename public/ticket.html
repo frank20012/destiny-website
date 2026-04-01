@@ -95,6 +95,7 @@
             </div>
 
             <button type="submit" class="primary-btn">Submit Ticket</button>
+            <p class="form-message" id="ticketMessageBox"></p>
           </form>
         </div>
 
@@ -153,12 +154,19 @@
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>#TCK-1001</td>
-                  <td>Wallet funding delay</td>
-                  <td>Wallet</td>
-                  <td><span class="status pending">Open</span></td>
+              <tbody id="ticketsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script src="/index.js/tickets.js"></script>
+</body>
+</html>
                   <td><span class="priority high">High</span></td>
                   <td>Today</td>
                 </tr>

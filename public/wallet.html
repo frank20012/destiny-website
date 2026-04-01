@@ -61,23 +61,23 @@
       <section class="wallet-overview reveal">
         <div class="balance-card card">
           <p>Available Balance</p>
-          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2">$0.00</h2>
+          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2" id="walletMainBalance">$0.00</h2>
           <span>Last updated a few seconds ago</span>
         </div>
 
         <div class="mini-card card">
           <p>Total Funded</p>
-          <h3 class="stat-number" data-target="3800" data-prefix="$">0</h3>
+          <h3 class="stat-number" data-target="3800" data-prefix="$" id="walletTotalFunded">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>Total Spent</p>
-          <h3 class="stat-number" data-target="2550" data-prefix="$">0</h3>
+          <h3 class="stat-number" data-target="2550" data-prefix="$" id="walletTotalSpent">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>Pending Funding</p>
-          <h3 class="stat-number" data-target="120" data-prefix="$">0</h3>
+          <h3 class="stat-number" data-target="120" data-prefix="$" id="walletPendingAmount">0</h3>
         </div>
       </section>
 
@@ -90,8 +90,8 @@
 
           <form class="fund-form" id="walletFundForm">
             <div class="input-group">
-              <label for="amount">Amount</label>
-              <input type="number" id="amount" placeholder="Enter amount" />
+              <label for="fundAmount">Amount</label>
+              <input type="number" id="fundAmount" min="10" placeholder="Enter amount" />
             </div>
 
             <div class="quick-amounts">
@@ -127,6 +127,7 @@
             </div>
 
             <button type="submit" class="primary-btn">Proceed to Fund</button>
+            <p class="form-message" id="walletMessage"></p>
           </form>
         </div>
 

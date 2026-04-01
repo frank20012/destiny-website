@@ -156,3 +156,16 @@ tbody td {
     grid-template-columns: 1fr;
   }
 }
+.form-message {
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  min-height: 20px;
+}
+.form-message.error {
+  color: #b91c1c;
+}
+.form-message.success {
+  color: #15803d;
+}

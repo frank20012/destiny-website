@@ -92,15 +92,16 @@
             <div class="table-actions">
               <input type="text"  id="transactionSearchInput" placeholder="Search reference..." />
               <select id="transactionTypeFilter">
-                <option>All Types</option>
-                <option>Credit</option>
-                <option>Debit</option>
+                <option value="all">All Types</option>
+                <option value="credit">Credit</option>
+                <option value="debit">Debit</option>
+                <option value="refund">Refund</option>
               </select>
               <select id="transactionStatusFilter">
-                <option>All Status</option>
-                <option>Completed</option>
-                <option>Pending</option>
-                <option>Failed</option>
+                <option value="all">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
               </select>
             </div>
           </div>
@@ -118,56 +119,7 @@
                 </tr>
               </thead>
                 
-                            <tbody id="transactionsTableBody">
-                <tr data-type="credit" data-status="completed">
-                  <td>#TRX-3001</td>
-                  <td>Credit</td>
-                  <td>Wallet Funding via Bank Transfer</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td class="amount positive">+$500.00</td>
-                  <td>Today</td>
-                </tr>
-                <tr data-type="debit" data-status="completed">
-                  <td>#TRX-3002</td>
-                  <td>Debit</td>
-                  <td>Order Payment - Growth Service Plan</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td class="amount negative">-$25.00</td>
-                  <td>Today</td>
-                </tr>
-                <tr data-type="debit" data-status="pending">
-                  <td>#TRX-3003</td>
-                  <td>Debit</td>
-                  <td>Order Payment - API Access</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td class="amount negative">-$60.00</td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr data-type="credit" data-status="completed">
-                  <td>#TRX-3004</td>
-                  <td>Credit</td>
-                  <td>Wallet Funding via Card</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td class="amount positive">+$300.00</td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr data-type="debit" data-status="completed">
-                  <td>#TRX-3005</td>
-                  <td>Debit</td>
-                  <td>Order Payment - Business Workflow Service</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td class="amount negative">-$45.00</td>
-                  <td>2 days ago</td>
-                </tr>
-                <tr data-type="credit" data-status="failed">
-                  <td>#TRX-3006</td>
-                  <td>Credit</td>
-                  <td>Wallet Funding via Crypto</td>
-                  <td><span class="status failed">Failed</span></td>
-                  <td class="amount positive">+$200.00</td>
-                  <td>2 days ago</td>
-                </tr>
-              </tbody>
+                            <tbody id="transactionsTableBody"></tbody>
             </table>
           </div>
           <p class="table-empty-message" id="transactionsEmptyMessage">No matching transactions found.</p>

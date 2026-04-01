@@ -113,12 +113,12 @@ tbody td {
 }
 
 .amount.positive {
-  color: #86efac;
+  color: #15803d;
   font-weight: 700;
 }
 
 .amount.negative {
-  color: #fca5a5;
+  color: #b91c1c;
   font-weight: 700;
 }
 
