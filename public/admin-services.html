@@ -36,7 +36,7 @@
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="openAddServiceModalBtn">Add Service</button>
+          <button class="top-btn" type="button" id="openAddServiceFormBtn">Add Service</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -66,6 +66,81 @@
           <h3 class="stat-number" data-target="1">0</h3>
         </div>
       </section>
+        
+        
+       <div class="admin-form-card card" id="adminServiceFormCard" style="display: none;">
+  <div class="form-card-head">
+    <div>
+      <h2>Create Service</h2>
+      <p>Add a new OTP / virtual number service</p>
+    </div>
+    <button type="button" class="close-form-btn" id="closeAddServiceFormBtn">✕</button>
+  </div>
+
+  <form id="adminServiceForm" class="admin-service-form">
+    <div class="form-grid">
+      <div class="input-group">
+        <label for="adminServiceName">Service Name</label>
+        <input type="text" id="adminServiceName" placeholder="e.g. WhatsApp OTP - UK" />
+      </div>
+
+      <div class="input-group">
+        <label for="adminServiceCode">Service Code</label>
+        <input type="text" id="adminServiceCode" placeholder="e.g. whatsapp" />
+      </div>
+
+      <div class="input-group">
+        <label for="adminServiceCountry">Country</label>
+        <input type="text" id="adminServiceCountry" placeholder="e.g. United Kingdom" />
+      </div>
+
+      <div class="input-group">
+        <label for="adminServicePrice">Price</label>
+        <input type="number" id="adminServicePrice" min="0" step="0.01" placeholder="e.g. 2.50" />
+      </div>
+
+      <div class="input-group">
+        <label for="adminServiceCategory">Category</label>
+        <select id="adminServiceCategory">
+          <option value="otp">OTP</option>
+          <option value="sms">SMS</option>
+          <option value="voice">Voice</option>
+          <option value="renewal">Renewal</option>
+          <option value="replacement">Replacement</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="adminServiceDeliveryType">Delivery Type</label>
+        <select id="adminServiceDeliveryType">
+          <option value="sms">SMS</option>
+          <option value="voice">Voice</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="adminServiceStatus">Status</label>
+        <select id="adminServiceStatus">
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="disabled">Disabled</option>
+        </select>
+      </div>
+
+      <div class="input-group full-width">
+        <label for="adminServiceDescription">Description</label>
+        <textarea id="adminServiceDescription" rows="4" placeholder="Short service description"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions-row">
+      <button type="button" class="secondary-btn" id="cancelAddServiceFormBtn">Cancel</button>
+      <button type="submit" class="primary-btn">Create Service</button>
+    </div>
+
+    <p class="form-message" id="adminServiceMessage"></p>
+  </form>
+</div>
 
       <section class="admin-table-section reveal">
         <div class="admin-table-card card">
@@ -105,43 +180,7 @@
                   <th>Status</th>
                 </tr>
               </thead>
-              <tbody id="adminServicesTableBody">
-                <tr data-category="standard" data-status="active">
-                  <td>#SRV-1001</td>
-                  <td>Starter Access Package</td>
-                  <td>Standard</td>
-                  <td>$12.00</td>
-                  <td><span class="status completed">Active</span></td>
-                </tr>
-                <tr data-category="popular" data-status="active">
-                  <td>#SRV-1002</td>
-                  <td>Growth Service Plan</td>
-                  <td>Popular</td>
-                  <td>$25.00</td>
-                  <td><span class="status completed">Active</span></td>
-                </tr>
-                <tr data-category="business" data-status="active">
-                  <td>#SRV-1003</td>
-                  <td>Business Workflow Service</td>
-                  <td>Business</td>
-                  <td>$45.00</td>
-                  <td><span class="status completed">Active</span></td>
-                </tr>
-                <tr data-category="api" data-status="draft">
-                  <td>#SRV-1004</td>
-                  <td>API Integration Access</td>
-                  <td>API</td>
-                  <td>$60.00</td>
-                  <td><span class="status pending">Draft</span></td>
-                </tr>
-                <tr data-category="advanced" data-status="disabled">
-                  <td>#SRV-1005</td>
-                  <td>Advanced Operations Plan</td>
-                  <td>Advanced</td>
-                  <td>$75.00</td>
-                  <td><span class="status cancelled">Disabled</span></td>
-                </tr>
-              </tbody>
+              <tbody id="adminServicesTableBody"></tbody>
             </table>
           </div>
 

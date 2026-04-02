@@ -4,34 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Orders - WaveAuth</title>
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+<link rel="stylesheet" href="/style.css/loader.css" />
+<link rel="stylesheet" href="/style.css/reveal.css" />
+<link rel="stylesheet" href="/style.css/toast.css" />
+<link rel="stylesheet" href="/style.css/panel.css" />
+<link rel="stylesheet" href="/style.css/admin-sub.css" />
 </head>
 <body>
-  <div class="loader-wrapper">
-    <div class="loader-box">
-      <div class="loader-logo">W</div>
-      <div class="loader-dots"><span></span><span></span><span></span></div>
-      <div class="loader-text">Loading WaveAuth...</div>
-    </div>
-  </div>
-
   <div class="sidebar-overlay"></div>
 
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
       <nav class="sidebar-nav">
-        <a href="admin.html">Admin Overview</a>
-        <a href="admin-users.html">Users</a>
-        <a href="admin-orders.html" class="active">Admin Orders</a>
-        <a href="admin-transactions.html">Admin Transactions</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="admin.html"><span>Admin Overview</span></a>
+        <a href="admin-users.html"><span>Users</span></a>
+        <a href="admin-orders.html" class="active"><span>Admin Orders</span></a>
+        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-reports.html"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
       </nav>
     </aside>
 
@@ -39,13 +34,13 @@
       <header class="topbar">
         <div>
           <h1>Admin Orders</h1>
-          <p>Review all platform orders and their statuses</p>
+          <p>Review and manage OTP orders across the platform</p>
         </div>
 
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button">Export Orders</button>
+          <button class="top-btn" type="button" id="refreshOrdersBtn">Refresh</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -53,41 +48,46 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid reveal">
+      <section class="admin-overview-grid">
         <div class="overview-card highlight-card card">
           <p>Total Orders</p>
-          <h2 class="stat-number" data-target="3896">0</h2>
-          <span>Across all services</span>
+          <h2 class="stat-number" id="ordersTotalCount">0</h2>
+          <span>All OTP orders</span>
         </div>
+
+        <div class="overview-card card">
+          <p>Active</p>
+          <h3 class="stat-number" id="ordersActiveCount">0</h3>
+        </div>
+
         <div class="overview-card card">
           <p>Completed</p>
-          <h3 class="stat-number" data-target="3124">0</h3>
+          <h3 class="stat-number" id="ordersCompletedCount">0</h3>
         </div>
+
         <div class="overview-card card">
-          <p>Pending</p>
-          <h3 class="stat-number" data-target="521">0</h3>
-        </div>
-        <div class="overview-card card">
-          <p>Processing</p>
-          <h3 class="stat-number" data-target="251">0</h3>
+          <p>Cancelled / Expired</p>
+          <h3 class="stat-number" id="ordersClosedCount">0</h3>
         </div>
       </section>
 
-      <section class="admin-table-section reveal">
+      <section class="admin-table-section">
         <div class="admin-table-card card">
           <div class="table-header">
             <div>
               <h2>Orders List</h2>
-              <p>Search and filter platform orders</p>
+              <p>Search, filter, and update order status</p>
             </div>
 
             <div class="table-actions">
-              <input type="text" id="adminOrderSearchInput" placeholder="Search order ID or user..." />
+              <input type="text" id="adminOrderSearchInput" placeholder="Search service or user..." />
               <select id="adminOrderStatusFilter">
                 <option value="all">All Status</option>
-                <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="expired">Expired</option>
               </select>
             </div>
           </div>
@@ -99,47 +99,14 @@
                   <th>Order ID</th>
                   <th>User</th>
                   <th>Service</th>
+                  <th>Number</th>
                   <th>Status</th>
-                  <th>Amount</th>
+                  <th>Price</th>
+                  <th>OTP</th>
+                  <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="adminOrdersTableBody">
-                <tr data-status="pending">
-                  <td>#ORD-2001</td>
-                  <td>Franklyn</td>
-                  <td>Growth Plan</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$25.00</td>
-                </tr>
-                <tr data-status="completed">
-                  <td>#ORD-2002</td>
-                  <td>Jane</td>
-                  <td>Starter Package</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$12.00</td>
-                </tr>
-                <tr data-status="processing">
-                  <td>#ORD-2003</td>
-                  <td>Michael</td>
-                  <td>API Access</td>
-                  <td><span class="status processing">Processing</span></td>
-                  <td>$60.00</td>
-                </tr>
-                <tr data-status="completed">
-                  <td>#ORD-2004</td>
-                  <td>Amaka</td>
-                  <td>Business Service</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$45.00</td>
-                </tr>
-                <tr data-status="pending">
-                  <td>#ORD-2005</td>
-                  <td>Chris</td>
-                  <td>Standard Package</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$18.00</td>
-                </tr>
-              </tbody>
+              <tbody id="adminOrdersTableBody"></tbody>
             </table>
           </div>
 
@@ -155,11 +122,11 @@
     </main>
   </div>
 
-  <script src="/index.js/panel.js"></script>
-  <script src="/index.js/loader.js"></script>
-  <script src="/index.js/reveal.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script src="/index.js/stats.js"></script>
-  <script src="/index.js/admin-orders.js"></script>
+ <script src="/index.js/panel.js"></script>
+<script src="/index.js/loader.js"></script>
+<script src="/index.js/reveal.js"></script>
+<script src="/index.js/toast.js"></script>
+<script src="/index.js/stats.js"></script>
+<script src="/index.js/admin-orders.js"></script> 
 </body>
 </html>

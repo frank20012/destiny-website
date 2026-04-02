@@ -4,34 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Users - WaveAuth</title>
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+ <link rel="stylesheet" href="/style.css/loader.css" />
+ <link rel="stylesheet" href="/style.css/reveal.css" />
+ <link rel="stylesheet" href="/style.css/toast.css" />
+ <link rel="stylesheet" href="/style.css/panel.css" />
+ <link rel="stylesheet" href="/style.css/admin-sub.css" />
 </head>
 <body>
-  <div class="loader-wrapper">
-    <div class="loader-box">
-      <div class="loader-logo">W</div>
-      <div class="loader-dots"><span></span><span></span><span></span></div>
-      <div class="loader-text">Loading WaveAuth...</div>
-    </div>
-  </div>
-
   <div class="sidebar-overlay"></div>
 
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
       <nav class="sidebar-nav">
-        <a href="admin.html">Admin Overview</a>
-        <a href="admin-users.html" class="active">Users</a>
-        <a href="admin-orders.html">Admin Orders</a>
-        <a href="admin-transaction.html">Admin Transactions</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="admin.html"><span>Admin Overview</span></a>
+        <a href="admin-users.html" class="active"><span>Users</span></a>
+        <a href="admin-orders.html"><span>Admin Orders</span></a>
+        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-reports.html"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
       </nav>
     </aside>
 
@@ -39,13 +34,13 @@
       <header class="topbar">
         <div>
           <h1>Admin Users</h1>
-          <p>Monitor accounts, user status, and recent signups</p>
+          <p>Monitor registered users and account roles</p>
         </div>
 
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button">Export Users</button>
+          <button class="top-btn" type="button" id="refreshUsersBtn">Refresh</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -53,44 +48,48 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid reveal">
+      <section class="admin-overview-grid">
         <div class="overview-card highlight-card card">
           <p>Total Users</p>
-          <h2 class="stat-number" data-target="1248">0</h2>
+          <h2 class="stat-number" id="usersTotalCount">0</h2>
           <span>All registered accounts</span>
         </div>
 
         <div class="overview-card card">
           <p>Active Users</p>
-          <h3 class="stat-number" data-target="1094">0</h3>
+          <h3 class="stat-number" id="usersActiveCount">0</h3>
         </div>
 
         <div class="overview-card card">
-          <p>Pending Users</p>
-          <h3 class="stat-number" data-target="86">0</h3>
+          <p>Admin Users</p>
+          <h3 class="stat-number" id="usersAdminCount">0</h3>
         </div>
 
         <div class="overview-card card">
-          <p>Blocked Users</p>
-          <h3 class="stat-number" data-target="12">0</h3>
+          <p>Standard Users</p>
+          <h3 class="stat-number" id="usersStandardCount">0</h3>
         </div>
       </section>
 
-      <section class="admin-table-section reveal">
+      <section class="admin-table-section">
         <div class="admin-table-card card">
           <div class="table-header">
             <div>
-              <h2>User List</h2>
-              <p>Search and filter all registered users</p>
+              <h2>Users List</h2>
+              <p>Search and filter registered accounts</p>
             </div>
 
             <div class="table-actions">
               <input type="text" id="adminUserSearchInput" placeholder="Search by name or email..." />
+              <select id="adminUserRoleFilter">
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
               <select id="adminUserStatusFilter">
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="blocked">Blocked</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
           </div>
@@ -102,47 +101,12 @@
                   <th>User ID</th>
                   <th>Name</th>
                   <th>Email</th>
+                  <th>Role</th>
                   <th>Status</th>
                   <th>Date Joined</th>
                 </tr>
               </thead>
-              <tbody id="adminUsersTableBody">
-                <tr data-status="active">
-                  <td>#USR-1001</td>
-                  <td>Franklyn Madu</td>
-                  <td>franklyn@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>Today</td>
-                </tr>
-                <tr data-status="pending">
-                  <td>#USR-1002</td>
-                  <td>Jane Doe</td>
-                  <td>jane@example.com</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>Today</td>
-                </tr>
-                <tr data-status="active">
-                  <td>#USR-1003</td>
-                  <td>Michael Ray</td>
-                  <td>michael@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr data-status="blocked">
-                  <td>#USR-1004</td>
-                  <td>Chris White</td>
-                  <td>chris@example.com</td>
-                  <td><span class="status cancelled">Blocked</span></td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr data-status="active">
-                  <td>#USR-1005</td>
-                  <td>Amaka Obi</td>
-                  <td>amaka@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>2 days ago</td>
-                </tr>
-              </tbody>
+              <tbody id="adminUsersTableBody"></tbody>
             </table>
           </div>
 
@@ -158,11 +122,13 @@
     </main>
   </div>
 
-  <script src="/index.js/panel.js"></script>
-  <script src="/index.js/loader.js"></script>
-  <script src="/index.js/reveal.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script src="/index.js/stats.js"></script>
-  <script src="/index.js/admin-users.js"></script>
+<script src="/index.js/panel.js"></script>
+ <script src="/index.js/loader.js"></script>
+ <script src="/index.js/reveal.js"></script>
+ <script src="/index.js/toast.js"></script>
+ <script src="/index.js/stats.js"></script>
+ <script src="/index.js/admin-users.js"></script>
+
+
 </body>
 </html>

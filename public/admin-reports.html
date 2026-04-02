@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Reports - WaveAuth</title>
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/admin-sub.css" />
-  <link rel="stylesheet" href="/style.css/admin-reports.css" />
+   <link rel="stylesheet" href="/style.css/toast.css" />
+<link rel="stylesheet" href="/style.css/panel.css" />
+<link rel="stylesheet" href="/style.css/admin-sub.css" />
+<link rel="stylesheet" href="/style.css/admin-reports.css" />
 </head>
 <body>
   <div class="sidebar-overlay"></div>
@@ -16,15 +16,16 @@
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
       <nav class="sidebar-nav">
-        <a href="admin.html">Admin Overview</a>
-        <a href="admin-users.html">Users</a>
-        <a href="admin-orders.html">Admin Orders</a>
-        <a href="admin-transaction.html">Admin Transactions</a>
-        <a href="admin-services.html">Admin Services</a>
-        <a href="admin-reports.html" class="active">Admin Reports</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="admin.html"><span>Admin Overview</span></a>
+        <a href="admin-users.html"><span>Users</span></a>
+        <a href="admin-orders.html"><span>Admin Orders</span></a>
+        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-reports.html" class="active"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
       </nav>
     </aside>
 
@@ -32,13 +33,13 @@
       <header class="topbar">
         <div>
           <h1>Admin Reports</h1>
-          <p>Revenue, growth, usage trends, and platform performance overview</p>
+          <p>Revenue, service performance, user activity, and support overview</p>
         </div>
 
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="exportReportsBtn">Export Reports</button>
+          <button class="top-btn" type="button" id="refreshReportsBtn">Refresh</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -46,203 +47,107 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid reveal">
+      <section class="admin-overview-grid">
         <div class="overview-card highlight-card card">
           <p>Total Revenue</p>
-          <h2 class="stat-number" data-target="18450" data-prefix="$">0</h2>
-          <span>All-time platform revenue</span>
+          <h2 id="reportsTotalRevenue">$0.00</h2>
+          <span>Completed debit transactions</span>
         </div>
 
         <div class="overview-card card">
-          <p>Monthly Revenue</p>
-          <h3 class="stat-number" data-target="6240" data-prefix="$">0</h3>
+          <p>Total Credits</p>
+          <h3 id="reportsTotalCredits">$0.00</h3>
         </div>
 
         <div class="overview-card card">
-          <p>New Users</p>
-          <h3 class="stat-number" data-target="148">0</h3>
+          <p>Total Refunds</p>
+          <h3 id="reportsTotalRefunds">$0.00</h3>
         </div>
 
         <div class="overview-card card">
-          <p>Conversion Rate</p>
-          <h3 class="stat-number" data-target="78.4" data-suffix="%" data-decimals="1">0%</h3>
+          <p>Active Users</p>
+          <h3 id="reportsActiveUsers">0</h3>
         </div>
       </section>
 
-      <section class="reports-grid reveal">
+      <section class="reports-grid">
         <div class="report-card card">
           <div class="section-title">
-            <h2>Revenue Summary</h2>
-            <p>Quick breakdown of recent earnings</p>
+            <h2>Platform Summary</h2>
+            <p>High-level report totals</p>
           </div>
 
           <div class="report-list">
             <div class="report-item">
-              <span>Today</span>
-              <strong>$420.00</strong>
+              <span>Total Users</span>
+              <strong id="reportsTotalUsers">0</strong>
             </div>
             <div class="report-item">
-              <span>This Week</span>
-              <strong>$1,860.00</strong>
+              <span>Total Orders</span>
+              <strong id="reportsTotalOrders">0</strong>
             </div>
             <div class="report-item">
-              <span>This Month</span>
-              <strong>$6,240.00</strong>
+              <span>Total Transactions</span>
+              <strong id="reportsTotalTransactions">0</strong>
             </div>
             <div class="report-item">
-              <span>Last Month</span>
-              <strong>$5,780.00</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="report-card card">
-          <div class="section-title">
-            <h2>User Growth</h2>
-            <p>Signup activity snapshot</p>
-          </div>
-
-          <div class="report-list">
-            <div class="report-item">
-              <span>Today</span>
-              <strong>34 users</strong>
-            </div>
-            <div class="report-item">
-              <span>This Week</span>
-              <strong>86 users</strong>
-            </div>
-            <div class="report-item">
-              <span>This Month</span>
-              <strong>148 users</strong>
-            </div>
-            <div class="report-item">
-              <span>Active Rate</span>
-              <strong>87%</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="reports-grid reveal">
-        <div class="report-card wide-card card">
-          <div class="section-title">
-            <h2>Top Performing Services</h2>
-            <p>Services generating the highest volume</p>
-          </div>
-
-          <div class="service-performance-list">
-            <div class="service-performance-item">
-              <div class="service-meta">
-                <h4>Growth Service Plan</h4>
-                <p>Most purchased plan this month</p>
-              </div>
-              <strong>482 orders</strong>
-            </div>
-
-            <div class="service-performance-item">
-              <div class="service-meta">
-                <h4>Business Workflow Service</h4>
-                <p>Strong business usage trend</p>
-              </div>
-              <strong>311 orders</strong>
-            </div>
-
-            <div class="service-performance-item">
-              <div class="service-meta">
-                <h4>API Integration Access</h4>
-                <p>Developer-focused plan growth</p>
-              </div>
-              <strong>196 orders</strong>
-            </div>
-
-            <div class="service-performance-item">
-              <div class="service-meta">
-                <h4>Starter Access Package</h4>
-                <p>Popular among new users</p>
-              </div>
-              <strong>154 orders</strong>
+              <span>Total Services</span>
+              <strong id="reportsTotalServices">0</strong>
             </div>
           </div>
         </div>
 
         <div class="report-card card">
           <div class="section-title">
-            <h2>System Report</h2>
-            <p>Current platform status</p>
+            <h2>Support Report</h2>
+            <p>Ticket resolution summary</p>
           </div>
 
           <div class="report-list">
             <div class="report-item">
-              <span>Website Status</span>
-              <strong>Online</strong>
+              <span>Open Tickets</span>
+              <strong id="reportsOpenTickets">0</strong>
             </div>
             <div class="report-item">
-              <span>API Health</span>
-              <strong>Stable</strong>
+              <span>In Review</span>
+              <strong id="reportsReviewTickets">0</strong>
             </div>
             <div class="report-item">
-              <span>Pending Tickets</span>
-              <strong>8</strong>
+              <span>Resolved</span>
+              <strong id="reportsResolvedTickets">0</strong>
             </div>
             <div class="report-item">
-              <span>Error Reports</span>
-              <strong>3</strong>
+              <span>Total Tickets</span>
+              <strong id="reportsTotalTickets">0</strong>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="admin-table-section reveal">
-        <div class="admin-table-card card">
+      <section class="reports-grid">
+        <div class="report-card card">
           <div class="section-title">
-            <h2>Monthly Overview Table</h2>
-            <p>High-level performance across recent months</p>
+            <h2>Top Services</h2>
+            <p>Most ordered services</p>
           </div>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Month</th>
-                  <th>Revenue</th>
-                  <th>New Users</th>
-                  <th>Orders</th>
-                  <th>Transactions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>January</td>
-                  <td>$4,820</td>
-                  <td>102</td>
-                  <td>612</td>
-                  <td>1,104</td>
-                </tr>
-                <tr>
-                  <td>February</td>
-                  <td>$5,280</td>
-                  <td>118</td>
-                  <td>694</td>
-                  <td>1,260</td>
-                </tr>
-                <tr>
-                  <td>March</td>
-                  <td>$6,240</td>
-                  <td>148</td>
-                  <td>812</td>
-                  <td>1,486</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="service-performance-list" id="reportsTopServicesList"></div>
+        </div>
+
+        <div class="report-card card">
+          <div class="section-title">
+            <h2>Monthly Breakdown</h2>
+            <p>Recent transaction and revenue activity</p>
           </div>
+
+          <div class="report-list" id="reportsMonthlyBreakdown"></div>
         </div>
       </section>
     </main>
   </div>
-
-  <script src="/index.js/panel.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script src="/index.js/stats.js"></script>
-  <script src="/index.js/admin-reports.js"></script>
+<script src="/index.js/panel.js"></script>
+<script src="/index.js/toast.js"></script>
+<script src="/index.js/stats.js"></script>
+<script src="/index.js/admin-reports.js"></script>  
 </body>
 </html>

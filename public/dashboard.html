@@ -62,23 +62,23 @@
       <section class="overview-grid reveal">
         <div class="balance-card card">
           <p>Available Balance</p>
-          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2">$0.00</h2>
+          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2" id="dashboardWalletBalance">$0.00</h2>
           <span>Updated just now</span>
         </div>
 
         <div class="mini-card card">
           <p>Total Orders</p>
-          <h3 class="stat-number" data-target="38">0</h3>
+          <h3 class="stat-number" data-target="38" id="dashboardOrdersCount">0</h3>
         </div>
 
         <div class="mini-card card">
-          <p>Active Services</p>
-          <h3 class="stat-number" data-target="12">0</h3>
+          <p>Total Transactions</p>
+          <h3 class="stat-number" data-target="12" id="dashboardTransactionsCount">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>API Status</p>
-          <h3>Enabled</h3>
+          <h3 id="dashboardApiStatus">Enabled</h3>
         </div>
       </section>
 
@@ -120,44 +120,7 @@
             <h2>Recent Orders</h2>
           </div>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Service</th>
-                  <th>Status</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>#1024</td>
-                  <td>Service Package A</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$45.00</td>
-                </tr>
-                <tr>
-                  <td>#1025</td>
-                  <td>Service Package B</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$20.00</td>
-                </tr>
-                <tr>
-                  <td>#1026</td>
-                  <td>Service Package C</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$80.00</td>
-                </tr>
-                <tr>
-                  <td>#1027</td>
-                  <td>Service Package D</td>
-                  <td><span class="status processing">Processing</span></td>
-                  <td>$65.00</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="activity-list" id="dashboardRecentOrders"></div>
         </div>
 
         <div class="activity-card card">
@@ -165,39 +128,7 @@
             <h2>Recent Transactions</h2>
           </div>
 
-          <div class="activity-list">
-            <div class="activity-item">
-              <div>
-                <h4>Wallet Funding</h4>
-                <p>Today, 10:45 AM</p>
-              </div>
-              <span class="amount positive">+$500</span>
-            </div>
-
-            <div class="activity-item">
-              <div>
-                <h4>Order Payment</h4>
-                <p>Today, 09:30 AM</p>
-              </div>
-              <span class="amount negative">-$45</span>
-            </div>
-
-            <div class="activity-item">
-              <div>
-                <h4>Order Payment</h4>
-                <p>Yesterday, 04:20 PM</p>
-              </div>
-              <span class="amount negative">-$20</span>
-            </div>
-
-            <div class="activity-item">
-              <div>
-                <h4>Wallet Funding</h4>
-                <p>Yesterday, 01:15 PM</p>
-              </div>
-              <span class="amount positive">+$300</span>
-            </div>
-          </div>
+          <div class="activity-list" id="dashboardRecentTransactions"></div>
         </div>
       </section>
     </main>
@@ -207,5 +138,6 @@
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
   <script src="/index.js/stat.js"></script>
+  <script src="/index.js/dashboard.js"></script>
 </body>
 </html>

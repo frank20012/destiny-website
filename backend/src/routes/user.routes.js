@@ -1,10 +1,18 @@
 import express from "express";
 import protect from "../middlewares/auth.middleware.js";
-import { getMyProfile, getUsers } from "../controllers/user.controller.js";
+import adminOnly from "../middlewares/admin.middleware.js";
+import {
+  getAllUsersForAdmin,
+  getMyProfile,
+  getUsers,
+  updateMyProfile
+} from "../controllers/user.controller.js";
 
 const router = express.Router();
 
 router.get("/", getUsers);
 router.get("/me", protect, getMyProfile);
+router.patch("/me", protect, updateMyProfile);
+router.get("/admin/all", protect, adminOnly, getAllUsersForAdmin);
 
 export default router;

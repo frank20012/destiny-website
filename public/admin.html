@@ -3,27 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Admin</title>
+  <title>Admin Overview - WaveAuth</title>
   <link rel="stylesheet" href="/style.css/admin.css" />
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  
+ <link rel="stylesheet" href="/style.css/loader.css" />
+ <link rel="stylesheet" href="/style.css/reveal.css" />
+ <link rel="stylesheet" href="/style.css/toast.css" />
+ <link rel="stylesheet" href="/style.css/panel.css" />
 </head>
 <body>
-  <div class="loader-wrapper">
-    <div class="loader-box">
-      <div class="loader-logo">W</div>
-      <div class="loader-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <div class="loader-text">Loading WaveAuth...</div>
-    </div>
-  </div>
-
   <div class="sidebar-overlay"></div>
 
   <div class="admin-layout">
@@ -31,15 +18,16 @@
       <div class="sidebar-logo">WaveAuth</div>
 
       <nav class="sidebar-nav">
-        <a href="admin.html" class="active">Admin Overview</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="service.html">Services</a>
-        <a href="orders.html">Orders</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="wallet.html">Wallet</a>
-        <a href="api.html">API</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="admin.html" class="active"><span>Admin Overview</span></a>
+        <a href="admin-users.html"><span>Users</span></a>
+        <a href="admin-orders.html"><span>Admin Orders</span></a>
+        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-reports.html"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
       </nav>
     </aside>
 
@@ -47,13 +35,13 @@
       <header class="topbar">
         <div>
           <h1>Admin Dashboard</h1>
-          <p>Oversee platform activity, users, revenue, and system performance</p>
+          <p>Overview of the OTP and virtual number platform</p>
         </div>
 
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button">Export Report</button>
+          <button class="top-btn" type="button" id="refreshAdminOverviewBtn">Refresh</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -61,30 +49,30 @@
         </div>
       </header>
 
-      <section class="admin-stats reveal">
+      <section class="admin-stats">
         <div class="stat-card highlight-card card">
-          <p>Total Revenue</p>
-          <h2 class="stat-number" data-target="18450" data-prefix="$">$0</h2>
-          <span>Platform-wide earnings</span>
+          <p>Total Users</p>
+          <h2 id="adminTotalUsers">0</h2>
+          <span>Registered accounts</span>
         </div>
 
         <div class="stat-card card">
-          <p>Total Users</p>
-          <h3 class="stat-number" data-target="1248">0</h3>
+          <p>Total Services</p>
+          <h3 id="adminTotalServices">0</h3>
         </div>
 
         <div class="stat-card card">
           <p>Total Orders</p>
-          <h3 class="stat-number" data-target="3896">0</h3>
+          <h3 id="adminTotalOrders">0</h3>
         </div>
 
         <div class="stat-card card">
-          <p>Pending Reviews</p>
-          <h3 class="stat-number" data-target="27">0</h3>
+          <p>Total Tickets</p>
+          <h3 id="adminTotalTickets">0</h3>
         </div>
       </section>
 
-      <section class="admin-actions reveal">
+      <section class="admin-actions">
         <div class="section-title">
           <h2>Quick Admin Actions</h2>
         </div>
@@ -92,35 +80,35 @@
         <div class="action-grid">
           <div class="action-card card">
             <h3>Manage Services</h3>
-            <p>Add, remove, or update available service plans.</p>
-            <a href="services.html">Open</a>
+            <p>Create, review, and control OTP service availability.</p>
+            <a href="admin-services.html">Open</a>
           </div>
 
           <div class="action-card card">
-            <h3>Review Orders</h3>
-            <p>Monitor pending, processing, and completed orders.</p>
-            <a href="orders.html">View Orders</a>
+            <h3>Monitor Orders</h3>
+            <p>Review assigned numbers, OTP codes, and order status.</p>
+            <a href="admin-orders.html">View Orders</a>
           </div>
 
           <div class="action-card card">
-            <h3>Monitor Transactions</h3>
-            <p>Track credits, debits, and failed transactions.</p>
-            <a href="transactions.html">View Transactions</a>
+            <h3>Track Transactions</h3>
+            <p>See wallet funding, debits, and refunds across users.</p>
+            <a href="admin-transactions.html">View Transactions</a>
           </div>
 
           <div class="action-card card">
-            <h3>API Control</h3>
-            <p>Inspect API activity and integration status.</p>
-            <a href="api.html">Manage API</a>
+            <h3>Support Tickets</h3>
+            <p>Respond to user issues and update support status.</p>
+            <a href="admin-tickets.html">Open Tickets</a>
           </div>
         </div>
       </section>
 
-      <section class="admin-main-grid reveal">
+      <section class="admin-main-grid">
         <div class="table-card card">
           <div class="section-title">
             <h2>Recent Users</h2>
-            <p>Latest accounts created on the platform</p>
+            <p>Latest registered accounts</p>
           </div>
 
           <div class="table-wrap">
@@ -130,40 +118,11 @@
                   <th>User ID</th>
                   <th>Name</th>
                   <th>Email</th>
-                  <th>Status</th>
+                  <th>Role</th>
                   <th>Date Joined</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>#USR-1001</td>
-                  <td>Franklyn Madu</td>
-                  <td>franklyn@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>Today</td>
-                </tr>
-                <tr>
-                  <td>#USR-1002</td>
-                  <td>Jane Doe</td>
-                  <td>jane@example.com</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>Today</td>
-                </tr>
-                <tr>
-                  <td>#USR-1003</td>
-                  <td>Michael Ray</td>
-                  <td>michael@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr>
-                  <td>#USR-1004</td>
-                  <td>Amaka Obi</td>
-                  <td>amaka@example.com</td>
-                  <td><span class="status completed">Active</span></td>
-                  <td>Yesterday</td>
-                </tr>
-              </tbody>
+              <tbody id="adminRecentUsersBody"></tbody>
             </table>
           </div>
         </div>
@@ -171,53 +130,40 @@
         <div class="side-column">
           <div class="summary-card card">
             <div class="section-title">
-              <h2>System Status</h2>
+              <h2>System Snapshot</h2>
             </div>
 
             <div class="summary-list">
               <div class="summary-item">
-                <span>Website Status</span>
+                <span>Total Transactions</span>
+                <strong id="adminTotalTransactions">0</strong>
+              </div>
+              <div class="summary-item">
+                <span>Platform Status</span>
                 <strong>Online</strong>
               </div>
               <div class="summary-item">
-                <span>API Health</span>
-                <strong>Stable</strong>
+                <span>API Status</span>
+                <strong>Connected</strong>
               </div>
               <div class="summary-item">
-                <span>Pending Tickets</span>
-                <strong>8</strong>
-              </div>
-              <div class="summary-item">
-                <span>New Signups Today</span>
-                <strong>34</strong>
+                <span>Support Queue</span>
+                <strong id="adminSupportQueueCount">0</strong>
               </div>
             </div>
           </div>
 
           <div class="summary-card card">
             <div class="section-title">
-              <h2>Top Services</h2>
+              <h2>Recent Tickets</h2>
             </div>
 
-            <div class="service-rank-list">
-              <div class="service-rank-item">
-                <span>Growth Service Plan</span>
-                <strong>482 orders</strong>
-              </div>
-              <div class="service-rank-item">
-                <span>Business Workflow Service</span>
-                <strong>311 orders</strong>
-              </div>
-              <div class="service-rank-item">
-                <span>API Integration Access</span>
-                <strong>196 orders</strong>
-              </div>
-            </div>
+            <div class="activity-list" id="adminRecentTicketsList"></div>
           </div>
         </div>
       </section>
 
-      <section class="bottom-grid reveal">
+      <section class="bottom-grid">
         <div class="table-card card">
           <div class="section-title">
             <h2>Recent Orders</h2>
@@ -231,76 +177,50 @@
                   <th>User</th>
                   <th>Service</th>
                   <th>Status</th>
-                  <th>Amount</th>
+                  <th>Number</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>#ORD-2001</td>
-                  <td>Franklyn</td>
-                  <td>Growth Plan</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$25.00</td>
-                </tr>
-                <tr>
-                  <td>#ORD-2002</td>
-                  <td>Jane</td>
-                  <td>Starter Package</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$12.00</td>
-                </tr>
-                <tr>
-                  <td>#ORD-2003</td>
-                  <td>Michael</td>
-                  <td>API Access</td>
-                  <td><span class="status processing">Processing</span></td>
-                  <td>$60.00</td>
-                </tr>
-              </tbody>
+              <tbody id="adminRecentOrdersBody"></tbody>
             </table>
           </div>
         </div>
 
         <div class="activity-card card">
           <div class="section-title">
-            <h2>Admin Alerts</h2>
+            <h2>Platform Notes</h2>
           </div>
 
           <div class="activity-list">
             <div class="activity-item">
               <div>
-                <h4>New User Registered</h4>
-                <p>Franklyn joined the platform today</p>
+                <h4>Service Catalog</h4>
+                <p>Review service availability and pricing regularly.</p>
               </div>
-              <span class="mini-badge success-text">New</span>
             </div>
 
             <div class="activity-item">
               <div>
-                <h4>Order Needs Review</h4>
-                <p>#ORD-2001 is still pending</p>
+                <h4>Order Monitoring</h4>
+                <p>Keep track of active and expired OTP orders.</p>
               </div>
-              <span class="mini-badge pending-text">Pending</span>
             </div>
 
             <div class="activity-item">
               <div>
-                <h4>API Spike Detected</h4>
-                <p>Higher request volume than normal</p>
+                <h4>Support Management</h4>
+                <p>Respond quickly to wallet and order complaints.</p>
               </div>
-              <span class="mini-badge processing-text">Notice</span>
             </div>
           </div>
         </div>
       </section>
     </main>
   </div>
-
-  <script src="/index.js/panel.js"></script> 
-   <script src="/index.js/loader.js"></script> 
+<script src="/index.js/panel.js"></script> 
+   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
   <script src="/index.js/stat.js"></script>
- 
+
 </body>
 </html>

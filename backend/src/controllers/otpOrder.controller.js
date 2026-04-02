@@ -199,3 +199,72 @@ export const cancelOtpOrder = async (req, res, next) => {
     next(error);
   }
 };
+export const getAllOtpOrdersForAdmin = async (req, res, next) => {
+  try {
+    const orders = await OtpOrder.find()
+      .populate("user", "firstName lastName email")
+      .populate("service")
+      .populate("numberInventory")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Admin OTP orders fetched successfully",
+      count: orders.length,
+      orders
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateOtpOrderStatusByAdmin = async (req, res, next) => {
+  try {
+    const { status, otpCode } = req.body;
+
+    const order = await OtpOrder.findById(req.params.id)
+      .populate("service")
+      .populate("numberInventory")
+      .populate("user", "firstName lastName email");
+
+    if (!order) {
+      res.status(404);
+      throw new Error("OTP order not found");
+    }
+
+    const allowedStatuses = ["pending", "active", "completed", "cancelled", "expired"];
+
+    if (status && !allowedStatuses.includes(status)) {
+      res.status(400);
+      throw new Error("Invalid order status");
+    }
+
+    if (status) {
+      order.status = status;
+    }
+
+    if (otpCode !== undefined) {
+      order.otpCode = otpCode;
+    }
+
+    await order.save();
+
+    if ((status === "completed" || status === "cancelled" || status === "expired") && order.numberInventory) {
+      const number = await NumberInventory.findById(order.numberInventory._id);
+
+      if (number) {
+        number.status = status === "completed" ? "used" : "available";
+        if (status !== "completed") {
+          number.assignedTo = null;
+        }
+        await number.save();
+      }
+    }
+
+    res.status(200).json({
+      message: "OTP order updated successfully",
+      order
+    });
+  } catch (error) {
+    next(error);
+  }
+};

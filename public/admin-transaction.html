@@ -4,34 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Transactions - WaveAuth</title>
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+<link rel="stylesheet" href="/style.css/loader.css" />
+<link rel="stylesheet" href="/style.css/reveal.css" />
+<link rel="stylesheet" href="/style.css/toast.css" />
+<link rel="stylesheet" href="/style.css/panel.css" />
+<link rel="stylesheet" href="/style.css/admin-sub.css" />
 </head>
 <body>
-  <div class="loader-wrapper">
-    <div class="loader-box">
-      <div class="loader-logo">W</div>
-      <div class="loader-dots"><span></span><span></span><span></span></div>
-      <div class="loader-text">Loading WaveAuth...</div>
-    </div>
-  </div>
-
   <div class="sidebar-overlay"></div>
 
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
       <nav class="sidebar-nav">
-        <a href="admin.html">Admin Overview</a>
-        <a href="admin-users.html">Users</a>
-        <a href="admin-orders.html">Admin Orders</a>
-        <a href="admin-transactions.html" class="active">Admin Transactions</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="admin.html"><span>Admin Overview</span></a>
+        <a href="admin-users.html"><span>Users</span></a>
+        <a href="admin-orders.html"><span>Admin Orders</span></a>
+        <a href="admin-transactions.html" class="active"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-reports.html"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
       </nav>
     </aside>
 
@@ -39,13 +34,13 @@
       <header class="topbar">
         <div>
           <h1>Admin Transactions</h1>
-          <p>Track credits, debits, and failed platform transactions</p>
+          <p>Track credits, debits, refunds, and transaction status</p>
         </div>
 
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button">Export Transactions</button>
+          <button class="top-btn" type="button" id="refreshTransactionsBtn">Refresh</button>
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -53,32 +48,35 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid reveal">
+      <section class="admin-overview-grid">
         <div class="overview-card highlight-card card">
-          <p>Total Transaction Value</p>
-          <h2 class="stat-number" data-target="6420" data-prefix="$">0</h2>
-          <span>Combined platform movement</span>
+          <p>Total Transactions</p>
+          <h2 class="stat-number" id="transactionsTotalCount">0</h2>
+          <span>All recorded platform transactions</span>
         </div>
+
         <div class="overview-card card">
-          <p>Credits</p>
-          <h3 class="stat-number" data-target="3800" data-prefix="$">0</h3>
+          <p>Total Credits</p>
+          <h3 class="stat-number" id="transactionsCreditAmount">$0.00</h3>
         </div>
+
         <div class="overview-card card">
-          <p>Debits</p>
-          <h3 class="stat-number" data-target="2550" data-prefix="$">0</h3>
+          <p>Total Debits</p>
+          <h3 class="stat-number" id="transactionsDebitAmount">$0.00</h3>
         </div>
+
         <div class="overview-card card">
-          <p>Failed</p>
-          <h3 class="stat-number" data-target="70" data-prefix="$">0</h3>
+          <p>Total Refunds</p>
+          <h3 class="stat-number" id="transactionsRefundAmount">$0.00</h3>
         </div>
       </section>
 
-      <section class="admin-table-section reveal">
+      <section class="admin-table-section">
         <div class="admin-table-card card">
           <div class="table-header">
             <div>
               <h2>Transactions List</h2>
-              <p>Search and filter all transactions</p>
+              <p>Search and filter all platform transactions</p>
             </div>
 
             <div class="table-actions">
@@ -87,6 +85,7 @@
                 <option value="all">All Types</option>
                 <option value="credit">Credit</option>
                 <option value="debit">Debit</option>
+                <option value="refund">Refund</option>
               </select>
               <select id="adminTransactionStatusFilter">
                 <option value="all">All Status</option>
@@ -102,42 +101,15 @@
               <thead>
                 <tr>
                   <th>Reference</th>
+                  <th>User</th>
                   <th>Type</th>
                   <th>Description</th>
                   <th>Status</th>
                   <th>Amount</th>
+                  <th>Date</th>
                 </tr>
               </thead>
-              <tbody id="adminTransactionsTableBody">
-                <tr data-type="credit" data-status="completed">
-                  <td>#TRX-3001</td>
-                  <td>Credit</td>
-                  <td>Wallet Funding via Bank Transfer</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$500.00</td>
-                </tr>
-                <tr data-type="debit" data-status="completed">
-                  <td>#TRX-3002</td>
-                  <td>Debit</td>
-                  <td>Order Payment - Growth Service Plan</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$25.00</td>
-                </tr>
-                <tr data-type="debit" data-status="pending">
-                  <td>#TRX-3003</td>
-                  <td>Debit</td>
-                  <td>Order Payment - API Access</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$60.00</td>
-                </tr>
-                <tr data-type="credit" data-status="failed">
-                  <td>#TRX-3004</td>
-                  <td>Credit</td>
-                  <td>Wallet Funding via Crypto</td>
-                  <td><span class="status failed">Failed</span></td>
-                  <td>$200.00</td>
-                </tr>
-              </tbody>
+              <tbody id="adminTransactionsTableBody"></tbody>
             </table>
           </div>
 
@@ -152,12 +124,12 @@
       </section>
     </main>
   </div>
-
-  <script src="/index.js/panel.js"></script>
+    <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
   <script src="/index.js/stats.js"></script>
   <script src="/index.js/admin-transactions.js"></script>
+
 </body>
 </html>
