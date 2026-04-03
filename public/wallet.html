@@ -61,23 +61,23 @@
       <section class="wallet-overview reveal">
         <div class="balance-card card">
           <p>Available Balance</p>
-          <h2 class="stat-number" data-target="1250" data-prefix="$" data-decimals="2" id="walletMainBalance">$0.00</h2>
+          <h2 class="stat-number" id="walletMainBalance">$0.00</h2>
           <span>Last updated a few seconds ago</span>
         </div>
 
         <div class="mini-card card">
           <p>Total Funded</p>
-          <h3 class="stat-number" data-target="3800" data-prefix="$" id="walletTotalFunded">0</h3>
+          <h3 class="stat-number" id="walletTotalFunded">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>Total Spent</p>
-          <h3 class="stat-number" data-target="2550" data-prefix="$" id="walletTotalSpent">0</h3>
+          <h3 class="stat-number" id="walletTotalSpent">0</h3>
         </div>
 
         <div class="mini-card card">
           <p>Pending Funding</p>
-          <h3 class="stat-number" data-target="120" data-prefix="$" id="walletPendingAmount">0</h3>
+          <h3 class="stat-number" id="walletPendingAmount">0</h3>
         </div>
       </section>
 
@@ -185,36 +185,7 @@
                   <th>Date</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>#WLT-1024</td>
-                  <td>Bank Transfer</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$500.00</td>
-                  <td>Today</td>
-                </tr>
-                <tr>
-                  <td>#WLT-1025</td>
-                  <td>Card Payment</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>$120.00</td>
-                  <td>Today</td>
-                </tr>
-                <tr>
-                  <td>#WLT-1026</td>
-                  <td>USSD</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>$300.00</td>
-                  <td>Yesterday</td>
-                </tr>
-                <tr>
-                  <td>#WLT-1027</td>
-                  <td>Crypto</td>
-                  <td><span class="status processing">Processing</span></td>
-                  <td>$200.00</td>
-                  <td>Yesterday</td>
-                </tr>
-              </tbody>
+              <tbody id="walletFundingHistoryBody"></tbody>
             </table>
           </div>
         </div>
@@ -239,12 +210,12 @@
     </div>
   </div>
 </div>
+
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
   <script src="/index.js/wallet.js"></script>
   <script src="/index.js/modal.js"></script>
-  <script src="/index.js/stat.js"></script>
 </body>
 </html>
