@@ -9,8 +9,14 @@ const walletMainBalance = document.getElementById("walletMainBalance");
 const walletTotalFunded = document.getElementById("walletTotalFunded");
 const walletTotalSpent = document.getElementById("walletTotalSpent");
 const walletPendingAmount = document.getElementById("walletPendingAmount");
+const walletFundingHistoryBody = document.getElementById("walletFundingHistoryBody");
 
 const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};
 
 const showMessage = (text, type = "error") => {
   if (!walletMessage) return;
@@ -26,10 +32,60 @@ const clearMessage = () => {
 
 const updateWalletUI = (wallet) => {
   if (!wallet) return;
-
   if (walletMainBalance) {
     walletMainBalance.textContent = formatPrice(wallet.balance);
   }
+};
+
+const getStatusClass = (status) => {
+  const map = {
+    completed: "completed",
+    pending: "pending",
+    failed: "cancelled"
+  };
+  return map[status] || "pending";
+};
+
+const getFundingMethodLabel = (transaction) => {
+  if (transaction.description?.toLowerCase().includes("paystack")) {
+    return "Paystack";
+  }
+  return "Wallet Funding";
+};
+
+const renderFundingHistory = (transactions) => {
+  if (!walletFundingHistoryBody) return;
+
+  const fundingTransactions = transactions.filter(
+    (transaction) => transaction.type === "credit"
+  );
+
+  if (!fundingTransactions.length) {
+    walletFundingHistoryBody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center; color: var(--muted);">
+          No funding history found.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  walletFundingHistoryBody.innerHTML = "";
+
+  fundingTransactions.slice(0, 6).forEach((transaction) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${transaction.reference}</td>
+      <td>${getFundingMethodLabel(transaction)}</td>
+      <td><span class="status ${getStatusClass(transaction.status)}">${transaction.status}</span></td>
+      <td>${formatPrice(transaction.amount)}</td>
+      <td>${formatDate(transaction.createdAt)}</td>
+    `;
+
+    walletFundingHistoryBody.appendChild(tr);
+  });
 };
 
 const fetchWallet = async () => {
@@ -104,8 +160,43 @@ const fetchTransactionsSummary = async () => {
     if (walletPendingAmount) {
       walletPendingAmount.textContent = formatPrice(pendingAmount);
     }
+
+    renderFundingHistory(transactions);
   } catch (error) {
     console.error(error.message);
+  }
+};
+
+const verifyPaymentFromUrl = async () => {
+  const params = new URLSearchParams(window.location.search);
+  const reference = params.get("reference");
+
+  if (!reference || !token) return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/payments/paystack/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Payment verification failed");
+    }
+
+    updateWalletUI(data.wallet);
+    await fetchTransactionsSummary();
+
+    if (typeof showToast === "function") {
+      showToast("success", "Payment verified", "Your wallet has been funded successfully.");
+    }
+
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  } catch (error) {
+    showMessage(error.message || "Could not verify payment.");
   }
 };
 
@@ -127,7 +218,7 @@ if (walletFundForm) {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/wallet/fund`, {
+      const response = await fetch(`${API_BASE_URL}/api/payments/paystack/initialize`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,21 +230,10 @@ if (walletFundForm) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Wallet funding failed");
+        throw new Error(data.message || "Payment initialization failed");
       }
 
-      updateWalletUI(data.wallet);
-      await fetchTransactionsSummary();
-
-      if (fundAmountInput) {
-        fundAmountInput.value = "";
-      }
-
-      showMessage("Wallet funded successfully.", "success");
-
-      if (typeof showToast === "function") {
-        showToast("success", "Wallet funded", "Your wallet has been funded successfully.");
-      }
+      window.location.href = data.authorization_url;
     } catch (error) {
       showMessage(error.message || "Something went wrong.");
     }
@@ -163,6 +243,7 @@ if (walletFundForm) {
 if (token) {
   fetchWallet();
   fetchTransactionsSummary();
+  verifyPaymentFromUrl();
 } else {
   showMessage("Please sign in first.");
 }

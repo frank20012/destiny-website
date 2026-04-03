@@ -11,6 +11,7 @@ import ticketRoutes from "./routes/ticket.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import otpOrderRoutes from "./routes/otpOrder.routes.js";
 import numberInventoryRoutes from "./routes/numberInventory.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 
 import notFound from "./middlewares/notfound.middleware.js";
 import errorHandler from "./middlewares/error.middleware.js";
@@ -34,7 +35,7 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/numbers", numberInventoryRoutes);
-
+app.use("/api/payments", paymentRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
