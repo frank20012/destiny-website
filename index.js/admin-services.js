@@ -1,5 +1,8 @@
 const API_BASE_URL = "http://localhost:5000";
-const token = localStorage.getItem("token");
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
+
+const token = getStoredToken();
+const user = getStoredUser();
 
 const adminServiceSearchInput = document.getElementById("adminServiceSearchInput");
 const adminServiceCategoryFilter = document.getElementById("adminServiceCategoryFilter");
@@ -26,6 +29,10 @@ const adminServiceCategory = document.getElementById("adminServiceCategory");
 const adminServiceDeliveryType = document.getElementById("adminServiceDeliveryType");
 const adminServiceStatus = document.getElementById("adminServiceStatus");
 const adminServiceDescription = document.getElementById("adminServiceDescription");
+const servicesTotalCount = document.getElementById("servicesTotalCount");
+const servicesActiveCount = document.getElementById("servicesActiveCount");
+const servicesDraftCount = document.getElementById("servicesDraftCount");
+const servicesDisabledCount = document.getElementById("servicesDisabledCount");
 
 const ADMIN_SERVICES_PER_PAGE = 6;
 let adminServicesCurrentPage = 1;
@@ -37,7 +44,35 @@ const showMessage = (text, type = "error") => {
   adminServiceMessage.textContent = text;
   adminServiceMessage.className = `form-message ${type}`;
 };
+const renderServiceCounts = () => {
+  const activeCount = allAdminServices.filter(
+    (service) => service.status === "active"
+  ).length;
 
+  const draftCount = allAdminServices.filter(
+    (service) => service.status === "draft"
+  ).length;
+
+  const disabledCount = allAdminServices.filter(
+    (service) => service.status === "disabled"
+  ).length;
+
+  if (servicesTotalCount) {
+    servicesTotalCount.textContent = allAdminServices.length;
+  }
+
+  if (servicesActiveCount) {
+    servicesActiveCount.textContent = activeCount;
+  }
+
+  if (servicesDraftCount) {
+    servicesDraftCount.textContent = draftCount;
+  }
+
+  if (servicesDisabledCount) {
+    servicesDisabledCount.textContent = disabledCount;
+  }
+};
 const clearMessage = () => {
   if (!adminServiceMessage) return;
   adminServiceMessage.textContent = "";
@@ -149,6 +184,7 @@ const fetchAdminServices = async () => {
 
     allAdminServices = data.services || [];
     filteredAdminServices = [...allAdminServices];
+    renderServiceCounts();
     renderAdminServicesPage();
   } catch (error) {
     if (adminServicesTableBody) {

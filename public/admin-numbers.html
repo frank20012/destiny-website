@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Numbers - WaveAuth</title>
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+</head>
+<body>
+  <div class="sidebar-overlay"></div>
+
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">WaveAuth</div>
+
+      <nav class="sidebar-nav">
+        <a href="admin.html"><span>Admin Overview</span></a>
+        <a href="admin-users.html"><span>Users</span></a>
+        <a href="admin-orders.html"><span>Admin Orders</span></a>
+        <a href="admin-transaction.html"><span>Admin Transactions</span></a>
+        <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-numbers.html" class="active"><span>Admin Numbers</span></a>
+        <a href="admin-reports.html"><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><span>User Dashboard</span></a>
+        <a href="signin.html"><span>Logout</span></a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Admin Numbers</h1>
+          <p>Manage virtual number inventory and availability</p>
+        </div>
+
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
+          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="top-btn" type="button" id="openAddNumberFormBtn">Add Number</button>
+          <div class="profile-box">
+            <div class="avatar">A</div>
+            <span>Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="admin-overview-grid">
+        <div class="overview-card highlight-card card">
+          <p>Total Numbers</p>
+          <h2 class="stat-number" id="numbersTotalCount">0</h2>
+          <span>All stored inventory</span>
+        </div>
+
+        <div class="overview-card card">
+          <p>Available</p>
+          <h3 class="stat-number" id="numbersAvailableCount">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Assigned</p>
+          <h3 class="stat-number" id="numbersAssignedCount">0</h3>
+        </div>
+
+        <div class="overview-card card">
+          <p>Used / Disabled</p>
+          <h3 class="stat-number" id="numbersClosedCount">0</h3>
+        </div>
+      </section>
+
+      <section class="admin-table-section">
+        <div class="admin-form-card card" id="adminNumberFormCard" style="display: none;">
+          <div class="form-card-head">
+            <div>
+              <h2>Add Number</h2>
+              <p>Add a new number to inventory</p>
+            </div>
+            <button type="button" class="close-form-btn" id="closeAddNumberFormBtn">✕</button>
+          </div>
+
+          <form id="adminNumberForm" class="admin-service-form">
+            <div class="form-grid">
+              <div class="input-group">
+                <label for="adminNumberCountry">Country</label>
+                <input type="text" id="adminNumberCountry" placeholder="e.g. United Kingdom" />
+              </div>
+
+              <div class="input-group">
+                <label for="adminNumberValue">Number</label>
+                <input type="text" id="adminNumberValue" placeholder="e.g. +447900000111" />
+              </div>
+
+              <div class="input-group">
+                <label for="adminNumberProvider">Provider</label>
+                <input type="text" id="adminNumberProvider" placeholder="e.g. internal" />
+              </div>
+
+              <div class="input-group">
+                <label for="adminNumberServiceType">Service Type</label>
+                <select id="adminNumberServiceType">
+                  <option value="otp">OTP</option>
+                  <option value="sms">SMS</option>
+                  <option value="voice">Voice</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="adminNumberStatus">Status</label>
+                <select id="adminNumberStatus">
+                  <option value="available">Available</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="used">Used</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions-row">
+              <button type="button" class="secondary-btn" id="cancelAddNumberFormBtn">Cancel</button>
+              <button type="submit" class="primary-btn">Create Number</button>
+            </div>
+
+            <p class="form-message" id="adminNumberMessage"></p>
+          </form>
+        </div>
+
+        <div class="admin-table-card card">
+          <div class="table-header">
+            <div>
+              <h2>Numbers List</h2>
+              <p>Search and filter inventory numbers</p>
+            </div>
+
+            <div class="table-actions">
+              <input type="text" id="adminNumberSearchInput" placeholder="Search country or number..." />
+              <select id="adminNumberTypeFilter">
+                <option value="all">All Types</option>
+                <option value="otp">OTP</option>
+                <option value="sms">SMS</option>
+                <option value="voice">Voice</option>
+              </select>
+              <select id="adminNumberStatusFilter">
+                <option value="all">All Status</option>
+                <option value="available">Available</option>
+                <option value="assigned">Assigned</option>
+                <option value="used">Used</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Number ID</th>
+                  <th>Country</th>
+                  <th>Number</th>
+                  <th>Provider</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminNumbersTableBody"></tbody>
+            </table>
+          </div>
+
+          <p class="table-empty-message" id="adminNumbersEmptyMessage">No matching numbers found.</p>
+
+          <div class="table-pagination" id="adminNumbersPagination">
+            <button type="button" id="adminNumbersPrevBtn">Previous</button>
+            <span id="adminNumbersPageInfo">Page 1 of 1</span>
+            <button type="button" id="adminNumbersNextBtn">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+ <script type="module" src="/index.js/require-admin.js"></script>
+ <script type="module" src="/index.js/session-ui.js"></script>
+  <script src="/index.js/panel.js"></script>
+  <script src="/index.js/toast.js"></script>
+  <script type="module" src="/index.js/admin-numbers.js"></script>
+</body>
+</html>

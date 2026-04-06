@@ -513,3 +513,51 @@ body {
   font-size: 12px;
   line-height: 1.5;
 }
+.auth-card-single {
+  max-width: 34rem;
+  width: 100%;
+  grid-template-columns: 1fr;
+}
+
+.auth-form-full {
+  width: 100%;
+}
+
+.form-message {
+  margin-top: 0.9rem;
+  min-height: 1.2rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.form-message.success {
+  color: #15803d;
+}
+
+.form-message.error {
+  color: #b91c1c;
+}
+.auth-helper-box {
+  margin-bottom: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.auth-helper-box strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.auth-helper-box p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

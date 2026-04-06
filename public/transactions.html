@@ -27,17 +27,18 @@
   <div class="transactions-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
-
-      <nav class="sidebar-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="service.html">Services</a>
-        <a href="orders.html">Orders</a>
-        <a href="wallet.html">Wallet</a>
-        <a href="transactions.html" class="active">Transactions</a>
-        <a href="api.html">API</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
-      </nav>
+         <nav class="sidebar-nav">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="service.html">Services</a>
+  <a href="Rent a number.html">Rent a Number</a>
+  <a href="orders.html">Orders</a>
+  <a href="wallet.html">Wallet</a>
+  <a href="transactions.html" class="active">Transactions</a>
+  <a href="ticket.html">Support Tickets</a>
+  <a href="contact.html">Contact Manager</a>
+  <a href="settings.html">Settings</a>
+  <a href="signin.html">Logout</a>
+</nav>
     </aside>
 
     <main class="main-content">
@@ -61,23 +62,23 @@
       <section class="transactions-overview reveal">
         <div class="overview-card highlight-card">
           <p>Total Transaction Value</p>
-          <h2 class="stat-number" >0</h2>
+          <h2 class="stat-number" id="transactionsTotalValue">0</h2>
           <span>All-time platform activity</span>
         </div>
 
         <div class="overview-card">
           <p>Credits</p>
-          <h3 class="stat-number" >0</h3>
+          <h3 class="stat-number" id="transactionsCreditsValue">0</h3>
         </div>
-
+        
         <div class="overview-card">
           <p>Debits</p>
-          <h3 class="stat-number" >0</h3>
+          <h3 class="stat-number" id="transactionsDebitsValue">0</h3>
         </div>
 
         <div class="overview-card">
           <p>Pending</p>
-          <h3 class="stat-number" >0</h3>
+          <h3 class="stat-number" id="transactionsPendingValue">0</h3>
         </div>
       </section>
 
@@ -118,7 +119,6 @@
                   <th>Date</th>
                 </tr>
               </thead>
-                
                             <tbody id="transactionsTableBody"></tbody>
             </table>
           </div>
@@ -139,19 +139,19 @@
             <div class="insight-list">
               <div class="insight-item">
                 <span>Highest funding</span>
-                <strong>$500.00</strong>
+                <strong id="transactionsHighestFunding">$0.00</strong>
               </div>
               <div class="insight-item">
                 <span>Most recent debit</span>
-                <strong>$25.00</strong>
+                <strong id="transactionsMostRecentDebit">$0.00</strong>
               </div>
               <div class="insight-item">
                 <span>Failed transactions</span>
-                <strong>1</strong>
+                <strong id="transactionsFailedCount">0</strong>
               </div>
               <div class="insight-item">
                 <span>Monthly volume</span>
-                <strong>$1,240.00</strong>
+                <strong id="transactionsMonthlyVolume">$0.00</strong>
               </div>
             </div>
           </div>
@@ -161,40 +161,18 @@
               <h2>Recent Alerts</h2>
             </div>
 
-            <div class="activity-list">
-              <div class="activity-item">
-                <div>
-                  <h4>Funding Confirmed</h4>
-                  <p>Bank transfer of $500 completed</p>
-                </div>
-                <span class="mini-badge success-text">Success</span>
-              </div>
-
-              <div class="activity-item">
-                <div>
-                  <h4>Payment Pending</h4>
-                  <p>API order payment is awaiting confirmation</p>
-                </div>
-                <span class="mini-badge pending-text">Pending</span>
-              </div>
-
-              <div class="activity-item">
-                <div>
-                  <h4>Failed Deposit</h4>
-                  <p>Crypto funding attempt was unsuccessful</p>
-                </div>
-                <span class="mini-badge failed-text">Failed</span>
-              </div>
-            </div>
+            <div class="activity-list" id="transactionsRecentAlerts"></div>
           </div>
         </div>
       </section>
     </main>
   </div>
+  <script type="module" src="/index.js/require-user.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>   
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/transaction.js"></script>
+  <script type="module" src="/index.js/transaction.js"></script>
 </body>
 </html>

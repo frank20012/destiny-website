@@ -3,9 +3,38 @@ import Service from "../models/service.js";
 import NumberInventory from "../models/NumberInventory.js";
 import Wallet from "../models/wallet.js";
 import Transaction from "../models/transaction.js";
+import { expireOrderIfNeeded, expireManyOrdersIfNeeded } from "../utils/expireOrders.js";
 
 const generateReference = () => {
   return `TRX-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+};
+export const getAdminOrders = async (req, res, next) => {
+  try {
+    const orders = await OtpOrder.find()
+      .populate("user", "email firstName lastName")
+      .populate("service", "name country")
+      .populate("numberInventory", "number")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Admin orders fetched successfully",
+      count: orders.length,
+      orders
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const normalizeText = (value = "") => String(value).trim().toLowerCase();
+
+const getExpectedServiceType = (category = "") => {
+  const normalizedCategory = normalizeText(category);
+
+  if (normalizedCategory === "voice") return "voice";
+  if (normalizedCategory === "sms") return "sms";
+
+  return "otp";
 };
 
 export const createOtpOrder = async (req, res, next) => {
@@ -29,22 +58,39 @@ export const createOtpOrder = async (req, res, next) => {
       throw new Error("Selected service is not active");
     }
 
-    const wallet = await Wallet.findOne({ user: req.user._id });
+    let wallet = await Wallet.findOne({ user: req.user._id });
 
     if (!wallet) {
-      res.status(404);
-      throw new Error("Wallet not found");
+      wallet = await Wallet.create({
+        user: req.user._id,
+        balance: 0,
+        currency: "USD",
+        status: "active"
+      });
     }
 
-    if (wallet.balance < service.price) {
+    const servicePrice = Number(service.price || 0);
+
+    if (wallet.balance < servicePrice) {
       res.status(400);
       throw new Error("Insufficient wallet balance");
     }
 
-    const availableNumber = await NumberInventory.findOne({
-      country: service.country,
-      serviceType: service.category === "voice" ? "voice" : "otp",
+    const expectedCountry = normalizeText(service.country);
+    const expectedServiceType = getExpectedServiceType(service.category);
+
+    const availableNumbers = await NumberInventory.find({
       status: "available"
+    });
+
+    const availableNumber = availableNumbers.find((numberItem) => {
+      const sameCountry =
+        normalizeText(numberItem.country) === expectedCountry;
+
+      const sameType =
+        normalizeText(numberItem.serviceType) === expectedServiceType;
+
+      return sameCountry && sameType;
     });
 
     if (!availableNumber) {
@@ -52,16 +98,18 @@ export const createOtpOrder = async (req, res, next) => {
       throw new Error("No available number for this service right now");
     }
 
-    wallet.balance -= service.price;
+    wallet.balance -= servicePrice;
     await wallet.save();
 
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    const rentalDurationHours = Number(service.durationHours || 2);
+const expiresAt = new Date(Date.now() + rentalDurationHours * 60 * 60 * 1000);
 
     const otpOrder = await OtpOrder.create({
       user: req.user._id,
       service: service._id,
       numberInventory: availableNumber._id,
-      price: service.price,
+      assignedNumber: availableNumber.number,
+      price: servicePrice,
       status: "active",
       expiresAt
     });
@@ -74,7 +122,7 @@ export const createOtpOrder = async (req, res, next) => {
       user: req.user._id,
       wallet: wallet._id,
       type: "debit",
-      amount: service.price,
+      amount: servicePrice,
       description: `OTP order payment for ${service.name}`,
       status: "completed",
       reference: generateReference()
@@ -97,10 +145,12 @@ export const createOtpOrder = async (req, res, next) => {
 
 export const getMyOtpOrders = async (req, res, next) => {
   try {
-    const orders = await OtpOrder.find({ user: req.user._id })
+    let orders = await OtpOrder.find({ user: req.user._id })
       .populate("service")
       .populate("numberInventory")
       .sort({ createdAt: -1 });
+
+    orders = await expireManyOrdersIfNeeded(orders);
 
     res.status(200).json({
       message: "Your OTP orders fetched successfully",
@@ -114,7 +164,7 @@ export const getMyOtpOrders = async (req, res, next) => {
 
 export const getSingleOtpOrder = async (req, res, next) => {
   try {
-    const order = await OtpOrder.findById(req.params.id)
+    let order = await OtpOrder.findById(req.params.id)
       .populate("service")
       .populate("numberInventory")
       .populate("user", "firstName lastName email");
@@ -132,6 +182,8 @@ export const getSingleOtpOrder = async (req, res, next) => {
       throw new Error("Not allowed to view this order");
     }
 
+    order = await expireOrderIfNeeded(order);
+
     res.status(200).json({
       message: "OTP order fetched successfully",
       order
@@ -140,7 +192,6 @@ export const getSingleOtpOrder = async (req, res, next) => {
     next(error);
   }
 };
-
 export const cancelOtpOrder = async (req, res, next) => {
   try {
     const order = await OtpOrder.findById(req.params.id).populate("service");
@@ -160,14 +211,18 @@ export const cancelOtpOrder = async (req, res, next) => {
       throw new Error("This order cannot be cancelled");
     }
 
-    const wallet = await Wallet.findOne({ user: req.user._id });
+    let wallet = await Wallet.findOne({ user: req.user._id });
 
     if (!wallet) {
-      res.status(404);
-      throw new Error("Wallet not found");
+      wallet = await Wallet.create({
+        user: req.user._id,
+        balance: 0,
+        currency: "USD",
+        status: "active"
+      });
     }
 
-    wallet.balance += order.price;
+    wallet.balance += Number(order.price || 0);
     await wallet.save();
 
     order.status = "cancelled";
@@ -184,7 +239,7 @@ export const cancelOtpOrder = async (req, res, next) => {
       user: req.user._id,
       wallet: wallet._id,
       type: "refund",
-      amount: order.price,
+      amount: Number(order.price || 0),
       description: `Refund for cancelled OTP order ${order._id}`,
       status: "completed",
       reference: generateReference()
@@ -201,11 +256,13 @@ export const cancelOtpOrder = async (req, res, next) => {
 };
 export const getAllOtpOrdersForAdmin = async (req, res, next) => {
   try {
-    const orders = await OtpOrder.find()
+    let orders = await OtpOrder.find()
       .populate("user", "firstName lastName email")
       .populate("service")
       .populate("numberInventory")
       .sort({ createdAt: -1 });
+
+    orders = await expireManyOrdersIfNeeded(orders);
 
     res.status(200).json({
       message: "Admin OTP orders fetched successfully",
@@ -248,7 +305,10 @@ export const updateOtpOrderStatusByAdmin = async (req, res, next) => {
 
     await order.save();
 
-    if ((status === "completed" || status === "cancelled" || status === "expired") && order.numberInventory) {
+    if (
+      (status === "completed" || status === "cancelled" || status === "expired") &&
+      order.numberInventory
+    ) {
       const number = await NumberInventory.findById(order.numberInventory._id);
 
       if (number) {

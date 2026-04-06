@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 import Wallet from "../models/wallet.js";
 import generateToken from "../utils/generateToken.js";
+import crypto from "crypto";
+import { sendEmail } from "../utils/sendEmail.js";
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const isStrongPassword = (password) =>
@@ -104,6 +106,116 @@ export const loginUser = async (req, res, next) => {
         role: user.role
       },
       token: generateToken(user._id)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      res.status(400);
+      throw new Error("Email is required");
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+    if (!user) {
+      res.status(404);
+      throw new Error("No account found with that email");
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 30);
+    await user.save();
+
+    const frontendUrl =
+      process.env.FRONTEND_URL || "http://127.0.0.1:5501/public";
+
+    const resetLink = `${frontendUrl}/reset-password.html?token=${resetToken}`;
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827;">
+        <h2>Reset your WaveAuth password</h2>
+        <p>Hello ${user.firstName || "User"},</p>
+        <p>You requested a password reset for your WaveAuth account.</p>
+        <p>Click the button below to reset your password:</p>
+        <p>
+          <a
+            href="${resetLink}"
+            style="
+              display:inline-block;
+              padding:12px 20px;
+              background:#2563eb;
+              color:#ffffff;
+              text-decoration:none;
+              border-radius:8px;
+              font-weight:600;
+            "
+          >
+            Reset Password
+          </a>
+        </p>
+        <p>This link will expire in 30 minutes.</p>
+        <p>If you did not request this, you can ignore this email.</p>
+        <p>WaveAuth</p>
+      </div>
+    `;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset your WaveAuth password",
+      html
+    });
+
+    res.status(200).json({
+      message: "Password reset link sent to your email successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      res.status(400);
+      throw new Error("Token and new password are required");
+    }
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      res.status(400);
+      throw new Error("Invalid or expired reset token");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    user.resetPasswordToken = "";
+    user.resetPasswordExpires = null;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Password reset successfully"
     });
   } catch (error) {
     next(error);

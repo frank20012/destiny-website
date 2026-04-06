@@ -22,6 +22,7 @@
         <a href="admin-orders.html" class="active"><span>Admin Orders</span></a>
         <a href="admin-transaction.html"><span>Admin Transactions</span></a>
         <a href="admin-services.html"><span>Admin Services</span></a>
+         <a href="admin-numbers.html"><span>Admin Numbers</span></a>
         <a href="admin-reports.html"><span>Admin Reports</span></a>
         <a href="admin-settings.html"><span>Admin Settings</span></a>
         <a href="admin-tickets.html"><span>Admin Tickets</span></a>
@@ -103,6 +104,8 @@
                   <th>Status</th>
                   <th>Price</th>
                   <th>OTP</th>
+                  <th>Expires</th>
+                  <th>Time left</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -121,11 +124,12 @@
       </section>
     </main>
   </div>
-
+ <script type="module" src="/index.js/require-admin.js"></script>
+ <script type="module" src="/index.js/session-ui.js"></script>
  <script src="/index.js/panel.js"></script>
 <script src="/index.js/loader.js"></script>
 <script src="/index.js/reveal.js"></script>
 <script src="/index.js/toast.js"></script>
-<script src="/index.js/admin-orders.js"></script> 
+<script type="module" src="/index.js/admin-orders.js"></script> 
 </body>
 </html>

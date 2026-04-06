@@ -15,15 +15,18 @@
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
       <nav class="sidebar-nav">
-        <a href="admin.html">Admin Overview</a>
-        <a href="admin-users.html">Users</a>
-        <a href="admin-orders.html">Admin Orders</a>
-        <a href="admin-transaction.html">Admin Transactions</a>
-        <a href="admin-services.html" class="active">Admin Services</a>
-        <a href="dashboard.html">User Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
-      </nav>
+  <a href="admin.html"><span>Admin Overview</span></a>
+  <a href="admin-users.html"><span>Users</span></a>
+  <a href="admin-orders.html"><span>Admin Orders</span></a>
+  <a href="admin-transactions.html"><span>Admin Transactions</span></a>
+  <a href="admin-services.html" class="active"><span>Admin Services</span></a>
+  <a href="admin-numbers.html"><span>Admin Numbers</span></a>
+  <a href="admin-reports.html"><span>Admin Reports</span></a>
+  <a href="admin-settings.html"><span>Admin Settings</span></a>
+  <a href="admin-tickets.html"><span>Admin Tickets</span></a>
+  <a href="dashboard.html"><span>User Dashboard</span></a>
+  <a href="signin.html"><span>Logout</span></a>
+</nav>
     </aside>
 
     <main class="main-content">
@@ -43,31 +46,28 @@
           </div>
         </div>
       </header>
+<section class="admin-overview-grid">
+  <div class="overview-card highlight-card card">
+    <p>Total Services</p>
+    <h2 class="stat-number" id="servicesTotalCount">0</h2>
+    <span>All available platform services</span>
+  </div>
 
-      <section class="admin-overview-grid reveal">
-        <div class="overview-card highlight-card card">
-          <p>Total Services</p>
-          <h2 class="stat-number" data-target="18">0</h2>
-          <span>All available platform services</span>
-        </div>
+  <div class="overview-card card">
+    <p>Active Services</p>
+    <h3 class="stat-number" id="servicesActiveCount">0</h3>
+  </div>
 
-        <div class="overview-card card">
-          <p>Active Services</p>
-          <h3 class="stat-number" data-target="15">0</h3>
-        </div>
+  <div class="overview-card card">
+    <p>Draft Services</p>
+    <h3 class="stat-number" id="servicesDraftCount">0</h3>
+  </div>
 
-        <div class="overview-card card">
-          <p>Draft Services</p>
-          <h3 class="stat-number" data-target="2">0</h3>
-        </div>
-
-        <div class="overview-card card">
-          <p>Disabled Services</p>
-          <h3 class="stat-number" data-target="1">0</h3>
-        </div>
-      </section>
-        
-        
+  <div class="overview-card card">
+    <p>Disabled Services</p>
+    <h3 class="stat-number" id="servicesDisabledCount">0</h3>
+  </div>
+</section>
        <div class="admin-form-card card" id="adminServiceFormCard" style="display: none;">
   <div class="form-card-head">
     <div>
@@ -195,9 +195,10 @@
       </section>
     </main>
   </div>
-
+ <script type="module" src="/index.js/require-admin.js"></script>
+ <script type="module" src="/index.js/session-ui.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/admin-services.js"></script>
+  <script type="module" src="/index.js/admin-services.js"></script>
 </body>
 </html>

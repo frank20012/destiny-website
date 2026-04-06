@@ -57,3 +57,16 @@ export const getAllUsersForAdmin = async (req, res, next) => {
     next(error);
   }
 };
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Users fetched successfully",
+      count: users.length,
+      users
+    });
+  } catch (error) {
+    next(error);
+  }
+};

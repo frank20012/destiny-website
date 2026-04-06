@@ -5,7 +5,8 @@ import {
   getAllUsersForAdmin,
   getMyProfile,
   getUsers,
-  updateMyProfile
+  updateMyProfile,
+  getAllUsers
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.get("/", getUsers);
 router.get("/me", protect, getMyProfile);
 router.patch("/me", protect, updateMyProfile);
 router.get("/admin/all", protect, adminOnly, getAllUsersForAdmin);
+router.get("/", protect, adminOnly, getAllUsers);
 
 export default router;

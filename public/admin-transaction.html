@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Transactions - WaveAuth</title>
-<link rel="stylesheet" href="/style.css/loader.css" />
-<link rel="stylesheet" href="/style.css/reveal.css" />
-<link rel="stylesheet" href="/style.css/toast.css" />
-<link rel="stylesheet" href="/style.css/panel.css" />
-<link rel="stylesheet" href="/style.css/admin-sub.css" />
+  <link rel="stylesheet" href="/style.css/loader.css" />
+  <link rel="stylesheet" href="/style.css/reveal.css" />
+  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
+  <link rel="stylesheet" href="/style.css/admin-sub.css" />
 </head>
 <body>
   <div class="sidebar-overlay"></div>
@@ -16,12 +16,14 @@
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
+
       <nav class="sidebar-nav">
         <a href="admin.html"><span>Admin Overview</span></a>
         <a href="admin-users.html"><span>Users</span></a>
         <a href="admin-orders.html"><span>Admin Orders</span></a>
         <a href="admin-transaction.html" class="active"><span>Admin Transactions</span></a>
         <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-numbers.html"><span>Admin Numbers</span></a>
         <a href="admin-reports.html"><span>Admin Reports</span></a>
         <a href="admin-settings.html"><span>Admin Settings</span></a>
         <a href="admin-tickets.html"><span>Admin Tickets</span></a>
@@ -124,11 +126,14 @@
       </section>
     </main>
   </div>
-    <script src="/index.js/panel.js"></script>
+
+  <script type="module" src="/index.js/require-admin.js"></script>
+  <script src="/index.js/config.js"></script>
+  <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/admin-transactions.js"></script>
-
+  <script type="module" src="/index.js/admin-transactions.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
 </body>
 </html>

@@ -14,7 +14,19 @@ export const getTransactions = async (req, res, next) => {
     next(error);
   }
 };
+export const getAdminTransactions = async (req, res, next) => {
+  try {
+    const transactions = await Transaction.find()
+      .populate("user", "email firstName lastName")
+      .sort({ createdAt: -1 });
 
+    res.status(200).json({
+      transactions
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const getAllTransactionsForAdmin = async (req, res, next) => {
   try {
     const transactions = await Transaction.find()

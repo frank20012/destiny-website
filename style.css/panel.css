@@ -36,6 +36,7 @@ body.dark-mode {
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
@@ -45,7 +46,17 @@ body {
     linear-gradient(135deg, var(--bg), var(--bg-soft));
   color: var(--text);
   min-height: 100vh;
+  overflow-x: hidden;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
 }
 
 .dashboard-layout,
@@ -53,13 +64,20 @@ body {
 .orders-layout,
 .transactions-layout,
 .api-layout,
-.settings-layout {
+.rent-layout,
+.settings-layout,
+.contact-layout,
+.admin-layout,
+.tickets-layout,
+.checkout-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
 }
 
 .sidebar {
+  width: 260px;
+  min-height: 100vh;
   background: var(--sidebar);
   border-right: 1px solid var(--border);
   padding: 28px 20px;
@@ -82,6 +100,7 @@ body {
 }
 
 .sidebar-nav a {
+  display: block;
   text-decoration: none;
   color: var(--muted);
   padding: 14px 16px;
@@ -96,14 +115,17 @@ body {
 }
 
 .main-content {
+  min-width: 0;
+  width: 100%;
   padding: 28px;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
+  flex-wrap: wrap;
   margin-bottom: 28px;
 }
 
@@ -119,34 +141,54 @@ body {
 .topbar-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
+/* UPDATED HEADER CONTROLS */
 .top-btn,
 .primary-btn,
 .icon-btn {
   border: none;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
-  padding: 12px 18px;
-  border-radius: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.3s ease;
+  max-width: 100%;
 }
+
 .top-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 10px 15px;
+  min-height: 42px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1;
 }
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  padding: 12px 18px;
+  border-radius: 14px;
+}
+
 .icon-btn {
-  padding: 12px 14px;
-  min-width: 46px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  border-radius: 12px;
   background: rgba(59, 130, 246, 0.12);
   color: var(--text);
   border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
 .top-btn:hover,
@@ -158,23 +200,34 @@ body {
 .profile-box {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: var(--card);
   border: 1px solid var(--border);
-  padding: 10px 14px;
-  border-radius: 14px;
+  padding: 7px 11px;
+  min-height: 42px;
+  border-radius: 12px;
   box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.profile-box span {
+  min-width: 0;
+  word-break: break-word;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   display: grid;
   place-items: center;
   font-weight: 700;
+  font-size: 13px;
   color: #fff;
+  flex-shrink: 0;
 }
 
 .card {
@@ -183,6 +236,7 @@ body {
   border-radius: 22px;
   backdrop-filter: blur(14px);
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .section-title {
@@ -228,6 +282,35 @@ body {
   color: #b91c1c;
 }
 
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  max-width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
+
 .mobile-menu-btn {
   display: none;
 }
@@ -236,13 +319,24 @@ body {
   display: none;
 }
 
+@media (max-width: 1200px) {
+  .main-content {
+    padding: 24px;
+  }
+}
+
 @media (max-width: 800px) {
   .dashboard-layout,
   .wallet-layout,
   .orders-layout,
   .transactions-layout,
   .api-layout,
-  .settings-layout {
+  .rent-layout,
+  .settings-layout,
+  .contact-layout,
+  .admin-layout,
+  .tickets-layout,
+  .checkout-layout {
     grid-template-columns: 1fr;
   }
 
@@ -285,16 +379,42 @@ body {
 }
 
 @media (max-width: 500px) {
+  html {
+    font-size: 15px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+
   .topbar h1 {
     font-size: 28px;
   }
 
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .topbar-actions {
     width: 100%;
+    gap: 8px;
+  }
+
+  .topbar-actions > * {
+    flex: 1 1 auto;
   }
 
   .profile-box {
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .icon-btn {
+    flex: 0 0 42px;
+  }
+
+  table {
+    min-width: 560px;
   }
 }

@@ -33,6 +33,11 @@ const serviceSchema = new mongoose.Schema(
       enum: ["sms", "voice"],
       default: "sms"
     },
+    durationHours: {
+      type: Number,
+      default: 2,
+      min: 1
+    },
     status: {
       type: String,
       enum: ["active", "draft", "disabled"],

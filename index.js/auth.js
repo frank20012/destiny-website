@@ -1,3 +1,5 @@
+import { saveAuth } from "./auth-storage.js";
+
 const API_BASE_URL = "http://localhost:5000";
 
 const signupForm = document.getElementById("signupForm");
@@ -84,8 +86,7 @@ if (signupForm) {
         throw new Error(data.message || "Registration failed");
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      saveAuth(data.token, data.user, true);
 
       showMessage("signupMessage", "Account created successfully.", "success");
 
@@ -106,6 +107,7 @@ if (signinForm) {
 
     const email = document.getElementById("signinEmail")?.value.trim();
     const password = document.getElementById("signinPassword")?.value.trim();
+    const rememberMe = document.getElementById("rememberMe")?.checked || false;
 
     if (!email || !password) {
       showMessage("signinMessage", "Email and password are required.");
@@ -135,8 +137,7 @@ if (signinForm) {
         throw new Error(data.message || "Login failed");
       }
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      saveAuth(data.token, data.user, rememberMe);
 
       showMessage("signinMessage", "Login successful.", "success");
 
@@ -146,7 +147,7 @@ if (signinForm) {
         } else {
           window.location.href = "dashboard.html";
         }
-      }, 1000);
+      }, 700);
     } catch (error) {
       showMessage("signinMessage", error.message || "Something went wrong.");
     }

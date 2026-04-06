@@ -1,5 +1,8 @@
 const API_BASE_URL = "http://localhost:5000";
-const token = localStorage.getItem("token");
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
+
+const token = getStoredToken();
+const user = getStoredUser();
 
 const adminTicketSearchInput = document.getElementById("adminTicketSearchInput");
 const adminTicketStatusFilter = document.getElementById("adminTicketStatusFilter");
@@ -29,8 +32,6 @@ const getStatusClass = (status) => {
   };
   return map[status] || "pending";
 };
-
-const formatPriority = (priority) => priority || "medium";
 
 const renderCounts = () => {
   const openCount = allAdminTickets.filter((t) => t.status === "open").length;
@@ -64,13 +65,30 @@ const renderAdminTicketsPage = () => {
       <td>${ticket.subject}</td>
       <td>${ticket.category}</td>
       <td><span class="status ${getStatusClass(ticket.status)}">${ticket.status}</span></td>
-      <td><span class="priority ${formatPriority(ticket.priority)}">${ticket.priority}</span></td>
+      <td>${ticket.adminReply || "-"}</td>
       <td>
-        <select class="ticket-status-select" data-id="${ticket._id}">
-          <option value="open" ${ticket.status === "open" ? "selected" : ""}>Open</option>
-          <option value="review" ${ticket.status === "review" ? "selected" : ""}>Review</option>
-          <option value="resolved" ${ticket.status === "resolved" ? "selected" : ""}>Resolved</option>
-        </select>
+        <div class="admin-order-action-box">
+          <select class="ticket-status-select" data-id="${ticket._id}">
+            <option value="open" ${ticket.status === "open" ? "selected" : ""}>Open</option>
+            <option value="review" ${ticket.status === "review" ? "selected" : ""}>Review</option>
+            <option value="resolved" ${ticket.status === "resolved" ? "selected" : ""}>Resolved</option>
+          </select>
+
+          <textarea
+            class="ticket-reply-input"
+            data-id="${ticket._id}"
+            placeholder="Write reply..."
+            rows="3"
+          >${ticket.adminReply || ""}</textarea>
+
+          <button
+            type="button"
+            class="save-ticket-update-btn"
+            data-id="${ticket._id}"
+          >
+            Save
+          </button>
+        </div>
       </td>
     `;
 
@@ -97,7 +115,7 @@ const renderAdminTicketsPage = () => {
     adminTicketsPagination.style.display = filteredAdminTickets.length === 0 ? "none" : "flex";
   }
 
-  bindStatusChangeEvents();
+  bindTicketEvents();
 };
 
 const filterAdminTickets = () => {
@@ -105,7 +123,7 @@ const filterAdminTickets = () => {
   const statusValue = adminTicketStatusFilter?.value || "all";
 
   filteredAdminTickets = allAdminTickets.filter((ticket) => {
-    const text = `${ticket.subject} ${ticket.category} ${ticket.user?.firstName || ""} ${ticket.user?.lastName || ""}`.toLowerCase();
+    const text = `${ticket.subject} ${ticket.category} ${ticket.user?.firstName || ""} ${ticket.user?.lastName || ""} ${ticket.adminReply || ""}`.toLowerCase();
     const matchesSearch = text.includes(searchValue);
     const matchesStatus = statusValue === "all" || ticket.status === statusValue;
     return matchesSearch && matchesStatus;
@@ -127,7 +145,7 @@ const fetchAdminTickets = async () => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/tickets/admin/all`, {
+    const response = await fetch(`${API_BASE_URL}/api/tickets`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -157,15 +175,18 @@ const fetchAdminTickets = async () => {
   }
 };
 
-const updateTicketStatus = async (ticketId, status) => {
+const updateTicket = async (ticketId, status, adminReply) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/tickets/${ticketId}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({
+        status,
+        adminReply
+      })
     });
 
     const data = await response.json();
@@ -175,7 +196,7 @@ const updateTicketStatus = async (ticketId, status) => {
     }
 
     if (typeof showToast === "function") {
-      showToast("success", "Ticket updated", "Ticket status updated successfully.");
+      showToast("success", "Ticket updated", "Ticket updated successfully.");
     }
 
     await fetchAdminTickets();
@@ -186,12 +207,18 @@ const updateTicketStatus = async (ticketId, status) => {
   }
 };
 
-const bindStatusChangeEvents = () => {
-  document.querySelectorAll(".ticket-status-select").forEach((select) => {
-    select.addEventListener("change", () => {
-      const ticketId = select.dataset.id;
-      const status = select.value;
-      updateTicketStatus(ticketId, status);
+const bindTicketEvents = () => {
+  document.querySelectorAll(".save-ticket-update-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const ticketId = button.dataset.id;
+
+      const statusSelect = document.querySelector(`.ticket-status-select[data-id="${ticketId}"]`);
+      const replyInput = document.querySelector(`.ticket-reply-input[data-id="${ticketId}"]`);
+
+      const status = statusSelect ? statusSelect.value : "open";
+      const adminReply = replyInput ? replyInput.value.trim() : "";
+
+      updateTicket(ticketId, status, adminReply);
     });
   });
 };

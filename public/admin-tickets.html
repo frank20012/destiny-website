@@ -18,8 +18,9 @@
         <a href="admin.html"><span>Admin Overview</span></a>
         <a href="admin-users.html"><span>Users</span></a>
         <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transaction.html"><span>Admin Transactions</span></a>
+        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
         <a href="admin-services.html"><span>Admin Services</span></a>
+        <a href="admin-numbers.html"><span>Admin Numbers</span></a>
         <a href="admin-reports.html"><span>Admin Reports</span></a>
         <a href="admin-settings.html"><span>Admin Settings</span></a>
         <a href="admin-tickets.html" class="active"><span>Admin Tickets</span></a>
@@ -74,7 +75,7 @@
           <div class="table-header">
             <div>
               <h2>Tickets List</h2>
-              <p>Search, filter, and update ticket status</p>
+              <p>Search, filter, and reply to tickets</p>
             </div>
 
             <div class="table-actions">
@@ -97,7 +98,7 @@
                   <th>Subject</th>
                   <th>Category</th>
                   <th>Status</th>
-                  <th>Priority</th>
+                  <th>Reply</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -117,8 +118,11 @@
     </main>
   </div>
 
+  <script type="module" src="/index.js/require-admin.js"></script>
+  <script src="/index.js/config.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/admin-ticket.js"></script>
+  <script type="module" src="/index.js/admin-ticket.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
 </body>
 </html>

@@ -1,14 +1,30 @@
 const API_BASE_URL = "http://localhost:5000";
-const token = localStorage.getItem("token");
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
+
+const token = getStoredToken();
+const user = getStoredUser();
 
 const ticketForm = document.getElementById("ticketForm");
 const ticketSubject = document.getElementById("ticketSubject");
 const ticketCategory = document.getElementById("ticketCategory");
-const ticketPriority = document.getElementById("ticketPriority");
-const ticketReference = document.getElementById("ticketReference");
 const ticketMessage = document.getElementById("ticketMessage");
 const ticketMessageBox = document.getElementById("ticketMessageBox");
-const ticketsTableBody = document.getElementById("ticketsTableBody");
+const ticketList = document.getElementById("ticketList");
+
+const getStatusClass = (status) => {
+  const map = {
+    open: "pending",
+    review: "processing",
+    resolved: "completed"
+  };
+  return map[status] || "pending";
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};
 
 const showMessage = (text, type = "error") => {
   if (!ticketMessageBox) return;
@@ -22,76 +38,53 @@ const clearMessage = () => {
   ticketMessageBox.className = "form-message";
 };
 
-const getStatusClass = (status) => {
-  const map = {
-    open: "pending",
-    review: "processing",
-    resolved: "completed"
-  };
-  return map[status] || "pending";
-};
-
-const getPriorityClass = (priority) => {
-  return priority || "medium";
-};
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString();
-};
-
 const renderTickets = (tickets) => {
-  if (!ticketsTableBody) return;
+  if (!ticketList) return;
 
   if (!tickets.length) {
-    ticketsTableBody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center; color: var(--muted);">No tickets found.</td>
-      </tr>
+    ticketList.innerHTML = `
+      <div class="ticket-item">
+        <div>
+          <h4>No tickets yet</h4>
+          <p>Your submitted tickets will appear here.</p>
+        </div>
+      </div>
     `;
     return;
   }
 
-  ticketsTableBody.innerHTML = "";
+  ticketList.innerHTML = "";
 
   tickets.forEach((ticket) => {
-    const tr = document.createElement("tr");
+    const item = document.createElement("div");
+    item.className = "ticket-item";
 
-    tr.innerHTML = `
-      <td>#${ticket._id.slice(-6).toUpperCase()}</td>
-      <td>${ticket.subject}</td>
-      <td>${ticket.category}</td>
-      <td><span class="status ${getStatusClass(ticket.status)}">${ticket.status}</span></td>
-      <td><span class="priority ${getPriorityClass(ticket.priority)}">${ticket.priority}</span></td>
-      <td>${formatDate(ticket.createdAt)}</td>
+    item.innerHTML = `
+      <div class="ticket-top">
+        <div>
+          <h4>${ticket.subject}</h4>
+          <p>${ticket.category} • ${formatDate(ticket.createdAt)}</p>
+        </div>
+        <span class="status ${getStatusClass(ticket.status)}">${ticket.status}</span>
+      </div>
+
+      <div class="ticket-body">
+        <p>${ticket.message}</p>
+      </div>
+
+      <div class="ticket-reply-box">
+        <strong>Admin Reply</strong>
+        <p>${ticket.adminReply || "No reply yet."}</p>
+      </div>
     `;
 
-    ticketsTableBody.appendChild(tr);
+    ticketList.appendChild(item);
   });
 };
 
 const fetchTickets = async () => {
-  if (!token) {
-    if (ticketsTableBody) {
-      ticketsTableBody.innerHTML = `
-        <tr>
-          <td colspan="6" style="text-align:center; color: var(--muted);">Please sign in to view tickets.</td>
-        </tr>
-      `;
-    }
-    return;
-  }
-
-  if (ticketsTableBody) {
-    ticketsTableBody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center; color: var(--muted);">Loading tickets...</td>
-      </tr>
-    `;
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/tickets`, {
+    const response = await fetch(`${API_BASE_URL}/api/tickets/me`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -105,13 +98,7 @@ const fetchTickets = async () => {
 
     renderTickets(data.tickets || []);
   } catch (error) {
-    if (ticketsTableBody) {
-      ticketsTableBody.innerHTML = `
-        <tr>
-          <td colspan="6" style="text-align:center; color: #ef4444;">${error.message || "Could not load tickets."}</td>
-        </tr>
-      `;
-    }
+    showMessage(error.message || "Could not load tickets.");
   }
 };
 
@@ -120,19 +107,14 @@ if (ticketForm) {
     e.preventDefault();
     clearMessage();
 
-    if (!token) {
-      showMessage("Please sign in first.");
-      return;
-    }
+    const payload = {
+      subject: ticketSubject?.value.trim(),
+      category: ticketCategory?.value,
+      message: ticketMessage?.value.trim()
+    };
 
-    const subject = ticketSubject?.value.trim();
-    const category = ticketCategory?.value;
-    const priority = ticketPriority?.value || "medium";
-    const referenceId = ticketReference?.value.trim() || "";
-    const message = ticketMessage?.value.trim();
-
-    if (!subject || !category || !message) {
-      showMessage("Subject, category, and message are required.");
+    if (!payload.subject || !payload.message) {
+      showMessage("Subject and message are required.");
       return;
     }
 
@@ -143,13 +125,7 @@ if (ticketForm) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          subject,
-          category,
-          priority,
-          referenceId,
-          message
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
@@ -158,12 +134,12 @@ if (ticketForm) {
         throw new Error(data.message || "Failed to create ticket");
       }
 
-      showMessage("Ticket submitted successfully.", "success");
       ticketForm.reset();
+      showMessage("Ticket submitted successfully.", "success");
       await fetchTickets();
 
       if (typeof showToast === "function") {
-        showToast("success", "Ticket created", "Your support ticket was submitted successfully.");
+        showToast("success", "Ticket submitted", "Support has received your message.");
       }
     } catch (error) {
       showMessage(error.message || "Something went wrong.");

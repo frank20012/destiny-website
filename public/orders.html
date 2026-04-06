@@ -12,31 +12,34 @@
 </head>
 <body>
   <div class="loader-wrapper">
-  <div class="loader-box">
-    <div class="loader-logo">W</div>
-    <div class="loader-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loader-text">Loading WaveAuth...</div>
     </div>
-    <div class="loader-text">Loading WaveAuth...</div>
   </div>
-</div>
+
   <div class="orders-layout">
     <div class="sidebar-overlay"></div>
+
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
-
-      <nav class="sidebar-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="service.html">Services</a>
-        <a href="orders.html" class="active">Orders</a>
-        <a href="wallet.html">Wallet</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="api.html">API</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
-      </nav>
+        <nav class="sidebar-nav">
+  <a href="dashboard.html">Dashboard</a>
+  <a href="service.html">Services</a>
+  <a href="Rent a number.html">Rent a Number</a>
+  <a href="orders.html" class="active">Orders</a>
+  <a href="wallet.html">Wallet</a>
+  <a href="transactions.html">Transactions</a>
+  <a href="ticket.html">Support Tickets</a>
+  <a href="contact.html">Contact Manager</a>
+  <a href="settings.html">Settings</a>
+  <a href="signin.html">Logout</a>
+</nav>
     </aside>
 
     <main class="main-content">
@@ -51,8 +54,8 @@
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
           <a href="service.html" class="top-btn">Place New Order</a>
           <div class="profile-box">
-            <div class="avatar">F</div>
-            <span>Franklyn</span>
+            <div class="avatar">U</div>
+            <span>User</span>
           </div>
         </div>
       </header>
@@ -60,23 +63,23 @@
       <section class="orders-overview reveal">
         <div class="overview-card highlight-card">
           <p>Total Orders</p>
-          <h2 class="stat-number">0</h2>
+          <h2 class="stat-number" id="ordersTotalCount">0</h2>
           <span>Across all service categories</span>
         </div>
 
         <div class="overview-card">
           <p>Completed</p>
-          <h3 class="stat-number" >0</h3>
+          <h3 class="stat-number" id="ordersCompletedCount">0</h3>
         </div>
 
         <div class="overview-card">
           <p>Pending</p>
-          <h3 class="stat-number" >0</h3>
+          <h3 class="stat-number" id="ordersPendingCount">0</h3>
         </div>
 
         <div class="overview-card">
           <p>Processing</p>
-          <h3 class="stat-number">0</h3>
+          <h3 class="stat-number" id="ordersProcessingCount">0</h3>
         </div>
       </section>
 
@@ -107,21 +110,27 @@
                 <tr>
                   <th>Order ID</th>
                   <th>Service</th>
-                  <th>Category</th>
+                  <th>Assigned Number</th>
                   <th>Status</th>
+                  <th>OTP Code</th>
+                  <!-- <th>Country</th> -->
+                  <th>Expires At</th>
+                  <th>Time left</th>
                   <th>Amount</th>
                   <th>Date</th>
                 </tr>
-              </thead>         
+              </thead>
               <tbody id="ordersTableBody"></tbody>
             </table>
           </div>
+
           <p class="table-empty-message" id="ordersEmptyMessage">No matching orders found.</p>
+
           <div class="table-pagination" id="ordersPagination">
-  <button type="button" id="ordersPrevBtn">Previous</button>
-  <span id="ordersPageInfo">Page 1 of 1</span>
-  <button type="button" id="ordersNextBtn">Next</button>
-</div>
+            <button type="button" id="ordersPrevBtn">Previous</button>
+            <span id="ordersPageInfo">Page 1 of 1</span>
+            <button type="button" id="ordersNextBtn">Next</button>
+          </div>
         </div>
 
         <div class="side-panel">
@@ -130,31 +139,7 @@
               <h2>Recent Activity</h2>
             </div>
 
-            <div class="activity-list">
-              <div class="activity-item">
-                <div>
-                  <h4>Order #ORD-1002</h4>
-                  <p>Marked as pending</p>
-                </div>
-                <span class="mini-badge pending-text">Pending</span>
-              </div>
-
-              <div class="activity-item">
-                <div>
-                  <h4>Order #ORD-1003</h4>
-                  <p>Currently processing</p>
-                </div>
-                <span class="mini-badge processing-text">Processing</span>
-              </div>
-
-              <div class="activity-item">
-                <div>
-                  <h4>Order #ORD-1004</h4>
-                  <p>Completed successfully</p>
-                </div>
-                <span class="mini-badge success-text">Done</span>
-              </div>
-            </div>
+            <div class="activity-list" id="ordersRecentActivity"></div>
           </div>
 
           <div class="summary-card card">
@@ -165,22 +150,22 @@
             <div class="summary-list">
               <div class="summary-item">
                 <span>Most used service</span>
-                <strong>Growth Plan</strong>
+                <strong id="ordersMostUsedService">-</strong>
               </div>
 
               <div class="summary-item">
                 <span>Last completed</span>
-                <strong>#ORD-1004</strong>
+                <strong id="ordersLastCompleted">-</strong>
               </div>
 
               <div class="summary-item">
                 <span>Pending value</span>
-                <strong>$85.00</strong>
+                <strong id="ordersPendingValue">$0.00</strong>
               </div>
 
               <div class="summary-item">
                 <span>Success rate</span>
-                <strong>94%</strong>
+                <strong id="ordersSuccessRate">0%</strong>
               </div>
             </div>
           </div>
@@ -188,10 +173,12 @@
       </section>
     </main>
   </div>
+  <script type="module" src="/index.js/require-user.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/order.js"></script>
+  <script type="module" src="/index.js/order.js"></script>
 </body>
 </html>

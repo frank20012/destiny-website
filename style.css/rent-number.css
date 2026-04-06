@@ -1,0 +1,97 @@
+.rent-hero {
+  margin-bottom: 24px;
+}
+
+.hero-card {
+  padding: 24px;
+}
+
+.hero-card h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.hero-card p {
+  color: var(--muted);
+}
+
+.rent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.rent-card {
+  padding: 20px;
+}
+
+.rent-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.rent-tag {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(59,130,246,0.14);
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rent-card h3 {
+  margin-bottom: 10px;
+}
+
+.rent-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.rent-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 18px;
+}
+
+.rent-meta span {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+}
+
+.rent-btn {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.table-empty-message {
+  display: none;
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .rent-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .rent-grid {
+    grid-template-columns: 1fr;
+  }
+}

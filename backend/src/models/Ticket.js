@@ -12,35 +12,24 @@ const ticketSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-    category: {
-      type: String,
-      enum: ["orders", "wallet", "transactions", "account", "api"],
-      required: true
-    },
-    priority: {
-      type: String,
-      enum: ["low", "medium", "high"],
-      default: "medium"
-    },
-    referenceId: {
-      type: String,
-      default: "",
-      trim: true
-    },
     message: {
       type: String,
       required: true,
       trim: true
+    },
+    category: {
+      type: String,
+      enum: ["general", "order", "wallet", "technical"],
+      default: "general"
     },
     status: {
       type: String,
       enum: ["open", "review", "resolved"],
       default: "open"
     },
-    adminNote: {
+    adminReply: {
       type: String,
-      default: "",
-      trim: true
+      default: ""
     }
   },
   {

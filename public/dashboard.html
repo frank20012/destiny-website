@@ -12,17 +12,19 @@
 </head>
 <body>
   <div class="loader-wrapper">
-  <div class="loader-box">
-    <div class="loader-logo">W</div>
-    <div class="loader-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loader-text">Loading WaveAuth...</div>
     </div>
-    <div class="loader-text">Loading WaveAuth...</div>
   </div>
-</div>
+
   <div class="sidebar-overlay"></div>
+
   <div class="dashboard-layout">
     <aside class="sidebar">
       <div class="sidebar-logo">WaveAuth</div>
@@ -34,7 +36,7 @@
         <a href="orders.html">Orders</a>
         <a href="wallet.html">Wallet</a>
         <a href="transactions.html">Transactions</a>
-        <a href="api.html">API Connection</a>
+        <a href="ticket.html">Support Tickets</a>
         <a href="contact.html">Contact Manager</a>
         <a href="settings.html">Settings</a>
         <a href="signin.html">Logout</a>
@@ -51,7 +53,7 @@
         <div class="topbar-actions">
           <button class="icon-btn mobile-menu-btn" type="button">☰</button>
           <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn">Fund Wallet</button>
+          <a href="wallet.html" class="top-btn">Fund Wallet</a>
           <div class="profile-box">
             <div class="avatar">U</div>
             <span>User</span>
@@ -62,7 +64,7 @@
       <section class="overview-grid reveal">
         <div class="balance-card card">
           <p>Available Balance</p>
-          <h2 class="stat-number" data-prefix="$" data-decimals="2" id="dashboardWalletBalance">$0.00</h2>
+          <h2 class="stat-number" id="dashboardWalletBalance">$0.00</h2>
           <span>Updated just now</span>
         </div>
 
@@ -78,7 +80,7 @@
 
         <div class="mini-card card">
           <p>API Status</p>
-          <h3 id="dashboardApiStatus">Enabled</h3>
+          <h3 id="dashboardApiStatus">Connected</h3>
         </div>
       </section>
 
@@ -107,9 +109,9 @@
           </div>
 
           <div class="action-card card">
-            <h3>API Access</h3>
-            <p>Manage keys and access integration tools.</p>
-            <a href="api.html">Manage API</a>
+            <h3>Contact Support</h3>
+            <p>Submit a ticket and get help from support.</p>
+            <a href="ticket.html">Open Tickets</a>
           </div>
         </div>
       </section>
@@ -133,10 +135,14 @@
       </section>
     </main>
   </div>
+
+  <script type="module" src="/index.js/require-user.js"></script>
+  <script src="/index.js/config.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/dashboard.js"></script>
+  <script type="module" src="/index.js/dashboard.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
 </body>
 </html>

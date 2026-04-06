@@ -1,6 +1,8 @@
-const API_BASE_URL = "http://localhost:5000";
-const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user") || "null");
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
+
+const API_BASE_URL = CONFIG.API_BASE_URL;
+const token = getStoredToken();
+const user = getStoredUser();
 
 const dashboardWalletBalance = document.getElementById("dashboardWalletBalance");
 const dashboardOrdersCount = document.getElementById("dashboardOrdersCount");
@@ -11,11 +13,6 @@ const dashboardRecentOrders = document.getElementById("dashboardRecentOrders");
 const dashboardRecentTransactions = document.getElementById("dashboardRecentTransactions");
 
 const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString();
-};
 
 const getStatusClass = (status) => {
   const map = {
@@ -34,6 +31,34 @@ const getStatusClass = (status) => {
 
 const getAmountPrefix = (type) => {
   return type === "credit" || type === "refund" ? "+" : "-";
+};
+
+const formatDate = (dateString) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};
+
+const getTimeLeft = (order) => {
+  if (!order.expiresAt) return "";
+
+  if (order.status === "expired") return "Expired";
+  if (order.status === "completed") return "Completed";
+  if (order.status === "cancelled") return "Cancelled";
+
+  const now = new Date();
+  const expiresAt = new Date(order.expiresAt);
+  const diffMs = expiresAt - now;
+
+  if (diffMs <= 0) return "Expired";
+
+  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours <= 0) return `${minutes}m left`;
+
+  return `${hours}h ${minutes}m left`;
 };
 
 const renderRecentOrders = (orders) => {
@@ -60,7 +85,10 @@ const renderRecentOrders = (orders) => {
     item.innerHTML = `
       <div>
         <h4>${order.service?.name || "Unknown Service"}</h4>
-        <p>${order.numberInventory?.number || "No number yet"} • ${formatDate(order.createdAt)}</p>
+        <p>
+          ${order.assignedNumber || order.numberInventory?.number || "No number yet"} •
+          ${getTimeLeft(order) || formatDate(order.createdAt)}
+        </p>
       </div>
       <span class="mini-badge ${getStatusClass(order.status)}">${order.status}</span>
     `;
@@ -93,7 +121,7 @@ const renderRecentTransactions = (transactions) => {
     item.innerHTML = `
       <div>
         <h4>${transaction.description || "Transaction"}</h4>
-        <p>${transaction.reference} • ${formatDate(transaction.createdAt)}</p>
+        <p>${transaction.reference || "-"} • ${formatDate(transaction.createdAt)}</p>
       </div>
       <span class="mini-badge ${getStatusClass(transaction.status)}">
         ${getAmountPrefix(transaction.type)}${formatPrice(transaction.amount)}

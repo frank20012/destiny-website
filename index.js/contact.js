@@ -1,4 +1,7 @@
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
 
+const token = getStoredToken();
+const user = getStoredUser();
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
     contactForm.addEventListener("submit", (e) => {

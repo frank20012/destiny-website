@@ -17,6 +17,10 @@ const otpOrderSchema = new mongoose.Schema(
       ref: "NumberInventory",
       required: true
     },
+    assignedNumber: {
+      type: String,
+      default: "",
+    },
     price: {
       type: Number,
       required: true,

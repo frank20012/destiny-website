@@ -2,20 +2,18 @@ import Ticket from "../models/Ticket.js";
 
 export const createTicket = async (req, res, next) => {
   try {
-    const { subject, category, priority, referenceId, message } = req.body;
+    const { subject, message, category } = req.body;
 
-    if (!subject || !category || !message) {
+    if (!subject || !message) {
       res.status(400);
-      throw new Error("Subject, category, and message are required");
+      throw new Error("Subject and message are required");
     }
 
     const ticket = await Ticket.create({
       user: req.user._id,
-      subject,
-      category,
-      priority,
-      referenceId,
-      message
+      subject: subject.trim(),
+      message: message.trim(),
+      category: category || "general"
     });
 
     res.status(201).json({
@@ -41,8 +39,26 @@ export const getMyTickets = async (req, res, next) => {
   }
 };
 
-export const getSingleTicket = async (req, res, next) => {
+export const getAllTickets = async (req, res, next) => {
   try {
+    const tickets = await Ticket.find()
+      .populate("user", "firstName lastName email")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Admin tickets fetched successfully",
+      count: tickets.length,
+      tickets
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateTicket = async (req, res, next) => {
+  try {
+    const { status, adminReply } = req.body;
+
     const ticket = await Ticket.findById(req.params.id).populate(
       "user",
       "firstName lastName email"
@@ -53,56 +69,19 @@ export const getSingleTicket = async (req, res, next) => {
       throw new Error("Ticket not found");
     }
 
-    if (
-      ticket.user._id.toString() !== req.user._id.toString() &&
-      req.user.role !== "admin"
-    ) {
-      res.status(403);
-      throw new Error("Not allowed to view this ticket");
-    }
+    const allowedStatuses = ["open", "review", "resolved"];
 
-    res.status(200).json({
-      message: "Ticket fetched successfully",
-      ticket
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getAllTicketsForAdmin = async (req, res, next) => {
-  try {
-    const tickets = await Ticket.find()
-      .populate("user", "firstName lastName email")
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({
-      message: "All tickets fetched successfully",
-      count: tickets.length,
-      tickets
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateTicketStatus = async (req, res, next) => {
-  try {
-    const { status, adminNote } = req.body;
-
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      res.status(404);
-      throw new Error("Ticket not found");
+    if (status && !allowedStatuses.includes(status)) {
+      res.status(400);
+      throw new Error("Invalid ticket status");
     }
 
     if (status) {
       ticket.status = status;
     }
 
-    if (adminNote !== undefined) {
-      ticket.adminNote = adminNote;
+    if (adminReply !== undefined) {
+      ticket.adminReply = adminReply.trim();
     }
 
     await ticket.save();

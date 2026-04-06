@@ -1,5 +1,9 @@
 const API_BASE_URL = "http://localhost:5000";
-const token = localStorage.getItem("token");
+import { getStoredToken, getStoredUser } from "./auth-storage.js";
+
+
+const token = getStoredToken();
+const user = getStoredUser();
 
 const refreshReportsBtn = document.getElementById("refreshReportsBtn");
 
