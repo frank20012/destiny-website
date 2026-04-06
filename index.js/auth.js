@@ -1,6 +1,6 @@
 import { saveAuth } from "./auth-storage.js";
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const signupForm = document.getElementById("signupForm");
 const signinForm = document.getElementById("signinForm");

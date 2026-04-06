@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const rentNumberGrid = document.getElementById("rentNumberGrid");
 const rentNumberEmptyMessage = document.getElementById("rentNumberEmptyMessage");

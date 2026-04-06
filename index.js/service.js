@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const filterButtons = document.querySelectorAll(".filter-btn");
 const servicesGrid = document.getElementById("servicesGrid");
