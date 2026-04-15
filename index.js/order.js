@@ -1,277 +1,311 @@
 const API_BASE_URL = CONFIG.API_BASE_URL;
-import { getStoredToken, getStoredUser } from "./auth-storage.js";
 
-const token = getStoredToken();
-const user = getStoredUser();
-
-const orderSearchInput = document.getElementById("orderSearchInput");
-const orderStatusFilter = document.getElementById("orderStatusFilter");
-const ordersTableBody = document.getElementById("ordersTableBody");
-const ordersEmptyMessage = document.getElementById("ordersEmptyMessage");
-const ordersPrevBtn = document.getElementById("ordersPrevBtn");
-const ordersNextBtn = document.getElementById("ordersNextBtn");
-const ordersPageInfo = document.getElementById("ordersPageInfo");
-const ordersPagination = document.getElementById("ordersPagination");
+const ordersContainer = document.getElementById("ordersContainer");
+const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
 
 const ordersTotalCount = document.getElementById("ordersTotalCount");
+const ordersActiveCount = document.getElementById("ordersActiveCount");
 const ordersCompletedCount = document.getElementById("ordersCompletedCount");
-const ordersPendingCount = document.getElementById("ordersPendingCount");
-const ordersProcessingCount = document.getElementById("ordersProcessingCount");
+const ordersClosedCount = document.getElementById("ordersClosedCount");
 
-const ordersRecentActivity = document.getElementById("ordersRecentActivity");
-const ordersMostUsedService = document.getElementById("ordersMostUsedService");
-const ordersLastCompleted = document.getElementById("ordersLastCompleted");
-const ordersPendingValue = document.getElementById("ordersPendingValue");
-const ordersSuccessRate = document.getElementById("ordersSuccessRate");
+let orders = [];
 
-const ORDERS_PER_PAGE = 6;
-let ordersCurrentPage = 1;
-let allOrders = [];
-let filteredOrders = [];
-
-const formatPrice = (price) => `$${Number(price || 0).toFixed(2)}`;
+const getToken = () => localStorage.getItem("token");
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
   const date = new Date(dateString);
-  return date.toLocaleDateString();
+  return date.toLocaleString();
 };
 
-const formatDateTime = (dateString) => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+const formatMoney = (value) => `₦${Number(value || 0).toLocaleString("en-NG", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+})}`;
+
+const getStatusLabel = (status) => {
+  if (!status) return "pending";
+  return String(status).toLowerCase();
 };
 
-const getStatusClass = (status) => {
-  const map = {
-    pending: "pending",
-    active: "processing",
-    completed: "completed",
-    cancelled: "cancelled",
-    expired: "cancelled"
-  };
-
-  return map[status] || "pending";
+const getOrderType = (order) => {
+  if (order.provider === "smspool") return "rent";
+  return "otp";
 };
 
-const getTimeLeft = (order) => {
-  if (!order.expiresAt) return "-";
+const getOrderTypeLabel = (order) => {
+  return getOrderType(order) === "rent" ? "Rent Order" : "OTP Order";
+};
 
-  if (order.status === "expired") return "Expired";
-  if (order.status === "completed") return "Completed";
-  if (order.status === "cancelled") return "Cancelled";
+const getOrderProgressText = (order) => {
+  const status = getStatusLabel(order.status);
+  const type = getOrderType(order);
 
-  const now = new Date();
-  const expiresAt = new Date(order.expiresAt);
-  const diffMs = expiresAt - now;
-
-  if (diffMs <= 0) return "Expired";
-
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-
-  if (hours <= 0) {
-    return `${minutes}m left`;
+  if (status === "completed") return "OTP received successfully.";
+  if (status === "cancelled") return "Order cancelled.";
+  if (status === "expired") return "Order expired.";
+  if (status === "failed") return "Order failed.";
+  if (status === "active") {
+    return type === "rent"
+      ? "Waiting for SMSPool update or incoming OTP."
+      : "Waiting for OTP from provider.";
   }
-
-  return `${hours}h ${minutes}m left`;
+  return "Preparing order...";
 };
 
-const renderOrdersSummary = () => {
-  const totalOrders = allOrders.length;
-  const completedOrders = allOrders.filter((order) => order.status === "completed");
-  const pendingOrders = allOrders.filter((order) => order.status === "pending");
-  const processingOrders = allOrders.filter((order) => order.status === "active");
+const renderCounts = () => {
+  const active = orders.filter(
+    (order) => ["active", "pending"].includes(getStatusLabel(order.status))
+  ).length;
 
-  if (ordersTotalCount) ordersTotalCount.textContent = totalOrders;
-  if (ordersCompletedCount) ordersCompletedCount.textContent = completedOrders.length;
-  if (ordersPendingCount) ordersPendingCount.textContent = pendingOrders.length;
-  if (ordersProcessingCount) ordersProcessingCount.textContent = processingOrders.length;
+  const completed = orders.filter(
+    (order) => getStatusLabel(order.status) === "completed"
+  ).length;
 
-  let pendingValue = 0;
-  pendingOrders.forEach((order) => {
-    pendingValue += Number(order.price || 0);
-  });
+  const closed = orders.filter(
+    (order) => ["cancelled", "expired", "failed"].includes(getStatusLabel(order.status))
+  ).length;
 
-  if (ordersPendingValue) ordersPendingValue.textContent = formatPrice(pendingValue);
+  if (ordersTotalCount) ordersTotalCount.textContent = orders.length;
+  if (ordersActiveCount) ordersActiveCount.textContent = active;
+  if (ordersCompletedCount) ordersCompletedCount.textContent = completed;
+  if (ordersClosedCount) ordersClosedCount.textContent = closed;
+};
 
-  const serviceUsage = {};
-  allOrders.forEach((order) => {
-    const name = order.service?.name || "Unknown Service";
-    serviceUsage[name] = (serviceUsage[name] || 0) + 1;
-  });
+const renderEmptyOrders = (message = "Your purchased numbers and OTP activity will appear here.") => {
+  if (!ordersContainer) return;
 
-  let topService = "-";
-  let topCount = 0;
+  ordersContainer.innerHTML = `
+    <div class="empty-orders-box">
+      <i class="fa-solid fa-box-open"></i>
+      <h3>No orders yet</h3>
+      <p>${message}</p>
+    </div>
+  `;
+};
 
-  Object.entries(serviceUsage).forEach(([name, count]) => {
-    if (count > topCount) {
-      topCount = count;
-      topService = name;
+const copyText = async (text, successMessage) => {
+  if (!text || text === "Waiting..." || text === "Pending..." || text === "-") return;
+
+  try {
+    await navigator.clipboard.writeText(String(text));
+
+    if (typeof showToast === "function") {
+      showToast("success", "Copied", successMessage);
+    } else {
+      alert(successMessage);
     }
-  });
-
-  if (ordersMostUsedService) ordersMostUsedService.textContent = topService;
-
-  const sortedCompleted = [...completedOrders].sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
-
-  if (ordersLastCompleted) {
-    ordersLastCompleted.textContent =
-      sortedCompleted.length > 0
-        ? `#${sortedCompleted[0]._id.slice(-6).toUpperCase()}`
-        : "-";
+  } catch (error) {
+    console.log("Copy failed:", error.message);
   }
-
-  const successRate =
-    totalOrders > 0 ? Math.round((completedOrders.length / totalOrders) * 100) : 0;
-
-  if (ordersSuccessRate) ordersSuccessRate.textContent = `${successRate}%`;
 };
 
-const renderRecentActivity = () => {
-  if (!ordersRecentActivity) return;
+const sortOrdersByDate = (items = []) => {
+  return [...items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+};
 
-  if (!allOrders.length) {
-    ordersRecentActivity.innerHTML = `
-      <div class="activity-item">
-        <div>
-          <h4>No recent activity</h4>
-          <p>Your recent order updates will appear here.</p>
-        </div>
-      </div>
-    `;
+const renderOrders = () => {
+  if (!ordersContainer) return;
+
+  renderCounts();
+
+  if (!orders.length) {
+    renderEmptyOrders();
     return;
   }
 
-  ordersRecentActivity.innerHTML = "";
+  ordersContainer.innerHTML = "";
 
-  allOrders.slice(0, 3).forEach((order) => {
-    const item = document.createElement("div");
-    item.className = "activity-item";
+  orders.forEach((order) => {
+    const orderStatus = getStatusLabel(order.status);
+    const orderType = getOrderType(order);
+    const canCancel =
+      orderType === "otp" &&
+      !["completed", "cancelled", "expired", "failed"].includes(orderStatus);
 
-    let activityText = "Order updated";
-    if (order.status === "pending") activityText = "Marked as pending";
-    if (order.status === "active") activityText = "Currently active";
-    if (order.status === "completed") activityText = "Completed successfully";
-    if (order.status === "cancelled") activityText = "Cancelled";
-    if (order.status === "expired") activityText = "Expired automatically";
+    const hasOtp = Boolean(order.otpCode);
+    const hasNumber = Boolean(order.assignedNumber);
 
-    item.innerHTML = `
-      <div>
-        <h4>Order #${order._id.slice(-6).toUpperCase()}</h4>
-        <p>${activityText}</p>
+    const div = document.createElement("div");
+    div.className = "order-card";
+
+    div.innerHTML = `
+      <div class="order-top">
+        <div class="order-title">
+          <h3>${(order.serviceName || "Service").toUpperCase()}</h3>
+          <p>${order.country || "-"} • ${formatDate(order.createdAt)}</p>
+          <span class="order-type-badge">
+            <i class="fa-solid ${orderType === "rent" ? "fa-phone-volume" : "fa-bolt"}"></i>
+            ${getOrderTypeLabel(order)}
+          </span>
+        </div>
+
+        <div class="order-status">
+          <span class="status status-${orderStatus}">${orderStatus}</span>
+        </div>
       </div>
-      <span class="mini-badge ${getStatusClass(order.status)}">${order.status}</span>
+
+      <div class="order-progress-text">
+        ${getOrderProgressText(order)}
+      </div>
+
+      <div class="order-body">
+        <div class="order-meta">
+          <span>Assigned Number</span>
+          <strong>${order.assignedNumber || "Pending..."}</strong>
+          <button
+            class="mini-action-btn ${hasNumber ? "" : "is-disabled"}"
+            type="button"
+            data-copy-number="${order._id}"
+            ${hasNumber ? "" : "disabled"}
+          >
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy Number</span>
+          </button>
+        </div>
+
+        <div class="order-meta">
+          <span>OTP Code</span>
+          <strong class="${hasOtp ? "order-otp" : ""}">
+            ${order.otpCode || "Waiting..."}
+          </strong>
+          <button
+            class="mini-action-btn ${hasOtp ? "" : "is-disabled"}"
+            type="button"
+            data-copy-otp="${order._id}"
+            ${hasOtp ? "" : "disabled"}
+          >
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy OTP</span>
+          </button>
+        </div>
+
+        <div class="order-meta">
+          <span>Provider Order ID</span>
+          <strong>${order.providerOrderId || "-"}</strong>
+        </div>
+
+        <div class="order-meta">
+          <span>Price</span>
+          <strong>${formatMoney(order.price)}</strong>
+        </div>
+      </div>
+
+      <div class="order-actions">
+        <button class="refresh-btn" data-id="${order._id}" data-type="${orderType}" type="button">
+          Refresh OTP
+        </button>
+
+        ${
+          canCancel
+            ? `<button class="cancel-btn" data-id="${order._id}" type="button">Cancel Order</button>`
+            : ""
+        }
+
+        <span class="order-note">
+          ${orderType === "rent"
+            ? "Use refresh to check the latest SMSPool update."
+            : "Use refresh to check the latest provider update."}
+        </span>
+      </div>
     `;
 
-    ordersRecentActivity.appendChild(item);
+    ordersContainer.appendChild(div);
   });
+
+  bindRefreshButtons();
+  bindCancelButtons();
+  bindCopyButtons();
 };
 
-const renderOrdersPage = () => {
-  if (!ordersTableBody) return;
-
-  const totalPages = Math.max(1, Math.ceil(filteredOrders.length / ORDERS_PER_PAGE));
-  if (ordersCurrentPage > totalPages) ordersCurrentPage = totalPages;
-
-  const start = (ordersCurrentPage - 1) * ORDERS_PER_PAGE;
-  const end = start + ORDERS_PER_PAGE;
-  const currentOrders = filteredOrders.slice(start, end);
-
-  ordersTableBody.innerHTML = "";
-
-  currentOrders.forEach((order) => {
-    const tr = document.createElement("tr");
-    tr.dataset.status = order.status;
-
-    tr.innerHTML = `
-      <td>#${order._id.slice(-6).toUpperCase()}</td>
-      <td>${order.service?.name || "Unknown Service"}</td>
-      <td>${order.assignedNumber || order.numberInventory?.number || "-"}</td>
-      <td><span class="status ${getStatusClass(order.status)}">${order.status}</span></td>
-      <td>${order.otpCode || "-"}</td>
-      <td>${formatDateTime(order.expiresAt)}</td>
-      <td>${getTimeLeft(order)}</td>
-      <td>${formatPrice(order.price)}</td>
-      <td>${formatDate(order.createdAt)}</td>
-    `;
-
-    ordersTableBody.appendChild(tr);
+const fetchOtpOrders = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 
-  if (ordersPageInfo) {
-    ordersPageInfo.textContent = `Page ${ordersCurrentPage} of ${totalPages}`;
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch OTP orders");
   }
 
-  if (ordersPrevBtn) {
-    ordersPrevBtn.disabled = ordersCurrentPage === 1;
-  }
-
-  if (ordersNextBtn) {
-    ordersNextBtn.disabled = ordersCurrentPage === totalPages;
-  }
-
-  if (ordersEmptyMessage) {
-    ordersEmptyMessage.style.display = filteredOrders.length === 0 ? "block" : "none";
-  }
-
-  if (ordersPagination) {
-    ordersPagination.style.display = filteredOrders.length === 0 ? "none" : "flex";
-  }
+  return data.orders || [];
 };
 
-const filterOrders = () => {
-  const searchValue = (orderSearchInput?.value || "").toLowerCase().trim();
-  const statusValue = orderStatusFilter?.value || "all";
-
-  filteredOrders = allOrders.filter((order) => {
-    const orderId = `#${order._id.slice(-6).toUpperCase()}`.toLowerCase();
-    const serviceName = (order.service?.name || "").toLowerCase();
-    const assignedNumber = (order.assignedNumber || order.numberInventory?.number || "").toLowerCase();
-    const otpCode = (order.otpCode || "").toLowerCase();
-    const status = order.status || "";
-
-    const matchesSearch =
-      orderId.includes(searchValue) ||
-      serviceName.includes(searchValue) ||
-      assignedNumber.includes(searchValue) ||
-      otpCode.includes(searchValue);
-
-    const matchesStatus = statusValue === "all" || status === statusValue;
-
-    return matchesSearch && matchesStatus;
+const fetchRentOrders = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/rent/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 
-  ordersCurrentPage = 1;
-  renderOrdersPage();
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch rent orders");
+  }
+
+  return data.orders || [];
 };
 
 const fetchOrders = async () => {
-  if (!token) {
-    if (ordersEmptyMessage) {
-      ordersEmptyMessage.textContent = "Please sign in to view your orders.";
-      ordersEmptyMessage.style.display = "block";
-    }
-    if (ordersPagination) {
-      ordersPagination.style.display = "none";
-    }
-    return;
-  }
-
-  if (ordersTableBody) {
-    ordersTableBody.innerHTML = `
-      <tr>
-        <td colspan="9" style="text-align:center; color: var(--muted);">Loading orders...</td>
-      </tr>
-    `;
-  }
-
   try {
-    const response = await fetch(`${API_BASE_URL}/api/orders`, {
+    const token = getToken();
+
+    if (!token) {
+      if (ordersContainer) {
+        ordersContainer.innerHTML = `
+          <div class="empty-orders-box">
+            <i class="fa-solid fa-lock"></i>
+            <h3>Login required</h3>
+            <p>You need to sign in before viewing your orders.</p>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    ordersContainer.innerHTML = `
+      <div class="empty-orders-box">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <h3>Loading orders</h3>
+        <p>Please wait while we fetch your latest orders.</p>
+      </div>
+    `;
+
+    const [otpOrders, rentOrders] = await Promise.all([
+      fetchOtpOrders(token).catch(() => []),
+      fetchRentOrders(token).catch(() => [])
+    ]);
+
+    orders = sortOrdersByDate([...otpOrders, ...rentOrders]);
+    renderOrders();
+  } catch (error) {
+    if (ordersContainer) {
+      ordersContainer.innerHTML = `
+        <div class="empty-orders-box">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <h3>Could not load orders</h3>
+          <p>${error.message || "Something went wrong."}</p>
+        </div>
+      `;
+    }
+  }
+};
+
+const fetchOrderStatus = async (orderId, type) => {
+  try {
+    const token = getToken();
+    if (!token) return;
+
+    const url =
+      type === "rent"
+        ? `${API_BASE_URL}/api/rent/orders/${orderId}/status`
+        : `${API_BASE_URL}/api/orders/${orderId}/status`;
+
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -280,54 +314,107 @@ const fetchOrders = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch orders");
+      return;
     }
 
-    allOrders = data.orders || [];
-    filteredOrders = [...allOrders];
+    const index = orders.findIndex((order) => order._id === orderId);
 
-    renderOrdersSummary();
-    renderRecentActivity();
-    renderOrdersPage();
+    if (index !== -1) {
+      orders[index] = {
+        ...orders[index],
+        ...data.order
+      };
+      renderOrders();
+    }
   } catch (error) {
-    if (ordersTableBody) {
-      ordersTableBody.innerHTML = `
-        <tr>
-          <td colspan="9" style="text-align:center; color: #ef4444;">${error.message || "Could not load orders."}</td>
-        </tr>
-      `;
+    console.log("Status check error:", error.message);
+  }
+};
+
+const cancelOrder = async (orderId) => {
+  try {
+    const token = getToken();
+    if (!token) return;
+
+    const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/cancel`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to cancel order");
     }
-    if (ordersPagination) {
-      ordersPagination.style.display = "none";
+
+    const index = orders.findIndex((order) => order._id === orderId);
+
+    if (index !== -1) {
+      orders[index] = data.order;
+      renderOrders();
+    }
+
+    if (typeof showToast === "function") {
+      showToast("success", "Cancelled", "Order cancelled successfully.");
+    }
+  } catch (error) {
+    if (typeof showToast === "function") {
+      showToast("error", "Cancel failed", error.message || "Could not cancel order.");
+    } else {
+      alert(error.message || "Could not cancel order.");
     }
   }
 };
 
-if (orderSearchInput) {
-  orderSearchInput.addEventListener("input", filterOrders);
-}
-
-if (orderStatusFilter) {
-  orderStatusFilter.addEventListener("change", filterOrders);
-}
-
-if (ordersPrevBtn) {
-  ordersPrevBtn.addEventListener("click", () => {
-    if (ordersCurrentPage > 1) {
-      ordersCurrentPage--;
-      renderOrdersPage();
-    }
+const bindRefreshButtons = () => {
+  document.querySelectorAll(".refresh-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const orderId = button.dataset.id;
+      const type = button.dataset.type;
+      fetchOrderStatus(orderId, type);
+    });
   });
-}
+};
 
-if (ordersNextBtn) {
-  ordersNextBtn.addEventListener("click", () => {
-    const totalPages = Math.ceil(filteredOrders.length / ORDERS_PER_PAGE);
-    if (ordersCurrentPage < totalPages) {
-      ordersCurrentPage++;
-      renderOrdersPage();
-    }
+const bindCancelButtons = () => {
+  document.querySelectorAll(".cancel-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const orderId = button.dataset.id;
+      cancelOrder(orderId);
+    });
   });
-}
+};
+
+const bindCopyButtons = () => {
+  document.querySelectorAll("[data-copy-number]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const orderId = button.dataset.copyNumber;
+      const order = orders.find((item) => item._id === orderId);
+      if (!order) return;
+
+      copyText(order.assignedNumber, "Number copied successfully.");
+    });
+  });
+
+  document.querySelectorAll("[data-copy-otp]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const orderId = button.dataset.copyOtp;
+      const order = orders.find((item) => item._id === orderId);
+      if (!order) return;
+
+      copyText(order.otpCode, "OTP copied successfully.");
+    });
+  });
+};
+
+refreshOrdersBtn?.addEventListener("click", async () => {
+  await fetchOrders();
+
+  if (typeof showToast === "function") {
+    showToast("success", "Refreshed", "Orders refreshed successfully.");
+  }
+});
 
 fetchOrders();

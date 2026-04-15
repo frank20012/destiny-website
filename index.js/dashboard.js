@@ -5,14 +5,60 @@ const token = getStoredToken();
 const user = getStoredUser();
 
 const dashboardWalletBalance = document.getElementById("dashboardWalletBalance");
+const mobileDashboardWalletBalance = document.getElementById("mobileDashboardWalletBalance");
+const walletVisibilityToggle = document.getElementById("walletVisibilityToggle");
+
 const dashboardOrdersCount = document.getElementById("dashboardOrdersCount");
 const dashboardTransactionsCount = document.getElementById("dashboardTransactionsCount");
 const dashboardApiStatus = document.getElementById("dashboardApiStatus");
+const dashboardActiveOrdersCount = document.getElementById("dashboardActiveOrdersCount");
+const dashboardCompletedOrdersCount = document.getElementById("dashboardCompletedOrdersCount");
+const dashboardRefundsCount = document.getElementById("dashboardRefundsCount");
+const dashboardRefundAmount = document.getElementById("dashboardRefundAmount");
 
 const dashboardRecentOrders = document.getElementById("dashboardRecentOrders");
 const dashboardRecentTransactions = document.getElementById("dashboardRecentTransactions");
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+let walletVisible = true;
+let currentWalletText = "₦0.00";
+
+const syncWalletDisplays = (value) => {
+  currentWalletText = value;
+
+  if (dashboardWalletBalance) {
+    dashboardWalletBalance.textContent = value;
+  }
+
+  if (mobileDashboardWalletBalance) {
+    mobileDashboardWalletBalance.textContent = walletVisible ? value : "••••••";
+  }
+};
+
+walletVisibilityToggle?.addEventListener("click", () => {
+  walletVisible = !walletVisible;
+
+  if (mobileDashboardWalletBalance) {
+    mobileDashboardWalletBalance.textContent = walletVisible
+      ? currentWalletText
+      : "••••••";
+  }
+
+  walletVisibilityToggle.innerHTML = walletVisible
+    ? '<i class="fa-regular fa-eye"></i>'
+    : '<i class="fa-regular fa-eye-slash"></i>';
+});
+
+const formatPrice = (value) =>
+  `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+
+const formatDate = (dateString) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};
 
 const getStatusClass = (status) => {
   const map = {
@@ -26,25 +72,37 @@ const getStatusClass = (status) => {
     failed: "cancelled"
   };
 
-  return map[status] || "pending";
+  return map[String(status || "").toLowerCase()] || "pending";
 };
 
 const getAmountPrefix = (type) => {
   return type === "credit" || type === "refund" ? "+" : "-";
 };
 
-const formatDate = (dateString) => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return date.toLocaleDateString();
+const getOrderType = (order) => {
+  return order.provider === "smspool" ? "Rent Order" : "OTP Order";
+};
+
+const getOrderDisplayName = (order) => {
+  return order.serviceName || order.service?.name || "Unknown Service";
+};
+
+const getOrderNumber = (order) => {
+  return (
+    order.assignedNumber ||
+    order.numberInventory?.number ||
+    "No number yet"
+  );
 };
 
 const getTimeLeft = (order) => {
   if (!order.expiresAt) return "";
 
-  if (order.status === "expired") return "Expired";
-  if (order.status === "completed") return "Completed";
-  if (order.status === "cancelled") return "Cancelled";
+  const status = String(order.status || "").toLowerCase();
+
+  if (status === "expired") return "Expired";
+  if (status === "completed") return "Completed";
+  if (status === "cancelled") return "Cancelled";
 
   const now = new Date();
   const expiresAt = new Date(order.expiresAt);
@@ -61,6 +119,12 @@ const getTimeLeft = (order) => {
   return `${hours}h ${minutes}m left`;
 };
 
+const sortByDateDesc = (items = []) => {
+  return [...items].sort(
+    (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+  );
+};
+
 const renderRecentOrders = (orders) => {
   if (!dashboardRecentOrders) return;
 
@@ -69,7 +133,7 @@ const renderRecentOrders = (orders) => {
       <div class="activity-item">
         <div>
           <h4>No recent orders</h4>
-          <p>Your recent OTP orders will appear here.</p>
+          <p>Your recent OTP and rent orders will appear here.</p>
         </div>
       </div>
     `;
@@ -78,23 +142,26 @@ const renderRecentOrders = (orders) => {
 
   dashboardRecentOrders.innerHTML = "";
 
-  orders.slice(0, 4).forEach((order) => {
-    const item = document.createElement("div");
-    item.className = "activity-item";
+  sortByDateDesc(orders)
+    .slice(0, 4)
+    .forEach((order) => {
+      const item = document.createElement("div");
+      item.className = "activity-item";
 
-    item.innerHTML = `
-      <div>
-        <h4>${order.service?.name || "Unknown Service"}</h4>
-        <p>
-          ${order.assignedNumber || order.numberInventory?.number || "No number yet"} •
-          ${getTimeLeft(order) || formatDate(order.createdAt)}
-        </p>
-      </div>
-      <span class="mini-badge ${getStatusClass(order.status)}">${order.status}</span>
-    `;
+      item.innerHTML = `
+        <div>
+          <h4>${getOrderDisplayName(order)}</h4>
+          <p>
+            ${getOrderNumber(order)} •
+            ${getTimeLeft(order) || formatDate(order.createdAt)} •
+            ${getOrderType(order)}
+          </p>
+        </div>
+        <span class="mini-badge ${getStatusClass(order.status)}">${order.status}</span>
+      `;
 
-    dashboardRecentOrders.appendChild(item);
-  });
+      dashboardRecentOrders.appendChild(item);
+    });
 };
 
 const renderRecentTransactions = (transactions) => {
@@ -114,22 +181,24 @@ const renderRecentTransactions = (transactions) => {
 
   dashboardRecentTransactions.innerHTML = "";
 
-  transactions.slice(0, 4).forEach((transaction) => {
-    const item = document.createElement("div");
-    item.className = "activity-item";
+  sortByDateDesc(transactions)
+    .slice(0, 4)
+    .forEach((transaction) => {
+      const item = document.createElement("div");
+      item.className = "activity-item";
 
-    item.innerHTML = `
-      <div>
-        <h4>${transaction.description || "Transaction"}</h4>
-        <p>${transaction.reference || "-"} • ${formatDate(transaction.createdAt)}</p>
-      </div>
-      <span class="mini-badge ${getStatusClass(transaction.status)}">
-        ${getAmountPrefix(transaction.type)}${formatPrice(transaction.amount)}
-      </span>
-    `;
+      item.innerHTML = `
+        <div>
+          <h4>${transaction.description || "Transaction"}</h4>
+          <p>${transaction.reference || "-"} • ${formatDate(transaction.createdAt)}</p>
+        </div>
+        <span class="amount ${transaction.type === "credit" || transaction.type === "refund" ? "positive" : "negative"}">
+          ${getAmountPrefix(transaction.type)}${formatPrice(transaction.amount)}
+        </span>
+      `;
 
-    dashboardRecentTransactions.appendChild(item);
-  });
+      dashboardRecentTransactions.appendChild(item);
+    });
 };
 
 const fetchWallet = async () => {
@@ -145,12 +214,17 @@ const fetchWallet = async () => {
     throw new Error(data.message || "Failed to fetch wallet");
   }
 
-  if (dashboardWalletBalance) {
-    dashboardWalletBalance.textContent = formatPrice(data.wallet.balance);
-  }
+  const balance =
+    data.wallet?.balance ??
+    data.balance ??
+    0;
+
+  syncWalletDisplays(formatPrice(balance));
+
+  return data.wallet || { balance };
 };
 
-const fetchOrders = async () => {
+const fetchOtpOrders = async () => {
   const response = await fetch(`${API_BASE_URL}/api/orders`, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -160,16 +234,26 @@ const fetchOrders = async () => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch orders");
+    throw new Error(data.message || "Failed to fetch OTP orders");
   }
 
-  const orders = data.orders || [];
+  return data.orders || [];
+};
 
-  if (dashboardOrdersCount) {
-    dashboardOrdersCount.textContent = orders.length;
+const fetchRentOrders = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/rent/orders`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch rent orders");
   }
 
-  renderRecentOrders(orders);
+  return data.orders || [];
 };
 
 const fetchTransactions = async () => {
@@ -185,13 +269,7 @@ const fetchTransactions = async () => {
     throw new Error(data.message || "Failed to fetch transactions");
   }
 
-  const transactions = data.transactions || [];
-
-  if (dashboardTransactionsCount) {
-    dashboardTransactionsCount.textContent = transactions.length;
-  }
-
-  renderRecentTransactions(transactions);
+  return data.transactions || [];
 };
 
 const loadDashboard = async () => {
@@ -205,7 +283,59 @@ const loadDashboard = async () => {
   }
 
   try {
-    await Promise.all([fetchWallet(), fetchOrders(), fetchTransactions()]);
+    const [wallet, otpOrders, rentOrders, transactions] = await Promise.all([
+      fetchWallet(),
+      fetchOtpOrders().catch(() => []),
+      fetchRentOrders().catch(() => []),
+      fetchTransactions()
+    ]);
+
+    const allOrders = sortByDateDesc([...otpOrders, ...rentOrders]);
+
+    const activeOrders = allOrders.filter((order) =>
+      ["pending", "active"].includes(String(order.status || "").toLowerCase())
+    ).length;
+
+    const completedOrders = allOrders.filter((order) =>
+      String(order.status || "").toLowerCase() === "completed"
+    ).length;
+
+    const refundTransactions = transactions.filter(
+      (transaction) =>
+        String(transaction.type || "").toLowerCase() === "refund"
+    );
+
+    const totalRefundAmount = refundTransactions.reduce(
+      (sum, transaction) => sum + Number(transaction.amount || 0),
+      0
+    );
+
+    if (dashboardOrdersCount) {
+      dashboardOrdersCount.textContent = allOrders.length;
+    }
+
+    if (dashboardTransactionsCount) {
+      dashboardTransactionsCount.textContent = transactions.length;
+    }
+
+    if (dashboardActiveOrdersCount) {
+      dashboardActiveOrdersCount.textContent = activeOrders;
+    }
+
+    if (dashboardCompletedOrdersCount) {
+      dashboardCompletedOrdersCount.textContent = completedOrders;
+    }
+
+    if (dashboardRefundsCount) {
+      dashboardRefundsCount.textContent = refundTransactions.length;
+    }
+
+    if (dashboardRefundAmount) {
+      dashboardRefundAmount.textContent = formatPrice(totalRefundAmount);
+    }
+
+    renderRecentOrders(allOrders);
+    renderRecentTransactions(transactions);
   } catch (error) {
     console.error(error.message);
 
@@ -218,6 +348,21 @@ const loadDashboard = async () => {
           </div>
         </div>
       `;
+    }
+
+    if (dashboardRecentTransactions) {
+      dashboardRecentTransactions.innerHTML = `
+        <div class="activity-item">
+          <div>
+            <h4>Could not load transactions</h4>
+            <p>${error.message}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    if (dashboardApiStatus) {
+      dashboardApiStatus.textContent = "Disconnected";
     }
   }
 };

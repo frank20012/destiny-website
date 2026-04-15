@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Orders</title>
+  <title>DeskOtp Orders</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/orders.css" />
-  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
@@ -19,40 +20,85 @@
         <span></span>
         <span></span>
       </div>
-      <div class="loader-text">Loading WaveAuth...</div>
+      <div class="loader-text">Loading orders...</div>
     </div>
   </div>
 
   <div class="orders-layout">
-    <div class="sidebar-overlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>DeskOtp</span>
+      </div>
 
-    <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>
-        <nav class="sidebar-nav">
-  <a href="dashboard.html">Dashboard</a>
-  <a href="service.html">Services</a>
-  <a href="Rent a number.html">Rent a Number</a>
-  <a href="orders.html" class="active">Orders</a>
-  <a href="wallet.html">Wallet</a>
-  <a href="transactions.html">Transactions</a>
-  <a href="ticket.html">Support Tickets</a>
-  <a href="contact.html">Contact Manager</a>
-  <a href="settings.html">Settings</a>
-  <a href="signin.html">Logout</a>
-</nav>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html" class="active">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
     </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <h1>Orders</h1>
-          <p>Track service orders and monitor current statuses</p>
+          <p>Track your purchased numbers, rentals, and incoming OTP codes</p>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <a href="service.html" class="top-btn">Place New Order</a>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+          <a href="service.html" class="top-btn">Buy New</a>
           <div class="profile-box">
             <div class="avatar">U</div>
             <span>User</span>
@@ -60,119 +106,69 @@
         </div>
       </header>
 
-      <section class="orders-overview reveal">
-        <div class="overview-card highlight-card">
-          <p>Total Orders</p>
-          <h2 class="stat-number" id="ordersTotalCount">0</h2>
-          <span>Across all service categories</span>
+      <section class="orders-summary-grid reveal">
+        <div class="orders-summary-card">
+          <div class="orders-summary-top">
+            <div class="summary-icon summary-icon-blue">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <span>Total Orders</span>
+          </div>
+          <h2 id="ordersTotalCount">0</h2>
+          <p>OTP and rent orders combined</p>
         </div>
 
-        <div class="overview-card">
-          <p>Completed</p>
-          <h3 class="stat-number" id="ordersCompletedCount">0</h3>
+        <div class="orders-summary-card">
+          <div class="orders-summary-top">
+            <div class="summary-icon summary-icon-cyan">
+              <i class="fa-solid fa-signal"></i>
+            </div>
+            <span>Active Orders</span>
+          </div>
+          <h2 id="ordersActiveCount">0</h2>
+          <p>Currently waiting for update</p>
         </div>
 
-        <div class="overview-card">
-          <p>Pending</p>
-          <h3 class="stat-number" id="ordersPendingCount">0</h3>
+        <div class="orders-summary-card">
+          <div class="orders-summary-top">
+            <div class="summary-icon summary-icon-green">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <span>Completed</span>
+          </div>
+          <h2 id="ordersCompletedCount">0</h2>
+          <p>Orders with OTP received</p>
         </div>
 
-        <div class="overview-card">
-          <p>Processing</p>
-          <h3 class="stat-number" id="ordersProcessingCount">0</h3>
+        <div class="orders-summary-card">
+          <div class="orders-summary-top">
+            <div class="summary-icon summary-icon-red">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <span>Closed</span>
+          </div>
+          <h2 id="ordersClosedCount">0</h2>
+          <p>Cancelled or expired orders</p>
         </div>
       </section>
 
-      <section class="orders-main-grid reveal">
-        <div class="orders-table-card card">
-          <div class="table-header">
-            <div>
-              <h2>Order History</h2>
-              <p>View all recent and active orders</p>
-            </div>
-
-            <div class="table-actions">
-              <input type="text" id="orderSearchInput" placeholder="Search order ID..." />
-              <select id="orderStatusFilter">
-                <option value="all">All Status</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
-                <option value="active">Active</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="expired">Expired</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Service</th>
-                  <th>Assigned Number</th>
-                  <th>Status</th>
-                  <th>OTP Code</th>
-                  <!-- <th>Country</th> -->
-                  <th>Expires At</th>
-                  <th>Time left</th>
-                  <th>Amount</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody id="ordersTableBody"></tbody>
-            </table>
-          </div>
-
-          <p class="table-empty-message" id="ordersEmptyMessage">No matching orders found.</p>
-
-          <div class="table-pagination" id="ordersPagination">
-            <button type="button" id="ordersPrevBtn">Previous</button>
-            <span id="ordersPageInfo">Page 1 of 1</span>
-            <button type="button" id="ordersNextBtn">Next</button>
-          </div>
+      <section class="orders-toolbar card reveal">
+        <div class="orders-toolbar-copy">
+          <h2>Your Orders</h2>
+          <p>Refresh order status and view OTPs in one place</p>
         </div>
 
-        <div class="side-panel">
-          <div class="activity-card card">
-            <div class="section-title">
-              <h2>Recent Activity</h2>
-            </div>
-
-            <div class="activity-list" id="ordersRecentActivity"></div>
-          </div>
-
-          <div class="summary-card card">
-            <div class="section-title">
-              <h2>Order Summary</h2>
-            </div>
-
-            <div class="summary-list">
-              <div class="summary-item">
-                <span>Most used service</span>
-                <strong id="ordersMostUsedService">-</strong>
-              </div>
-
-              <div class="summary-item">
-                <span>Last completed</span>
-                <strong id="ordersLastCompleted">-</strong>
-              </div>
-
-              <div class="summary-item">
-                <span>Pending value</span>
-                <strong id="ordersPendingValue">$0.00</strong>
-              </div>
-
-              <div class="summary-item">
-                <span>Success rate</span>
-                <strong id="ordersSuccessRate">0%</strong>
-              </div>
-            </div>
-          </div>
+        <div class="orders-toolbar-actions">
+          <button id="refreshOrdersBtn" class="top-btn" type="button">Refresh All</button>
         </div>
+      </section>
+
+      <section class="orders-section reveal">
+        <div id="ordersContainer" class="orders-container"></div>
       </section>
     </main>
   </div>
+
   <script src="/index.js/config.js"></script>
   <script type="module" src="/index.js/require-user.js"></script>
   <script type="module" src="/index.js/session-ui.js"></script>
@@ -180,6 +176,6 @@
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script type="module" src="/index.js/order.js"></script>
+  <script src="/index.js/order.js"></script>
 </body>
 </html>

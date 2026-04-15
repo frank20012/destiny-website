@@ -1,8 +1,8 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
-import { getStoredToken, getStoredUser } from "./auth-storage.js";
 
 const token = getStoredToken();
-const user = getStoredUser();
 
 const transactionSearchInput = document.getElementById("transactionSearchInput");
 const transactionTypeFilter = document.getElementById("transactionTypeFilter");
@@ -30,7 +30,7 @@ let transactionsCurrentPage = 1;
 let allTransactions = [];
 let filteredTransactions = [];
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+const formatPrice = (value) => `₦${Number(value || 0).toFixed(2)}`;
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -160,10 +160,7 @@ const renderRecentAlerts = () => {
 const renderTransactionsPage = () => {
   if (!transactionsTableBody) return;
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredTransactions.length / TRANSACTIONS_PER_PAGE)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredTransactions.length / TRANSACTIONS_PER_PAGE));
 
   if (transactionsCurrentPage > totalPages) {
     transactionsCurrentPage = totalPages;
@@ -177,14 +174,12 @@ const renderTransactionsPage = () => {
 
   currentTransactions.forEach((transaction) => {
     const tr = document.createElement("tr");
-    tr.dataset.type = transaction.type;
-    tr.dataset.status = transaction.status;
 
     tr.innerHTML = `
-      <td>${transaction.reference}</td>
-      <td>${transaction.type}</td>
+      <td>${transaction.reference || "-"}</td>
+      <td>${transaction.type || "-"}</td>
       <td>${transaction.description || "-"}</td>
-      <td><span class="status ${getStatusClass(transaction.status)}">${transaction.status}</span></td>
+      <td><span class="status ${getStatusClass(transaction.status)}">${transaction.status || "-"}</span></td>
       <td class="amount ${getAmountClass(transaction.type)}">${getAmountPrefix(transaction.type)}${formatPrice(transaction.amount)}</td>
       <td>${formatDate(transaction.createdAt)}</td>
     `;
@@ -242,8 +237,7 @@ const filterTransactions = () => {
 const fetchTransactions = async () => {
   if (!token) {
     if (transactionsEmptyMessage) {
-      transactionsEmptyMessage.textContent =
-        "Please sign in to view your transactions.";
+      transactionsEmptyMessage.textContent = "Please sign in to view your transactions.";
       transactionsEmptyMessage.style.display = "block";
     }
     if (transactionsPagination) {
@@ -293,37 +287,23 @@ const fetchTransactions = async () => {
   }
 };
 
-if (transactionSearchInput) {
-  transactionSearchInput.addEventListener("input", filterTransactions);
-}
+transactionSearchInput?.addEventListener("input", filterTransactions);
+transactionTypeFilter?.addEventListener("change", filterTransactions);
+transactionStatusFilter?.addEventListener("change", filterTransactions);
 
-if (transactionTypeFilter) {
-  transactionTypeFilter.addEventListener("change", filterTransactions);
-}
+transactionsPrevBtn?.addEventListener("click", () => {
+  if (transactionsCurrentPage > 1) {
+    transactionsCurrentPage--;
+    renderTransactionsPage();
+  }
+});
 
-if (transactionStatusFilter) {
-  transactionStatusFilter.addEventListener("change", filterTransactions);
-}
-
-if (transactionsPrevBtn) {
-  transactionsPrevBtn.addEventListener("click", () => {
-    if (transactionsCurrentPage > 1) {
-      transactionsCurrentPage--;
-      renderTransactionsPage();
-    }
-  });
-}
-
-if (transactionsNextBtn) {
-  transactionsNextBtn.addEventListener("click", () => {
-    const totalPages = Math.ceil(
-      filteredTransactions.length / TRANSACTIONS_PER_PAGE
-    );
-    if (transactionsCurrentPage < totalPages) {
-      transactionsCurrentPage++;
-      renderTransactionsPage();
-    }
-  });
-}
+transactionsNextBtn?.addEventListener("click", () => {
+  const totalPages = Math.ceil(filteredTransactions.length / TRANSACTIONS_PER_PAGE);
+  if (transactionsCurrentPage < totalPages) {
+    transactionsCurrentPage++;
+    renderTransactionsPage();
+  }
+});
 
 fetchTransactions();

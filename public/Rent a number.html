@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WaveAuth Rent a Number</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/rent-number.css" />
   <link rel="stylesheet" href="/style.css/loader.css" />
@@ -23,35 +24,81 @@
     </div>
   </div>
 
-  <div class="sidebar-overlay"></div>
-
   <div class="rent-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>
-       <nav class="sidebar-nav">
-  <a href="dashboard.html">Dashboard</a>
-  <a href="service.html">Services</a>
-  <a href="Rent a number.html" class="active">Rent a Number</a>
-  <a href="orders.html">Orders</a>
-  <a href="wallet.html">Wallet</a>
-  <a href="transactions.html">Transactions</a>
-  <a href="ticket.html">Support Tickets</a>
-  <a href="contact.html">Contact Manager</a>
-  <a href="settings.html">Settings</a>
-  <a href="signin.html">Logout</a>
-</nav>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>WaveAuth</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html" class="active">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
     </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <h1>Rent a Number</h1>
-          <p>Choose a country and rent a virtual number service</p>
+          <p>Select a country, choose a service, and rent instantly</p>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+          <a href="orders.html" class="top-btn">View Orders</a>
           <div class="profile-box">
             <div class="avatar">U</div>
             <span>User</span>
@@ -61,19 +108,76 @@
 
       <section class="rent-hero reveal">
         <div class="hero-card card">
-          <h2>Virtual Numbers by Country</h2>
-          <p>Browse active services and select a number rental option that fits your use case.</p>
+          <div class="hero-card-copy">
+            <h2>Fast rental number access</h2>
+            <p>Choose a country first, select the service you want, and see the live customer price before renting.</p>
+          </div>
+
+          <div class="rent-summary-mini">
+            <div class="rent-mini-box">
+              <span>Countries</span>
+              <strong id="rentCountriesCount">0</strong>
+            </div>
+
+            <div class="rent-mini-box">
+              <span>Services</span>
+              <strong id="rentServicesCount">0</strong>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="rent-section reveal">
+      <section class="rent-filter-section card reveal">
         <div class="section-title">
-          <h2>Available Rental Services</h2>
-          <p>Select a service to continue to checkout</p>
+          <h2>Find Rental Service</h2>
+          <p>Country first, then service</p>
         </div>
 
-        <div class="rent-grid" id="rentNumberGrid"></div>
-        <p class="table-empty-message" id="rentNumberEmptyMessage">No rental services available right now.</p>
+        <div class="rent-filter-grid">
+          <div class="rent-filter-field">
+            <label for="rentCountryFilter">Country</label>
+            <select id="rentCountryFilter">
+              <option value="">Select Country</option>
+            </select>
+          </div>
+
+          <div class="rent-filter-field">
+            <label for="rentServiceFilter">Service</label>
+            <select id="rentServiceFilter" disabled>
+              <option value="">Select Service</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="rent-main-grid reveal">
+        <div class="rent-section">
+          <div class="section-title">
+            <h2>Available Rental Services</h2>
+            <p>Only the selected service will appear below</p>
+          </div>
+
+          <div class="rent-grid" id="rentNumberGrid"></div>
+
+          <p class="table-empty-message" id="rentNumberEmptyMessage">
+            Select a country and service to continue.
+          </p>
+        </div>
+
+        <aside class="rent-selected-panel card">
+          <div class="section-title">
+            <h2>Selected Service</h2>
+            <p>Review before renting</p>
+          </div>
+
+          <div id="selectedRentServiceBox" class="selected-rent-service-box">
+            <div class="selected-rent-empty">
+              <i class="fa-solid fa-hand-pointer"></i>
+              <h3>No service selected</h3>
+              <p>Select a country and service to see full details here.</p>
+            </div>
+          </div>
+        </aside>
       </section>
     </main>
   </div>

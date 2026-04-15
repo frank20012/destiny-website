@@ -3,222 +3,232 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Wallet</title>
+  <title>DeskOtp Wallet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/wallet.css" />
-  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/modal.css" />
 </head>
 <body>
   <div class="loader-wrapper">
-  <div class="loader-box">
-    <div class="loader-logo">W</div>
-    <div class="loader-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loader-text">Loading wallet...</div>
     </div>
-    <div class="loader-text">Loading WaveAuth...</div>
   </div>
-</div>
-  <div class="sidebar-overlay"></div>
+
   <div class="wallet-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>      
-        <nav class="sidebar-nav">
-  <a href="dashboard.html">Dashboard</a>
-  <a href="service.html">Services</a>
-  <a href="Rent a number.html">Rent a Number</a>
-  <a href="orders.html">Orders</a>
-  <a href="wallet.html" class="active">Wallet</a>
-  <a href="transactions.html">Transactions</a>
-  <a href="ticket.html">Support Tickets</a>
-  <a href="contact.html">Contact Manager</a>
-  <a href="settings.html">Settings</a>
-  <a href="signin.html">Logout</a>
-</nav>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>DeskOtp</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html" class="active">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
     </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <h1>Wallet</h1>
           <p>Manage your balance and funding activity</p>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-<button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="openFundModalBtn">Fund Wallet</button>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+          <a href="transactions.html" class="top-btn">Transactions</a>
           <div class="profile-box">
-            <div class="avatar">F</div>
-            <span>Franklyn</span>
+            <div class="avatar">U</div>
+            <span>User</span>
           </div>
         </div>
       </header>
 
-      <section class="wallet-overview reveal">
-        <div class="balance-card card">
-          <p>Available Balance</p>
-          <h2 class="stat-number" id="walletMainBalance">$0.00</h2>
-          <span>Last updated a few seconds ago</span>
+      <section class="wallet-summary-grid reveal">
+        <div class="wallet-balance-card">
+          <div class="wallet-balance-top">
+            <div>
+              <p class="wallet-label">Available Balance</p>
+              <h2 id="walletBalance" data-real="$0.00">$0.00</h2>
+              <p class="wallet-subtext" id="walletSubtext">Your current usable balance</p>
+            </div>
+
+            <button
+              id="toggleBalance"
+              class="icon-btn wallet-visibility-btn"
+              type="button"
+              aria-label="Show or hide balance"
+            >
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+
+          <div class="wallet-balance-actions">
+            <button id="fundBtn" class="wallet-primary-btn" type="button">
+              <i class="fa-solid fa-plus"></i>
+              <span>Fund Wallet</span>
+            </button>
+
+            <a href="transactions.html" class="wallet-secondary-btn">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+          </div>
         </div>
 
-        <div class="mini-card card">
-          <p>Total Funded</p>
-          <h3 class="stat-number" id="walletTotalFunded">0</h3>
+        <div class="wallet-mini-card">
+          <div class="wallet-mini-top">
+            <div class="mini-icon mini-icon-green">
+              <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <span>Total Credits</span>
+          </div>
+          <h3 id="walletCredits">$0.00</h3>
+          <p>Completed credit transactions</p>
         </div>
 
-        <div class="mini-card card">
-          <p>Total Spent</p>
-          <h3 class="stat-number" id="walletTotalSpent">0</h3>
+        <div class="wallet-mini-card">
+          <div class="wallet-mini-top">
+            <div class="mini-icon mini-icon-red">
+              <i class="fa-solid fa-arrow-up"></i>
+            </div>
+            <span>Total Debits</span>
+          </div>
+          <h3 id="walletDebits">$0.00</h3>
+          <p>Completed debit transactions</p>
         </div>
 
-        <div class="mini-card card">
-          <p>Pending Funding</p>
-          <h3 class="stat-number" id="walletPendingAmount">0</h3>
+        <div class="wallet-mini-card">
+          <div class="wallet-mini-top">
+            <div class="mini-icon mini-icon-blue">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <span>Transactions</span>
+          </div>
+          <h3 id="walletTransactionCount">0</h3>
+          <p>Total wallet activity</p>
         </div>
       </section>
 
-      <section class="wallet-grid reveal">
-        <div class="fund-card card">
-          <div class="section-title">
-            <h2>Add Funds</h2>
-            <p>Choose an amount and preferred payment method</p>
-          </div>
+      <section class="wallet-funding-card card reveal">
+        <div class="section-title">
+          <h2>Fund Wallet</h2>
+          <p>Add money to your balance securely</p>
+        </div>
 
-          <form class="fund-form" id="walletFundForm">
-            <div class="input-group">
+        <form id="fundWalletForm" class="wallet-form">
+          <div class="wallet-form-grid">
+            <div class="wallet-field">
               <label for="fundAmount">Amount</label>
-              <input type="number" id="fundAmount" min="10" placeholder="Enter amount" />
+              <input
+                type="number"
+                id="fundAmount"
+                min="1"
+                step="0.01"
+                placeholder="Enter amount"
+                required
+              />
             </div>
 
-            <div class="quick-amounts">
-              <button type="button" class="amount-btn">$10</button>
-              <button type="button" class="amount-btn">$25</button>
-              <button type="button" class="amount-btn">$50</button>
-              <button type="button" class="amount-btn">$100</button>
-            </div>
-
-            <div class="input-group">
-              <label>Payment Method</label>
-              <div class="payment-grid">
-                <label class="payment-option">
-                  <input type="radio" name="payment" checked />
-                  <span>Bank Transfer</span>
-                </label>
-
-                <label class="payment-option">
-                  <input type="radio" name="payment" />
-                  <span>Card Payment</span>
-                </label>
-
-                <label class="payment-option">
-                  <input type="radio" name="payment" />
-                  <span>USSD</span>
-                </label>
-
-                <label class="payment-option">
-                  <input type="radio" name="payment" />
-                  <span>Crypto</span>
-                </label>
-              </div>
-            </div>
-
-            <button type="submit" class="primary-btn">Proceed to Fund</button>
-            <p class="form-message" id="walletMessage"></p>
-          </form>
-        </div>
-
-        <div class="summary-card card">
-          <div class="section-title">
-            <h2>Funding Summary</h2>
-          </div>
-
-          <div class="summary-list">
-            <div class="summary-item">
-              <span>Minimum funding</span>
-              <strong>$10.00</strong>
-            </div>
-
-            <div class="summary-item">
-              <span>Processing time</span>
-              <strong>Instant</strong>
-            </div>
-
-            <div class="summary-item">
-              <span>Wallet status</span>
-              <strong>Active</strong>
-            </div>
-
-            <div class="summary-item">
-              <span>Payment support</span>
-              <strong>24/7</strong>
+            <div class="wallet-field">
+              <label for="fundMethod">Payment Method</label>
+              <select id="fundMethod">
+                <option value="paystack">Paystack</option>
+              </select>
             </div>
           </div>
 
-          <div class="notice-box">
-            <h4>Need help?</h4>
-            <p>
-              If your funding does not reflect immediately, check your transaction
-              history or contact support.
-            </p>
+          <div class="wallet-form-actions">
+            <button type="submit" class="wallet-primary-btn form-wallet-btn">
+              <i class="fa-solid fa-wallet"></i>
+              <span>Proceed to Fund</span>
+            </button>
           </div>
-        </div>
+
+          <p id="walletMessage" class="wallet-message"></p>
+        </form>
       </section>
 
-      <section class="history-section reveal">
-        <div class="history-card card">
-          <div class="section-title">
-            <h2>Recent Funding History</h2>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Reference</th>
-                  <th>Method</th>
-                  <th>Status</th>
-                  <th>Amount</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody id="walletFundingHistoryBody"></tbody>
-            </table>
-          </div>
+      <section class="wallet-transactions card reveal">
+        <div class="section-title">
+          <h2>Recent Transactions</h2>
+          <p>Your latest wallet activity</p>
         </div>
+
+        <div id="transactionList" class="transaction-list"></div>
       </section>
     </main>
   </div>
-  <div class="modal-overlay" id="fundWalletModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h3>Fund Wallet</h3>
-      <button class="modal-close" type="button" onclick="closeModal('fundWalletModal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <p>
-        You can continue funding your wallet using the available payment methods
-        on the wallet page.
-      </p>
-      <div class="modal-actions">
-        <button class="modal-btn" type="button" id="confirmFundModalBtn">Continue</button>
-        <button class="modal-btn-secondary" type="button" onclick="closeModal('fundWalletModal')">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-<script src="/index.js/config.js"></script>
-   <script type="module" src="/index.js/require-user.js"></script>
-   <script type="module" src="/index.js/session-ui.js"></script>   
+
+  <script src="/index.js/config.js"></script>
+  <script type="module" src="/index.js/require-user.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script type="module" src="/index.js/wallet.js"></script>
-  <script src="/index.js/modal.js"></script>
+  <script src="/index.js/wallet.js"></script>
 </body>
 </html>

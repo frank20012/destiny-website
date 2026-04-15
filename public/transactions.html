@@ -3,173 +3,266 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Transactions</title>
-  <link rel="stylesheet" href="/style.css/panel.css">
+  <title>DeskOtp Transactions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/transactions.css" />
-  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
-
 <body>
   <div class="loader-wrapper">
-  <div class="loader-box">
-    <div class="loader-logo">W</div>
-    <div class="loader-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loader-text">Loading transactions...</div>
     </div>
-    <div class="loader-text">Loading WaveAuth...</div>
   </div>
-</div>
-  <div class="sidebar-overlay"></div>
+
   <div class="transactions-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>
-         <nav class="sidebar-nav">
-  <a href="dashboard.html">Dashboard</a>
-  <a href="service.html">Services</a>
-  <a href="Rent a number.html">Rent a Number</a>
-  <a href="orders.html">Orders</a>
-  <a href="wallet.html">Wallet</a>
-  <a href="transactions.html" class="active">Transactions</a>
-  <a href="ticket.html">Support Tickets</a>
-  <a href="contact.html">Contact Manager</a>
-  <a href="settings.html">Settings</a>
-  <a href="signin.html">Logout</a>
-</nav>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>DeskOtp</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html" class="active">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
     </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <h1>Transactions</h1>
-          <p>Monitor wallet activity, payments, and service charges</p>
+          <p>Track wallet funding, debits, refunds, and payment activity</p>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-<button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <a href="wallet.html" class="top-btn">Fund Wallet</a>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+          <a href="wallet.html" class="top-btn">Wallet</a>
           <div class="profile-box">
-            <div class="avatar">F</div>
-            <span>Franklyn</span>
+            <div class="avatar">U</div>
+            <span>User</span>
           </div>
         </div>
       </header>
 
-      <section class="transactions-overview reveal">
-        <div class="overview-card highlight-card">
-          <p>Total Transaction Value</p>
-          <h2 class="stat-number" id="transactionsTotalValue">0</h2>
-          <span>All-time platform activity</span>
+      <section class="transactions-stats-grid reveal">
+        <div class="transactions-stat-card">
+          <div class="transactions-stat-top">
+            <div class="transactions-stat-icon transactions-stat-icon-blue">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <span>Total Value</span>
+          </div>
+          <h2 id="transactionsTotalValue">$0.00</h2>
+          <p>Overall transaction volume</p>
         </div>
 
-        <div class="overview-card">
-          <p>Credits</p>
-          <h3 class="stat-number" id="transactionsCreditsValue">0</h3>
-        </div>
-        
-        <div class="overview-card">
-          <p>Debits</p>
-          <h3 class="stat-number" id="transactionsDebitsValue">0</h3>
+        <div class="transactions-stat-card">
+          <div class="transactions-stat-top">
+            <div class="transactions-stat-icon transactions-stat-icon-green">
+              <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <span>Total Credits</span>
+          </div>
+          <h2 id="transactionsCreditsValue">$0.00</h2>
+          <p>Completed credit transactions</p>
         </div>
 
-        <div class="overview-card">
-          <p>Pending</p>
-          <h3 class="stat-number" id="transactionsPendingValue">0</h3>
+        <div class="transactions-stat-card">
+          <div class="transactions-stat-top">
+            <div class="transactions-stat-icon transactions-stat-icon-red">
+              <i class="fa-solid fa-arrow-up"></i>
+            </div>
+            <span>Total Debits</span>
+          </div>
+          <h2 id="transactionsDebitsValue">$0.00</h2>
+          <p>Completed debit transactions</p>
+        </div>
+
+        <div class="transactions-stat-card">
+          <div class="transactions-stat-top">
+            <div class="transactions-stat-icon transactions-stat-icon-yellow">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <span>Pending Value</span>
+          </div>
+          <h2 id="transactionsPendingValue">$0.00</h2>
+          <p>Transactions still processing</p>
         </div>
       </section>
 
-      <section class="transactions-main-grid reveal">
-        <div class="transactions-table-card card">
-          <div class="table-header">
-            <div>
-              <h2>Transaction History</h2>
-              <p>View all incoming and outgoing transactions</p>
+      <section class="transactions-insights-grid reveal">
+        <div class="transactions-insight-card card">
+          <div class="section-title">
+            <h2>Insights</h2>
+            <p>Quick transaction highlights</p>
+          </div>
+
+          <div class="insight-list">
+            <div class="insight-item">
+              <span>Highest Funding</span>
+              <strong id="transactionsHighestFunding">$0.00</strong>
             </div>
 
-            <div class="table-actions">
-              <input type="text"  id="transactionSearchInput" placeholder="Search reference..." />
+            <div class="insight-item">
+              <span>Most Recent Debit</span>
+              <strong id="transactionsRecentDebit">$0.00</strong>
+            </div>
+
+            <div class="insight-item">
+              <span>Failed Count</span>
+              <strong id="transactionsFailedCount">0</strong>
+            </div>
+
+            <div class="insight-item">
+              <span>Monthly Volume</span>
+              <strong id="transactionsMonthlyVolume">$0.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="transactions-alerts-card card">
+          <div class="section-title">
+            <h2>Recent Alerts</h2>
+            <p>Latest transaction activity</p>
+          </div>
+
+          <div class="activity-list" id="transactionsRecentAlerts"></div>
+        </div>
+      </section>
+
+      <section class="transactions-table-card card reveal">
+        <div class="transactions-controls">
+          <div class="section-title">
+            <h2>Transaction History</h2>
+            <p>Search and filter your transactions</p>
+          </div>
+
+          <div class="transactions-filter-grid">
+            <div class="transactions-filter-field">
+              <label for="transactionSearchInput">Search</label>
+              <input
+                type="text"
+                id="transactionSearchInput"
+                placeholder="Search by reference or description"
+              />
+            </div>
+
+            <div class="transactions-filter-field">
+              <label for="transactionTypeFilter">Type</label>
               <select id="transactionTypeFilter">
                 <option value="all">All Types</option>
                 <option value="credit">Credit</option>
                 <option value="debit">Debit</option>
                 <option value="refund">Refund</option>
               </select>
+            </div>
+
+            <div class="transactions-filter-field">
+              <label for="transactionStatusFilter">Status</label>
               <select id="transactionStatusFilter">
-                <option value="all">All Status</option>
+                <option value="all">All Statuses</option>
                 <option value="completed">Completed</option>
                 <option value="pending">Pending</option>
                 <option value="failed">Failed</option>
               </select>
             </div>
           </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Reference</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Amount</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-                            <tbody id="transactionsTableBody"></tbody>
-            </table>
-          </div>
-          <p class="table-empty-message" id="transactionsEmptyMessage">No matching transactions found.</p>
-          <div class="table-pagination" id="transactionsPagination">
-  <button type="button" id="transactionsPrevBtn">Previous</button>
-  <span id="transactionsPageInfo">Page 1 of 1</span>
-  <button type="button" id="transactionsNextBtn">Next</button>
-</div>
         </div>
 
-        <div class="side-panel">
-          <div class="insight-card card">
-            <div class="section-title">
-              <h2>Insights</h2>
-            </div>
+        <div class="table-wrap">
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsTableBody"></tbody>
+          </table>
+        </div>
 
-            <div class="insight-list">
-              <div class="insight-item">
-                <span>Highest funding</span>
-                <strong id="transactionsHighestFunding">$0.00</strong>
-              </div>
-              <div class="insight-item">
-                <span>Most recent debit</span>
-                <strong id="transactionsMostRecentDebit">$0.00</strong>
-              </div>
-              <div class="insight-item">
-                <span>Failed transactions</span>
-                <strong id="transactionsFailedCount">0</strong>
-              </div>
-              <div class="insight-item">
-                <span>Monthly volume</span>
-                <strong id="transactionsMonthlyVolume">$0.00</strong>
-              </div>
-            </div>
-          </div>
+        <p class="transactions-empty-message" id="transactionsEmptyMessage" style="display:none;">
+          No transactions found.
+        </p>
 
-          <div class="activity-card card">
-            <div class="section-title">
-              <h2>Recent Alerts</h2>
-            </div>
-
-            <div class="activity-list" id="transactionsRecentAlerts"></div>
-          </div>
+        <div class="transactions-pagination" id="transactionsPagination">
+          <button type="button" id="transactionsPrevBtn" class="pagination-btn">Previous</button>
+          <span id="transactionsPageInfo">Page 1 of 1</span>
+          <button type="button" id="transactionsNextBtn" class="pagination-btn">Next</button>
         </div>
       </section>
     </main>
   </div>
+
   <script src="/index.js/config.js"></script>
   <script type="module" src="/index.js/require-user.js"></script>
-  <script type="module" src="/index.js/session-ui.js"></script>   
+  <script type="module" src="/index.js/session-ui.js"></script>
   <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>

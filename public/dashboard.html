@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Dashboard</title>
+  <title>DeskOtp Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/dashboard.css" />
-  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
@@ -19,40 +20,84 @@
         <span></span>
         <span></span>
       </div>
-      <div class="loader-text">Loading WaveAuth...</div>
+      <div class="loader-text">Loading dashboard...</div>
     </div>
   </div>
 
-  <div class="sidebar-overlay"></div>
-
   <div class="dashboard-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>DeskOtp</span>
+      </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="active">Dashboard</a>
-        <a href="service.html">Services</a>
-        <a href="Rent a number.html">Rent a Number</a>
-        <a href="orders.html">Orders</a>
-        <a href="wallet.html">Wallet</a>
-        <a href="transactions.html">Transactions</a>
-        <a href="ticket.html">Support Tickets</a>
-        <a href="contact.html">Contact Manager</a>
-        <a href="settings.html">Settings</a>
-        <a href="signin.html">Logout</a>
+        <a href="dashboard.html" class="active">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <main class="main-content">
       <header class="topbar">
-        <div>
+        <div class="topbar-copy">
           <h1>Dashboard</h1>
-          <p>Welcome back</p>
+          <p>Track wallet activity, orders, rentals, and platform updates in one place.</p>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
           <a href="wallet.html" class="top-btn">Fund Wallet</a>
           <div class="profile-box">
             <div class="avatar">U</div>
@@ -61,76 +106,192 @@
         </div>
       </header>
 
-      <section class="overview-grid reveal">
-        <div class="balance-card card">
-          <p>Available Balance</p>
-          <h2 class="stat-number" id="dashboardWalletBalance">$0.00</h2>
-          <span>Updated just now</span>
+      <!-- Desktop / tablet stats -->
+      <section class="dashboard-stats-grid desktop-stats-grid reveal">
+        <div class="dashboard-stat-card dashboard-stat-card--primary">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <span>Available Balance</span>
+          </div>
+          <h2 class="dashboard-stat-value" id="dashboardWalletBalance">₦0.00</h2>
+          <p>Live wallet balance</p>
         </div>
 
-        <div class="mini-card card">
-          <p>Total Orders</p>
-          <h3 class="stat-number" id="dashboardOrdersCount">0</h3>
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--blue">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <span>Total Orders</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardOrdersCount">0</h3>
+          <p>OTP and rent orders combined</p>
         </div>
 
-        <div class="mini-card card">
-          <p>Total Transactions</p>
-          <h3 class="stat-number" id="dashboardTransactionsCount">0</h3>
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--purple">
+              <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
+            <span>Total Transactions</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardTransactionsCount">0</h3>
+          <p>Credits, debits, and refunds</p>
         </div>
 
-        <div class="mini-card card">
-          <p>API Status</p>
-          <h3 id="dashboardApiStatus">Connected</h3>
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--green">
+              <i class="fa-solid fa-signal"></i>
+            </div>
+            <span>API Status</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardApiStatus">Connected</h3>
+          <p>Service connection status</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--blue">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <span>Active Orders</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardActiveOrdersCount">0</h3>
+          <p>Pending and active orders</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--green">
+              <i class="fa-solid fa-check-double"></i>
+            </div>
+            <span>Completed Orders</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardCompletedOrdersCount">0</h3>
+          <p>Orders with received OTP</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--purple">
+              <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <span>Total Refunds</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardRefundsCount">0</h3>
+          <p>Refund transactions recorded</p>
+        </div>
+
+        <div class="dashboard-stat-card">
+          <div class="dashboard-stat-top">
+            <div class="dashboard-stat-icon dashboard-stat-icon--green">
+              <i class="fa-solid fa-naira-sign"></i>
+            </div>
+            <span>Refund Value</span>
+          </div>
+          <h3 class="dashboard-stat-value-small" id="dashboardRefundAmount">₦0.00</h3>
+          <p>Total refunded back to users</p>
         </div>
       </section>
 
-      <section class="quick-actions reveal">
+      <!-- Mobile wallet hero -->
+      <section class="mobile-wallet-hero reveal">
+        <div class="mobile-wallet-card">
+          <div class="mobile-wallet-top">
+            <div>
+              <p class="mobile-wallet-label">Wallet Balance</p>
+              <h2 class="mobile-wallet-balance" id="mobileDashboardWalletBalance">₦0.00</h2>
+            </div>
+
+            <button class="wallet-visibility-btn" type="button" id="walletVisibilityToggle" aria-label="Show or hide balance">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+
+          <div class="mobile-wallet-actions">
+            <a href="wallet.html" class="mobile-wallet-btn mobile-wallet-btn--primary">Add Money</a>
+            <a href="transactions.html" class="mobile-wallet-btn mobile-wallet-btn--secondary">History</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mobile quick actions -->
+      <section class="quick-actions-section reveal">
         <div class="section-title">
           <h2>Quick Actions</h2>
         </div>
 
-        <div class="action-grid">
-          <div class="action-card card">
-            <h3>Browse Services</h3>
-            <p>View all available services and categories.</p>
-            <a href="service.html">Open</a>
-          </div>
+        <div class="quick-actions-icon-grid">
+          <a href="service.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-blue">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <span>Buy OTP</span>
+          </a>
 
-          <div class="action-card card">
-            <h3>Fund Wallet</h3>
-            <p>Add money to your account wallet quickly.</p>
-            <a href="wallet.html">Add Funds</a>
-          </div>
+          <a href="Rent a number.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-orange">
+              <i class="fa-solid fa-phone-volume"></i>
+            </div>
+            <span>Rent Number</span>
+          </a>
 
-          <div class="action-card card">
-            <h3>View Orders</h3>
-            <p>Track your pending and completed orders.</p>
-            <a href="orders.html">See Orders</a>
-          </div>
+          <a href="wallet.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-green">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <span>Fund Wallet</span>
+          </a>
 
-          <div class="action-card card">
-            <h3>Contact Support</h3>
-            <p>Submit a ticket and get help from support.</p>
-            <a href="ticket.html">Open Tickets</a>
-          </div>
+          <a href="orders.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-yellow">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <span>Orders</span>
+          </a>
+
+          <a href="transactions.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-cyan">
+              <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
+            <span>Transactions</span>
+          </a>
+
+          <a href="tickets.html" class="quick-action-item">
+            <div class="quick-action-icon quick-action-pink">
+              <i class="fa-solid fa-headset"></i>
+            </div>
+            <span>Support</span>
+          </a>
         </div>
       </section>
 
       <section class="content-grid reveal">
-        <div class="table-card card">
-          <div class="section-title">
-            <h2>Recent Orders</h2>
+        <div class="dashboard-panel-card recent-orders-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h2>Recent Orders</h2>
+              <p>Your latest OTP and rent orders</p>
+            </div>
+            <a href="orders.html" class="panel-link">View all</a>
           </div>
 
-          <div class="activity-list" id="dashboardRecentOrders"></div>
+          <div class="dashboard-list" id="dashboardRecentOrders"></div>
         </div>
 
-        <div class="activity-card card">
-          <div class="section-title">
-            <h2>Recent Transactions</h2>
+        <div class="dashboard-panel-card recent-transactions-card">
+          <div class="dashboard-panel-header">
+            <div>
+              <h2>Recent Transactions</h2>
+              <p>Latest wallet credits, debits, and refunds</p>
+            </div>
+            <a href="transactions.html" class="panel-link">View all</a>
           </div>
 
-          <div class="activity-list" id="dashboardRecentTransactions"></div>
+          <div class="dashboard-list" id="dashboardRecentTransactions"></div>
         </div>
       </section>
     </main>

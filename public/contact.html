@@ -3,160 +3,218 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveAuth Contact</title>
+  <title>DeskOtp Contact Manager</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="/style.css/panel.css" />
   <link rel="stylesheet" href="/style.css/contact.css" />
-  <link rel="stylesheet" href="/style.css/loader.css"/>
+  <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
 </head>
 <body>
   <div class="loader-wrapper">
-  <div class="loader-box">
-    <div class="loader-logo">W</div>
-    <div class="loader-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="loader-box">
+      <div class="loader-logo">W</div>
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="loader-text">Loading contact manager...</div>
     </div>
-    <div class="loader-text">Loading WaveAuth...</div>
   </div>
-</div>
-  <header class="site-header">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">WaveAuth</a>
 
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="service.html">Services</a>
-        <a href="/public/dashboard.html">dashboard</a>
-        <a href="faq.html">FAQ</a>
-        <a href="contact.html" class="active">Contact</a>
+  <div class="contact-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
+        <span>DeskOtp</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="service.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Services</span>
+        </a>
+
+        <a href="Rent a number.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Rent a Number</span>
+        </a>
+
+        <a href="orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Orders</span>
+        </a>
+
+        <a href="wallet.html">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Wallet</span>
+        </a>
+
+        <a href="transactions.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Transactions</span>
+        </a>
+
+        <a href="tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Support Tickets</span>
+        </a>
+
+        <a href="contact.html" class="active">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Contact Manager</span>
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
+    </aside>
 
-      <div class="nav-actions">
-        <button class="mobile-menu-btn" type="button">☰</button>
-        <button class="theme-toggle-btn" type="button">🌙</button>
-        <a href="signin.html" class="btn btn-outline">Login</a>
-        <a href="signup.html" class="btn btn-primary">Get Started</a>
-      </div>
-    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <div class="mobile-nav">
-      <a href="index.html">Home</a>
-      <a href="service.html">Services</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html">Contact</a>
-      <a href="signin.html">Login</a>
-      <a href="signup.html">Get Started</a>
-    </div>
-  </header>
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-copy">
+          <h1>Contact Manager</h1>
+          <p>Save and organize important contacts for your workflow</p>
+        </div>
 
-  <main>
-    <section class="hero-section reveal">
-      <div class="container hero-content">
-        <span class="badge">Contact Us</span>
-        <h1>We’re here to help</h1>
-        <p>
-          Reach out to support, ask questions about the platform, or send us
-          feedback about your experience.
-        </p>
-      </div>
-    </section>
+        <div class="topbar-actions">
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+          <div class="profile-box">
+            <div class="avatar">U</div>
+            <span>User</span>
+          </div>
+        </div>
+      </header>
 
-    <section class="contact-section reveal">
-      <div class="container contact-grid">
-        <div class="contact-card">
-          <h2>Send a message</h2>
-          <form class="contact-form" id="contactForm">
-            <div class="form-row">
-              <div class="input-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" placeholder="Your full name" />
+      <section class="contact-stats-grid reveal">
+        <div class="contact-stat-card">
+          <div class="contact-stat-top">
+            <div class="contact-stat-icon icon-blue">
+              <i class="fa-solid fa-address-book"></i>
+            </div>
+            <span>Total Contacts</span>
+          </div>
+          <h2 id="contactsTotalCount">0</h2>
+          <p>All saved contacts</p>
+        </div>
+
+        <div class="contact-stat-card">
+          <div class="contact-stat-top">
+            <div class="contact-stat-icon icon-green">
+              <i class="fa-solid fa-phone"></i>
+            </div>
+            <span>With Phone</span>
+          </div>
+          <h2 id="contactsPhoneCount">0</h2>
+          <p>Contacts with phone numbers</p>
+        </div>
+
+        <div class="contact-stat-card">
+          <div class="contact-stat-top">
+            <div class="contact-stat-icon icon-purple">
+              <i class="fa-solid fa-envelope"></i>
+            </div>
+            <span>With Email</span>
+          </div>
+          <h2 id="contactsEmailCount">0</h2>
+          <p>Contacts with email addresses</p>
+        </div>
+      </section>
+
+      <section class="contact-main-grid reveal">
+        <div class="card contact-form-card">
+          <div class="section-title">
+            <h2>Add Contact</h2>
+            <p>Save a new contact to your manager</p>
+          </div>
+
+          <form id="contactForm" class="contact-form">
+            <div class="contact-form-grid">
+              <div class="contact-field">
+                <label for="contactName">Full Name</label>
+                <input type="text" id="contactName" placeholder="Enter full name" required />
               </div>
 
-              <div class="input-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="you@example.com" />
+              <div class="contact-field">
+                <label for="contactPhone">Phone Number</label>
+                <input type="text" id="contactPhone" placeholder="Enter phone number" />
+              </div>
+
+              <div class="contact-field">
+                <label for="contactEmail">Email Address</label>
+                <input type="email" id="contactEmail" placeholder="Enter email address" />
+              </div>
+
+              <div class="contact-field">
+                <label for="contactTag">Tag</label>
+                <input type="text" id="contactTag" placeholder="Example: Buyer, VIP, Supplier" />
               </div>
             </div>
 
-            <div class="input-group">
-              <label for="subject">Subject</label>
-              <input type="text" id="subject" placeholder="How can we help?" />
+            <div class="contact-field">
+              <label for="contactNote">Note</label>
+              <textarea id="contactNote" rows="4" placeholder="Optional note about this contact"></textarea>
             </div>
 
-            <div class="input-group">
-              <label for="message">Message</label>
-              <textarea id="message" rows="6" placeholder="Write your message here"></textarea>
+            <div class="contact-form-actions">
+              <button type="submit" class="primary-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>Save Contact</span>
+              </button>
             </div>
 
-            <button type="submit" class="btn btn-primary full-btn">Send Message</button>
+            <p id="contactFormMessage" class="contact-form-message"></p>
           </form>
         </div>
 
-        <div class="info-column">
-          <div class="info-card">
-            <h3>Support Email</h3>
-            <p>support@waveauth.com</p>
+        <div class="card contact-list-card">
+          <div class="contact-list-header">
+            <div class="section-title">
+              <h2>Saved Contacts</h2>
+              <p>Search and manage your contact list</p>
+            </div>
+
+            <div class="contact-search-wrap">
+              <input
+                type="text"
+                id="contactSearchInput"
+                placeholder="Search by name, phone, email, or tag"
+              />
+            </div>
           </div>
 
-          <div class="info-card">
-            <h3>Phone</h3>
-            <p>+234 000 000 0000</p>
-          </div>
-
-          <div class="info-card">
-            <h3>Office Hours</h3>
-            <p>Monday - Friday, 9:00 AM - 5:00 PM</p>
-          </div>
-
-          <div class="info-card">
-            <h3>Location</h3>
-            <p>Nigeria</p>
-          </div>
+          <div id="contactList" class="contact-list"></div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
 
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div>
-        <h3>WaveAuth</h3>
-        <p>Modern service platform built for access, account flow, and scale.</p>
-      </div>
-
-      <div>
-        <h4>Pages</h4>
-        <a href="index.html">Home</a>
-        <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
-      </div>
-
-      <div>
-        <h4>Account</h4>
-        <a href="signup.html">Sign Up</a>
-        <a href="signin.html">Sign In</a>
-      </div>
-
-      <div>
-        <h4>Support</h4>
-        <a href="faq.html">FAQ</a>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>© 2026 WaveAuth. All rights reserved.</p>
-    </div>
-  </footer>
   <script src="/index.js/config.js"></script>
- <script type="module" src="/index.js/require-user.js"></script>
- <script type="module" src="/index.js/session-ui.js"></script>   
-  <script src="/index.js/theme.js"></script>
-  <script src="/index.js/nav.js"></script>
+  <script type="module" src="/index.js/require-user.js"></script>
+  <script type="module" src="/index.js/session-ui.js"></script>
+  <script src="/index.js/panel.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script type="module" src="/index.js/contact.js"></script>
+  <script src="/index.js/contact.js"></script>
 </body>
 </html>

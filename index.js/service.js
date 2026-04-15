@@ -1,66 +1,88 @@
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
-const filterButtons = document.querySelectorAll(".filter-btn");
+const countryFilter = document.getElementById("countryFilter");
+const serviceFilter = document.getElementById("serviceFilter");
+const selectedServiceBox = document.getElementById("selectedServiceBox");
 const servicesGrid = document.getElementById("servicesGrid");
 const servicesEmptyMessage = document.getElementById("servicesEmptyMessage");
+const servicesCountriesCount = document.getElementById("servicesCountriesCount");
+const servicesTotalCount = document.getElementById("servicesTotalCount");
 
-let allServices = [];
-let activeFilter = "all";
+let allCountries = [];
+let currentServices = [];
+let selectedServiceData = null;
 
 const formatPrice = (price) => {
-  return `$${Number(price).toFixed(2)}`;
+  return `₦${Number(price || 0).toLocaleString("en-NG")}`;
 };
 
-const getCategoryLabel = (category) => {
-  const labels = {
-    otp: "OTP",
-    sms: "SMS",
-    voice: "Voice",
-    renewal: "Renewal",
-    replacement: "Replacement"
-  };
-
-  return labels[category] || category;
+const prettifyText = (value) => {
+  if (!value) return "";
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-const getServiceTag = (service) => {
-  return `${service.country} • ${getCategoryLabel(service.category)}`;
+const showMessage = (type, title, message) => {
+  if (typeof showToast === "function") {
+    showToast(type, title, message);
+  } else {
+    alert(message);
+  }
 };
 
-const renderServices = () => {
-  if (!servicesGrid) return;
+const isOutOfStockMessage = (message) => {
+  const text = String(message || "").toLowerCase();
+  return (
+    text.includes("out of stock") ||
+    text.includes("no free phones") ||
+    text.includes("service is currently out of stock")
+  );
+};
 
-  let filteredServices = allServices;
-
-  if (activeFilter !== "all") {
-    filteredServices = allServices.filter((service) => {
-      if (activeFilter === "popular") {
-        return service.category === "otp";
-      }
-
-      if (activeFilter === "business") {
-        return service.category === "sms" || service.category === "voice";
-      }
-
-      if (activeFilter === "api") {
-        return service.serviceCode?.toLowerCase().includes("api");
-      }
-
-      if (activeFilter === "standard") {
-        return service.category === "otp";
-      }
-
-      if (activeFilter === "advanced") {
-        return service.category === "voice" || service.category === "replacement";
-      }
-
-      return true;
-    });
+const updateSummaryCounts = (visibleServices = []) => {
+  if (servicesCountriesCount) {
+    servicesCountriesCount.textContent = allCountries.length;
   }
 
+  if (servicesTotalCount) {
+    servicesTotalCount.textContent = visibleServices.length || currentServices.length;
+  }
+};
+
+const renderEmptySelection = (message = "Select a country, then choose a service to see details here.") => {
+  if (!selectedServiceBox) return;
+
+  selectedServiceBox.innerHTML = `
+    <div class="selected-service-empty">
+      <i class="fa-solid fa-hand-pointer"></i>
+      <h3>No service selected</h3>
+      <p>${message}</p>
+    </div>
+  `;
+};
+
+const getVisibleServices = () => {
+  const selectedName = serviceFilter?.value || "";
+
+  if (!selectedName) {
+    return currentServices;
+  }
+
+  return currentServices.filter(
+    (service) => String(service.name).toLowerCase() === String(selectedName).toLowerCase()
+  );
+};
+
+const renderServicesGrid = () => {
+  if (!servicesGrid) return;
+
+  const visibleServices = getVisibleServices();
+
+  updateSummaryCounts(visibleServices);
   servicesGrid.innerHTML = "";
 
-  if (filteredServices.length === 0) {
+  if (!visibleServices.length) {
     if (servicesEmptyMessage) {
       servicesEmptyMessage.style.display = "block";
     }
@@ -71,61 +93,316 @@ const renderServices = () => {
     servicesEmptyMessage.style.display = "none";
   }
 
-  filteredServices.forEach((service) => {
+  visibleServices.forEach((service) => {
     const article = document.createElement("article");
     article.className = "service-card";
 
+    const isAvailable = Boolean(service.available);
+
     article.innerHTML = `
-      <div class="card-top">
-        <span class="service-type">${getServiceTag(service)}</span>
+      <div class="service-card-top">
+        <span class="service-tag">${prettifyText(service.country)} • ${prettifyText(service.name)}</span>
         <span class="service-price">${formatPrice(service.price)}</span>
       </div>
 
-      <h3>${service.name}</h3>
-      <p>${service.description || "Virtual number service available for OTP delivery."}</p>
+      <h3>${prettifyText(service.name)}</h3>
+      <p>Live provider service available for ${prettifyText(service.country)}.</p>
 
-      <ul>
-        <li>Country: ${service.country}</li>
-        <li>Delivery: ${service.deliveryType}</li>
-        <li>Status: ${service.status}</li>
-      </ul>
+      <div class="service-meta-list">
+        <div class="service-meta-item">
+          <span class="meta-label">Country</span>
+          <strong>${prettifyText(service.country)}</strong>
+        </div>
 
-       <a href="checkout.html?serviceId=${service._id}" class="card-btn">Select Service</a>
+        <div class="service-meta-item">
+          <span class="meta-label">Service</span>
+          <strong>${prettifyText(service.name)}</strong>
+        </div>
+
+        <div class="service-meta-item">
+          <span class="meta-label">Availability</span>
+          <strong class="service-status ${isAvailable ? "is-active" : "is-inactive"}">
+            ${isAvailable ? `${service.count || 0} available` : "Out of stock"}
+          </strong>
+        </div>
+      </div>
+
+      <button
+        class="service-card-btn ${isAvailable ? "" : "disabled-link"}"
+        data-service="${service.name}"
+        ${isAvailable ? "" : "disabled"}
+      >
+        ${isAvailable ? "Select Service" : "Out of Stock"}
+      </button>
     `;
 
     servicesGrid.appendChild(article);
   });
+
+  bindServiceSelectButtons();
 };
 
-const fetchServices = async () => {
-  if (!servicesGrid) return;
+const renderSelectedService = (service) => {
+  if (!selectedServiceBox || !service) return;
 
-  servicesGrid.innerHTML = `<p style="color: var(--muted);">Loading services...</p>`;
+  selectedServiceData = service;
 
+  const isAvailable = Boolean(service.available);
+
+  selectedServiceBox.innerHTML = `
+    <div class="selected-service-card">
+      <div class="selected-service-top">
+        <div>
+          <span class="selected-service-badge">${prettifyText(service.country)}</span>
+          <h3>${prettifyText(service.name)}</h3>
+        </div>
+        <div class="selected-service-price">${formatPrice(service.price)}</div>
+      </div>
+
+      <div class="selected-service-meta">
+        <div class="selected-meta-box">
+          <span>Status</span>
+          <strong class="${isAvailable ? "text-success" : "text-danger"}">
+            ${isAvailable ? "Available" : "Out of stock"}
+          </strong>
+        </div>
+
+        <div class="selected-meta-box">
+          <span>Stock</span>
+          <strong>${service.count || 0}</strong>
+        </div>
+
+        <div class="selected-meta-box">
+          <span>Service</span>
+          <strong>${prettifyText(service.name)}</strong>
+        </div>
+      </div>
+
+      <div class="selected-service-actions">
+        <button
+          class="selected-service-btn ${isAvailable ? "" : "disabled-link"}"
+          id="buySelectedServiceBtn"
+          ${isAvailable ? "" : "disabled"}
+        >
+          ${isAvailable ? `Buy for ${formatPrice(service.price)}` : "Currently Out of Stock"}
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("buySelectedServiceBtn")?.addEventListener("click", buySelectedService);
+};
+
+const populateCountryDropdown = (countries) => {
+  if (!countryFilter) return;
+
+  countryFilter.innerHTML = `<option value="">Select Country</option>`;
+
+  countries.forEach((country) => {
+    const option = document.createElement("option");
+    option.value = country;
+    option.textContent = prettifyText(country);
+    countryFilter.appendChild(option);
+  });
+};
+
+const populateServiceDropdown = (services) => {
+  if (!serviceFilter) return;
+
+  serviceFilter.innerHTML = `<option value="">Select Service</option>`;
+
+  services.forEach((service) => {
+    const option = document.createElement("option");
+    option.value = service.name;
+    option.textContent = `${prettifyText(service.name)} (${formatPrice(service.price)})`;
+    serviceFilter.appendChild(option);
+  });
+
+  serviceFilter.disabled = services.length === 0;
+};
+
+const loadCountries = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/services`);
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch services");
+      throw new Error(data.message || "Failed to load countries");
     }
 
-    allServices = data.services || [];
-    renderServices();
+    allCountries = data.data || [];
+    populateCountryDropdown(allCountries);
+    updateSummaryCounts([]);
   } catch (error) {
-    servicesGrid.innerHTML = `<p style="color: #ef4444;">${error.message || "Could not load services."}</p>`;
+    console.error(error.message);
+    showMessage("error", "Countries failed", error.message || "Could not load countries.");
   }
 };
 
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activeFilter = button.dataset.filter || "all";
+const loadServicesByCountry = async (country) => {
+  if (!servicesGrid) return;
 
-    filterButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
+  servicesGrid.innerHTML = `<p style="color: var(--muted);">Loading services...</p>`;
+  renderEmptySelection();
 
-    renderServices();
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/services?country=${encodeURIComponent(country)}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to load services");
+    }
+
+    currentServices = data.services || [];
+    populateServiceDropdown(currentServices);
+    updateSummaryCounts(currentServices);
+    renderServicesGrid();
+  } catch (error) {
+    console.error(error.message);
+    servicesGrid.innerHTML = `<p style="color: #ef4444;">${error.message || "Could not load services."}</p>`;
+    currentServices = [];
+    selectedServiceData = null;
+    populateServiceDropdown([]);
+    updateSummaryCounts([]);
+  }
+};
+
+const refreshCurrentCountryServices = async () => {
+  const selectedCountry = countryFilter?.value || "";
+
+  if (!selectedCountry) return;
+
+  selectedServiceData = null;
+
+  if (serviceFilter) {
+    serviceFilter.value = "";
+  }
+
+  renderEmptySelection("Service availability has been refreshed. Please choose again.");
+  await loadServicesByCountry(selectedCountry);
+};
+
+const bindServiceSelectButtons = () => {
+  document.querySelectorAll(".service-card-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.disabled) return;
+
+      const serviceName = button.dataset.service;
+      const selected = currentServices.find(
+        (service) => String(service.name).toLowerCase() === String(serviceName).toLowerCase()
+      );
+
+      if (!selected) return;
+
+      if (serviceFilter) {
+        serviceFilter.value = selected.name;
+      }
+
+      renderServicesGrid();
+      renderSelectedService(selected);
+    });
   });
+};
+
+const buySelectedService = async () => {
+  if (!selectedServiceData) return;
+
+  if (!selectedServiceData.available) {
+    showMessage("error", "Out of stock", "This service is currently out of stock.");
+    await refreshCurrentCountryServices();
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    showMessage("error", "Login required", "You must be logged in.");
+    window.location.href = "signin.html";
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/orders/buy`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        country: selectedServiceData.country,
+        serviceName: selectedServiceData.name
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      if (isOutOfStockMessage(data.message)) {
+        showMessage(
+          "error",
+          "Out of stock",
+          data.message || "This service is currently out of stock. Please try another service or country."
+        );
+
+        await refreshCurrentCountryServices();
+        return;
+      }
+
+      throw new Error(data.message || "Failed to buy number");
+    }
+
+    showMessage(
+      "success",
+      "Purchase successful",
+      `Number purchased for ${formatPrice(data.order?.price || selectedServiceData.price)}.`
+    );
+
+    window.location.href = "orders.html";
+  } catch (error) {
+    showMessage("error", "Purchase failed", error.message || "Something went wrong.");
+  }
+};
+
+countryFilter?.addEventListener("change", () => {
+  const selectedCountry = countryFilter.value;
+
+  if (!selectedCountry) {
+    currentServices = [];
+    selectedServiceData = null;
+    populateServiceDropdown([]);
+    renderEmptySelection();
+    renderServicesGrid();
+    updateSummaryCounts([]);
+    return;
+  }
+
+  selectedServiceData = null;
+  loadServicesByCountry(selectedCountry);
 });
 
-fetchServices();
+serviceFilter?.addEventListener("change", () => {
+  const selectedName = serviceFilter.value;
+
+  renderServicesGrid();
+
+  if (!selectedName) {
+    selectedServiceData = null;
+    renderEmptySelection();
+    return;
+  }
+
+  const selectedService = currentServices.find(
+    (service) => String(service.name).toLowerCase() === String(selectedName).toLowerCase()
+  );
+
+  if (!selectedService) {
+    selectedServiceData = null;
+    renderEmptySelection();
+    return;
+  }
+
+  renderSelectedService(selectedService);
+});
+
+renderEmptySelection();
+loadCountries();

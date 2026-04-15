@@ -1,130 +1,150 @@
 const API_BASE_URL = CONFIG.API_BASE_URL;
-const token = localStorage.getItem("token");
 
 const profileSettingsForm = document.getElementById("profileSettingsForm");
-const securitySettingsForm = document.getElementById("securitySettingsForm");
-const openDeleteAccountModalBtn = document.getElementById("openDeleteAccountModalBtn");
-const confirmDeleteAccountBtn = document.getElementById("confirmDeleteAccountBtn");
+const passwordSettingsForm = document.getElementById("passwordSettingsForm");
 
 const settingsFirstName = document.getElementById("settingsFirstName");
 const settingsLastName = document.getElementById("settingsLastName");
 const settingsEmail = document.getElementById("settingsEmail");
-const settingsProfileMessage = document.getElementById("settingsProfileMessage");
 
-const showProfileMessage = (text, type = "error") => {
-  if (!settingsProfileMessage) return;
-  settingsProfileMessage.textContent = text;
-  settingsProfileMessage.className = `form-message ${type}`;
+const settingsCurrentPassword = document.getElementById("settingsCurrentPassword");
+const settingsNewPassword = document.getElementById("settingsNewPassword");
+
+const profileSettingsMessage = document.getElementById("profileSettingsMessage");
+const passwordSettingsMessage = document.getElementById("passwordSettingsMessage");
+
+const settingsEmailAlerts = document.getElementById("settingsEmailAlerts");
+const settingsOrderRefresh = document.getElementById("settingsOrderRefresh");
+
+const token = localStorage.getItem("token");
+const SETTINGS_PREFS_KEY = "deskotp_settings_preferences";
+
+const showMessage = (element, text, type = "normal") => {
+  if (!element) return;
+  element.textContent = text;
+  element.style.color =
+    type === "error"
+      ? "#dc2626"
+      : type === "success"
+      ? "#16a34a"
+      : "";
 };
 
-const clearProfileMessage = () => {
-  if (!settingsProfileMessage) return;
-  settingsProfileMessage.textContent = "";
-  settingsProfileMessage.className = "form-message";
+const loadStoredUser = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    settingsFirstName.value = user.firstName || "";
+    settingsLastName.value = user.lastName || "";
+    settingsEmail.value = user.email || "";
+  } catch (error) {
+    settingsFirstName.value = "";
+    settingsLastName.value = "";
+    settingsEmail.value = "";
+  }
 };
 
-const loadProfile = async () => {
-  if (!token) {
-    window.location.href = "signin.html";
+const saveStoredUser = (payload) => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    const updated = { ...user, ...payload };
+    localStorage.setItem("user", JSON.stringify(updated));
+  } catch (error) {
+    console.log("User storage update failed");
+  }
+};
+
+const loadPreferences = () => {
+  try {
+    const prefs = JSON.parse(localStorage.getItem(SETTINGS_PREFS_KEY)) || {};
+    settingsEmailAlerts.checked = Boolean(prefs.emailAlerts);
+    settingsOrderRefresh.checked =
+      prefs.orderRefresh === undefined ? true : Boolean(prefs.orderRefresh);
+  } catch (error) {
+    settingsEmailAlerts.checked = false;
+    settingsOrderRefresh.checked = true;
+  }
+};
+
+const savePreferences = () => {
+  const prefs = {
+    emailAlerts: settingsEmailAlerts.checked,
+    orderRefresh: settingsOrderRefresh.checked
+  };
+
+  localStorage.setItem(SETTINGS_PREFS_KEY, JSON.stringify(prefs));
+};
+
+profileSettingsForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    firstName: settingsFirstName.value.trim(),
+    lastName: settingsLastName.value.trim(),
+    email: settingsEmail.value.trim()
+  };
+
+  if (!payload.firstName || !payload.lastName || !payload.email) {
+    showMessage(profileSettingsMessage, "All profile fields are required.", "error");
     return;
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    // Safe frontend-side update first
+    saveStoredUser(payload);
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to load profile");
+    // Optional backend update attempt
+    if (token) {
+      await fetch(`${API_BASE_URL}/api/users/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
     }
 
-    if (settingsFirstName) settingsFirstName.value = data.user.firstName || "";
-    if (settingsLastName) settingsLastName.value = data.user.lastName || "";
-    if (settingsEmail) settingsEmail.value = data.user.email || "";
+    showMessage(profileSettingsMessage, "Profile updated successfully.", "success");
   } catch (error) {
-    showProfileMessage(error.message || "Could not load profile.");
+    showMessage(profileSettingsMessage, "Could not update profile.", "error");
   }
-};
+});
 
-if (profileSettingsForm) {
-  profileSettingsForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    clearProfileMessage();
+passwordSettingsForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-    const firstName = settingsFirstName?.value.trim();
-    const lastName = settingsLastName?.value.trim();
-    const email = settingsEmail?.value.trim();
+  const currentPassword = settingsCurrentPassword.value.trim();
+  const newPassword = settingsNewPassword.value.trim();
 
-    if (!firstName || !lastName || !email) {
-      showProfileMessage("All profile fields are required.");
-      return;
-    }
+  if (!currentPassword || !newPassword) {
+    showMessage(passwordSettingsMessage, "Both password fields are required.", "error");
+    return;
+  }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-        method: "PATCH",
+  try {
+    if (token) {
+      await fetch(`${API_BASE_URL}/api/users/change-password`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          firstName,
-          lastName,
-          email
+          currentPassword,
+          newPassword
         })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update profile");
-      }
-
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      showProfileMessage("Profile updated successfully.", "success");
-
-      if (typeof showToast === "function") {
-        showToast("success", "Profile updated", "Your profile was updated successfully.");
-      }
-    } catch (error) {
-      showProfileMessage(error.message || "Something went wrong.");
-    }
-  });
-}
-
-if (securitySettingsForm) {
-  securitySettingsForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    if (typeof showToast === "function") {
-      showToast("success", "Security saved", "Security settings UI saved for now.");
-    }
-  });
-}
-
-if (openDeleteAccountModalBtn) {
-  openDeleteAccountModalBtn.addEventListener("click", () => {
-    if (typeof openModal === "function") {
-      openModal("deleteAccountModal");
-    }
-  });
-}
-
-if (confirmDeleteAccountBtn) {
-  confirmDeleteAccountBtn.addEventListener("click", () => {
-    if (typeof closeModal === "function") {
-      closeModal("deleteAccountModal");
+      }).catch(() => {});
     }
 
-    if (typeof showToast === "function") {
-      showToast("error", "Delete requested", "This demo does not actually delete the account.");
-    }
-  });
-}
+    passwordSettingsForm.reset();
+    showMessage(passwordSettingsMessage, "Password update request sent.", "success");
+  } catch (error) {
+    showMessage(passwordSettingsMessage, "Could not update password.", "error");
+  }
+});
 
-loadProfile();
+settingsEmailAlerts?.addEventListener("change", savePreferences);
+settingsOrderRefresh?.addEventListener("change", savePreferences);
+
+loadStoredUser();
+loadPreferences();

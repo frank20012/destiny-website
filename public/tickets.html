@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeskOtp Services</title>
+  <title>DeskOtp Support Tickets</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/services.css" />
+  <link rel="stylesheet" href="/style.css/tickets.css" />
   <link rel="stylesheet" href="/style.css/loader.css" />
   <link rel="stylesheet" href="/style.css/reveal.css" />
   <link rel="stylesheet" href="/style.css/toast.css" />
@@ -20,11 +20,11 @@
         <span></span>
         <span></span>
       </div>
-      <div class="loader-text">Loading services...</div>
+      <div class="loader-text">Loading support tickets...</div>
     </div>
   </div>
 
-  <div class="services-layout">
+  <div class="tickets-layout">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
         <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
@@ -37,7 +37,7 @@
           <span>Dashboard</span>
         </a>
 
-        <a href="service.html" class="active">
+        <a href="service.html">
           <i class="fa-solid fa-layer-group"></i>
           <span>Services</span>
         </a>
@@ -62,7 +62,7 @@
           <span>Transactions</span>
         </a>
 
-        <a href="tickets.html">
+        <a href="tickets.html" class="active">
           <i class="fa-solid fa-headset"></i>
           <span>Support Tickets</span>
         </a>
@@ -89,8 +89,8 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-copy">
-          <h1>Services</h1>
-          <p>Select a country, then choose a service</p>
+          <h1>Support Tickets</h1>
+          <p>Create and track support issues from one place</p>
         </div>
 
         <div class="topbar-actions">
@@ -98,7 +98,6 @@
             <i class="fas fa-bars"></i>
           </button>
           <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
-          <a href="dashboard.html" class="top-btn">Dashboard</a>
           <div class="profile-box">
             <div class="avatar">U</div>
             <span>User</span>
@@ -106,87 +105,87 @@
         </div>
       </header>
 
-      <section class="services-hero-card reveal">
-        <div class="services-hero-copy">
-          <span class="hero-badge">Provider Services</span>
-          <h2>Choose country first, then select the platform you need.</h2>
-          <p>
-            This page loads live provider-backed service options by country, then lets users choose platforms like WhatsApp, Facebook, Telegram, and others.
-          </p>
+      <section class="ticket-stats-grid reveal">
+        <div class="ticket-stat-card">
+          <div class="ticket-stat-top">
+            <div class="ticket-stat-icon icon-blue">
+              <i class="fa-solid fa-ticket"></i>
+            </div>
+            <span>Total Tickets</span>
+          </div>
+          <h2 id="ticketsTotalCount">0</h2>
+          <p>All support tickets</p>
         </div>
 
-        <div class="services-summary-grid">
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-blue">
-              <i class="fa-solid fa-globe"></i>
+        <div class="ticket-stat-card">
+          <div class="ticket-stat-top">
+            <div class="ticket-stat-icon icon-yellow">
+              <i class="fa-solid fa-hourglass-half"></i>
             </div>
-            <div>
-              <strong id="servicesCountriesCount">0</strong>
-              <span>Countries</span>
-            </div>
+            <span>Open</span>
           </div>
+          <h2 id="ticketsOpenCount">0</h2>
+          <p>Still awaiting resolution</p>
+        </div>
 
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-purple">
-              <i class="fa-solid fa-layer-group"></i>
+        <div class="ticket-stat-card">
+          <div class="ticket-stat-top">
+            <div class="ticket-stat-icon icon-green">
+              <i class="fa-solid fa-check"></i>
             </div>
-            <div>
-              <strong id="servicesTotalCount">0</strong>
-              <span>Loaded Services</span>
-            </div>
+            <span>Resolved</span>
           </div>
-
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-green">
-              <i class="fa-solid fa-bolt"></i>
-            </div>
-            <div>
-              <strong>Live</strong>
-              <span>Provider Feed</span>
-            </div>
-          </div>
+          <h2 id="ticketsResolvedCount">0</h2>
+          <p>Resolved support cases</p>
         </div>
       </section>
 
-      <section class="services-filter-section reveal">
-        <div class="service-filter-panel">
-          <div class="service-filter-group">
-            <label for="countryFilter">Select Country</label>
-            <select id="countryFilter">
-              <option value="">Select Country</option>
-            </select>
+      <section class="ticket-main-grid reveal">
+        <div class="card ticket-form-card">
+          <div class="section-title">
+            <h2>Create Ticket</h2>
+            <p>Describe your issue clearly</p>
           </div>
 
-          <div class="service-filter-group">
-            <label for="serviceFilter">Select Service</label>
-            <select id="serviceFilter" disabled>
-              <option value="">Select Service</option>
-            </select>
+          <form id="ticketForm" class="ticket-form">
+            <div class="ticket-field">
+              <label for="ticketSubject">Subject</label>
+              <input type="text" id="ticketSubject" placeholder="Enter ticket subject" required />
+            </div>
+
+            <div class="ticket-field">
+              <label for="ticketPriority">Priority</label>
+              <select id="ticketPriority">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div class="ticket-field">
+              <label for="ticketMessage">Message</label>
+              <textarea id="ticketMessage" rows="6" placeholder="Explain the issue" required></textarea>
+            </div>
+
+            <div class="ticket-form-actions">
+              <button type="submit" class="primary-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Submit Ticket</span>
+              </button>
+            </div>
+
+            <p id="ticketFormMessage" class="ticket-form-message"></p>
+          </form>
+        </div>
+
+        <div class="card ticket-list-card">
+          <div class="section-title">
+            <h2>My Tickets</h2>
+            <p>Track your submitted support requests</p>
           </div>
+
+          <div id="ticketList" class="ticket-list"></div>
         </div>
-      </section>
-
-      <section class="service-preview-section reveal">
-        <div id="selectedServiceBox" class="selected-service-box">
-          <div class="selected-service-empty">
-            <i class="fa-solid fa-hand-pointer"></i>
-            <h3>No service selected</h3>
-            <p>Select a country, then choose a service to see details here.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="services-list-section reveal">
-        <div class="section-title">
-          <h2>Available Services</h2>
-          <p>Filtered by your selected country</p>
-        </div>
-
-        <div class="services-grid" id="servicesGrid"></div>
-
-        <p class="table-empty-message" id="servicesEmptyMessage" style="display: none;">
-          No matching services found.
-        </p>
       </section>
     </main>
   </div>
@@ -195,10 +194,9 @@
   <script type="module" src="/index.js/require-user.js"></script>
   <script type="module" src="/index.js/session-ui.js"></script>
   <script src="/index.js/panel.js"></script>
-  <script src="/index.js/theme.js"></script>
   <script src="/index.js/loader.js"></script>
   <script src="/index.js/reveal.js"></script>
   <script src="/index.js/toast.js"></script>
-  <script src="/index.js/service.js"></script>
+  <script src="/index.js/ticket.js"></script>
 </body>
 </html>
