@@ -1,3 +1,5 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const walletBalance = document.getElementById("walletBalance");
@@ -16,9 +18,13 @@ const walletTransactionCount = document.getElementById("walletTransactionCount")
 
 let balanceVisible = true;
 
-const token = localStorage.getItem("token");
+const getToken = () => getStoredToken();
 
-const formatMoney = (amount) => `₦${Number(amount || 0).toFixed(2)}`;
+const formatMoney = (amount) =>
+  `₦${Number(amount || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
 
 const showWalletMessage = (text, type = "normal") => {
   if (!walletMessage) return;
@@ -41,11 +47,6 @@ const showEmptyTransactions = (message, icon = "fa-wallet") => {
       <p>${message}</p>
     </div>
   `;
-};
-
-const getReferenceFromUrl = () => {
-  const url = new URL(window.location.href);
-  return url.searchParams.get("reference");
 };
 
 const clearReferenceFromUrl = () => {
@@ -75,6 +76,8 @@ fundBtn?.addEventListener("click", () => {
 
 const loadWallet = async () => {
   try {
+    const token = getToken();
+
     if (!token) {
       showWalletMessage("Please sign in to view wallet details.", "error");
       if (walletSubtext) {
@@ -149,6 +152,8 @@ const renderTransactions = (transactions) => {
 
 const loadTransactions = async () => {
   try {
+    const token = getToken();
+
     if (!token) {
       showEmptyTransactions("Please sign in to view transactions.", "fa-lock");
       return;
@@ -190,11 +195,16 @@ const loadTransactions = async () => {
 
     renderTransactions(transactions);
   } catch (error) {
-    showEmptyTransactions(error.message || "Could not load transactions.", "fa-triangle-exclamation");
+    showEmptyTransactions(
+      error.message || "Could not load transactions.",
+      "fa-triangle-exclamation"
+    );
   }
 };
 
 const initializePaystackFunding = async (amount) => {
+  const token = getToken();
+
   const response = await fetch(`${API_BASE_URL}/api/payments/paystack/initialize`, {
     method: "POST",
     headers: {
@@ -218,6 +228,8 @@ const initializePaystackFunding = async (amount) => {
 };
 
 const verifyPaystackFunding = async (reference) => {
+  const token = getToken();
+
   const response = await fetch(`${API_BASE_URL}/api/payments/paystack/verify/${reference}`, {
     method: "GET",
     headers: {
@@ -235,6 +247,7 @@ const verifyPaystackFunding = async (reference) => {
 };
 
 const handlePaystackReturn = async () => {
+  const token = getToken();
   const url = new URL(window.location.href);
   const reference =
     url.searchParams.get("reference") ||
@@ -261,6 +274,7 @@ const handlePaystackReturn = async () => {
 fundWalletForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  const token = getToken();
   const amount = Number(fundAmountInput?.value || 0);
   const method = fundMethodInput?.value || "paystack";
 

@@ -1,3 +1,5 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const countryFilter = document.getElementById("countryFilter");
@@ -12,13 +14,18 @@ let allCountries = [];
 let currentServices = [];
 let selectedServiceData = null;
 
+const getToken = () => getStoredToken();
+
 const formatPrice = (price) => {
-  return `₦${Number(price || 0).toLocaleString("en-NG")}`;
+  return `₦${Number(price || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
 };
 
 const prettifyText = (value) => {
   if (!value) return "";
-  return value
+  return String(value)
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
@@ -50,7 +57,9 @@ const updateSummaryCounts = (visibleServices = []) => {
   }
 };
 
-const renderEmptySelection = (message = "Select a country, then choose a service to see details here.") => {
+const renderEmptySelection = (
+  message = "Select a country, then choose a service to see details here."
+) => {
   if (!selectedServiceBox) return;
 
   selectedServiceBox.innerHTML = `
@@ -70,7 +79,8 @@ const getVisibleServices = () => {
   }
 
   return currentServices.filter(
-    (service) => String(service.name).toLowerCase() === String(selectedName).toLowerCase()
+    (service) =>
+      String(service.name).toLowerCase() === String(selectedName).toLowerCase()
   );
 };
 
@@ -190,7 +200,9 @@ const renderSelectedService = (service) => {
     </div>
   `;
 
-  document.getElementById("buySelectedServiceBtn")?.addEventListener("click", buySelectedService);
+  document
+    .getElementById("buySelectedServiceBtn")
+    ?.addEventListener("click", buySelectedService);
 };
 
 const populateCountryDropdown = (countries) => {
@@ -235,7 +247,11 @@ const loadCountries = async () => {
     updateSummaryCounts([]);
   } catch (error) {
     console.error(error.message);
-    showMessage("error", "Countries failed", error.message || "Could not load countries.");
+    showMessage(
+      "error",
+      "Countries failed",
+      error.message || "Could not load countries."
+    );
   }
 };
 
@@ -246,7 +262,9 @@ const loadServicesByCountry = async (country) => {
   renderEmptySelection();
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/services?country=${encodeURIComponent(country)}`);
+    const response = await fetch(
+      `${API_BASE_URL}/api/services?country=${encodeURIComponent(country)}`
+    );
     const data = await response.json();
 
     if (!response.ok) {
@@ -259,7 +277,9 @@ const loadServicesByCountry = async (country) => {
     renderServicesGrid();
   } catch (error) {
     console.error(error.message);
-    servicesGrid.innerHTML = `<p style="color: #ef4444;">${error.message || "Could not load services."}</p>`;
+    servicesGrid.innerHTML = `<p style="color: #ef4444;">${
+      error.message || "Could not load services."
+    }</p>`;
     currentServices = [];
     selectedServiceData = null;
     populateServiceDropdown([]);
@@ -278,7 +298,9 @@ const refreshCurrentCountryServices = async () => {
     serviceFilter.value = "";
   }
 
-  renderEmptySelection("Service availability has been refreshed. Please choose again.");
+  renderEmptySelection(
+    "Service availability has been refreshed. Please choose again."
+  );
   await loadServicesByCountry(selectedCountry);
 };
 
@@ -289,7 +311,8 @@ const bindServiceSelectButtons = () => {
 
       const serviceName = button.dataset.service;
       const selected = currentServices.find(
-        (service) => String(service.name).toLowerCase() === String(serviceName).toLowerCase()
+        (service) =>
+          String(service.name).toLowerCase() === String(serviceName).toLowerCase()
       );
 
       if (!selected) return;
@@ -308,12 +331,16 @@ const buySelectedService = async () => {
   if (!selectedServiceData) return;
 
   if (!selectedServiceData.available) {
-    showMessage("error", "Out of stock", "This service is currently out of stock.");
+    showMessage(
+      "error",
+      "Out of stock",
+      "This service is currently out of stock."
+    );
     await refreshCurrentCountryServices();
     return;
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
 
   if (!token) {
     showMessage("error", "Login required", "You must be logged in.");
@@ -341,7 +368,8 @@ const buySelectedService = async () => {
         showMessage(
           "error",
           "Out of stock",
-          data.message || "This service is currently out of stock. Please try another service or country."
+          data.message ||
+            "This service is currently out of stock. Please try another service or country."
         );
 
         await refreshCurrentCountryServices();
@@ -354,12 +382,18 @@ const buySelectedService = async () => {
     showMessage(
       "success",
       "Purchase successful",
-      `Number purchased for ${formatPrice(data.order?.price || selectedServiceData.price)}.`
+      `Number purchased for ${formatPrice(
+        data.order?.price || selectedServiceData.price
+      )}.`
     );
 
     window.location.href = "orders.html";
   } catch (error) {
-    showMessage("error", "Purchase failed", error.message || "Something went wrong.");
+    showMessage(
+      "error",
+      "Purchase failed",
+      error.message || "Something went wrong."
+    );
   }
 };
 
@@ -392,7 +426,8 @@ serviceFilter?.addEventListener("change", () => {
   }
 
   const selectedService = currentServices.find(
-    (service) => String(service.name).toLowerCase() === String(selectedName).toLowerCase()
+    (service) =>
+      String(service.name).toLowerCase() === String(selectedName).toLowerCase()
   );
 
   if (!selectedService) {

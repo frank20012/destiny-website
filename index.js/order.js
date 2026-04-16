@@ -1,3 +1,5 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const ordersContainer = document.getElementById("ordersContainer");
@@ -10,7 +12,7 @@ const ordersClosedCount = document.getElementById("ordersClosedCount");
 
 let orders = [];
 
-const getToken = () => localStorage.getItem("token");
+const getToken = () => getStoredToken();
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
@@ -18,10 +20,11 @@ const formatDate = (dateString) => {
   return date.toLocaleString();
 };
 
-const formatMoney = (value) => `₦${Number(value || 0).toLocaleString("en-NG", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-})}`;
+const formatMoney = (value) =>
+  `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
 
 const getStatusLabel = (status) => {
   if (!status) return "pending";
@@ -63,7 +66,8 @@ const renderCounts = () => {
   ).length;
 
   const closed = orders.filter(
-    (order) => ["cancelled", "expired", "failed"].includes(getStatusLabel(order.status))
+    (order) =>
+      ["cancelled", "expired", "failed"].includes(getStatusLabel(order.status))
   ).length;
 
   if (ordersTotalCount) ordersTotalCount.textContent = orders.length;
@@ -72,7 +76,9 @@ const renderCounts = () => {
   if (ordersClosedCount) ordersClosedCount.textContent = closed;
 };
 
-const renderEmptyOrders = (message = "Your purchased numbers and OTP activity will appear here.") => {
+const renderEmptyOrders = (
+  message = "Your purchased numbers and OTP activity will appear here."
+) => {
   if (!ordersContainer) return;
 
   ordersContainer.innerHTML = `
@@ -85,7 +91,8 @@ const renderEmptyOrders = (message = "Your purchased numbers and OTP activity wi
 };
 
 const copyText = async (text, successMessage) => {
-  if (!text || text === "Waiting..." || text === "Pending..." || text === "-") return;
+  if (!text || text === "Waiting..." || text === "Pending..." || text === "-")
+    return;
 
   try {
     await navigator.clipboard.writeText(String(text));
@@ -101,7 +108,9 @@ const copyText = async (text, successMessage) => {
 };
 
 const sortOrdersByDate = (items = []) => {
-  return [...items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return [...items].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
 };
 
 const renderOrders = () => {
@@ -135,7 +144,9 @@ const renderOrders = () => {
           <h3>${(order.serviceName || "Service").toUpperCase()}</h3>
           <p>${order.country || "-"} • ${formatDate(order.createdAt)}</p>
           <span class="order-type-badge">
-            <i class="fa-solid ${orderType === "rent" ? "fa-phone-volume" : "fa-bolt"}"></i>
+            <i class="fa-solid ${
+              orderType === "rent" ? "fa-phone-volume" : "fa-bolt"
+            }"></i>
             ${getOrderTypeLabel(order)}
           </span>
         </div>
@@ -203,9 +214,11 @@ const renderOrders = () => {
         }
 
         <span class="order-note">
-          ${orderType === "rent"
-            ? "Use refresh to check the latest SMSPool update."
-            : "Use refresh to check the latest provider update."}
+          ${
+            orderType === "rent"
+              ? "Use refresh to check the latest SMSPool update."
+              : "Use refresh to check the latest provider update."
+          }
         </span>
       </div>
     `;
@@ -361,7 +374,11 @@ const cancelOrder = async (orderId) => {
     }
   } catch (error) {
     if (typeof showToast === "function") {
-      showToast("error", "Cancel failed", error.message || "Could not cancel order.");
+      showToast(
+        "error",
+        "Cancel failed",
+        error.message || "Could not cancel order."
+      );
     } else {
       alert(error.message || "Could not cancel order.");
     }

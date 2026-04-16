@@ -1,3 +1,5 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const rentCountryFilter = document.getElementById("rentCountryFilter");
@@ -12,9 +14,13 @@ let allCountries = [];
 let currentServices = [];
 let selectedRentService = null;
 
-const token = localStorage.getItem("token");
+const getToken = () => getStoredToken();
 
-const formatPrice = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
+const formatPrice = (value) =>
+  `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
 
 const prettifyText = (value) => {
   if (!value) return "";
@@ -31,7 +37,9 @@ const showMessage = (type, title, message) => {
   }
 };
 
-const renderEmptySelectedService = (message = "Select a country and service to see full details here.") => {
+const renderEmptySelectedService = (
+  message = "Select a country and service to see full details here."
+) => {
   if (!selectedRentServiceBox) return;
 
   selectedRentServiceBox.innerHTML = `
@@ -192,10 +200,14 @@ const renderSelectedService = (service) => {
     </div>
   `;
 
-  document.getElementById("buyRentServiceBtn")?.addEventListener("click", buySelectedRentService);
+  document
+    .getElementById("buyRentServiceBtn")
+    ?.addEventListener("click", buySelectedRentService);
 };
 
 const loadCountries = async () => {
+  const token = getToken();
+
   if (!token) {
     window.location.href = "signin.html";
     return;
@@ -218,22 +230,31 @@ const loadCountries = async () => {
     populateCountryDropdown();
     updateCounts([]);
   } catch (error) {
-    showMessage("error", "Countries failed", error.message || "Could not load countries.");
+    showMessage(
+      "error",
+      "Countries failed",
+      error.message || "Could not load countries."
+    );
   }
 };
 
 const loadServicesByCountry = async (countryId) => {
+  const token = getToken();
+
   if (!token || !countryId) return;
 
   rentNumberGrid.innerHTML = `<p style="color: var(--muted);">Loading rental services...</p>`;
   renderEmptySelectedService();
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/rent/services?country=${encodeURIComponent(countryId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await fetch(
+      `${API_BASE_URL}/api/rent/services?country=${encodeURIComponent(countryId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    });
+    );
 
     const data = await response.json();
 
@@ -247,7 +268,9 @@ const loadServicesByCountry = async (countryId) => {
   } catch (error) {
     currentServices = [];
     populateServiceDropdown();
-    rentNumberGrid.innerHTML = `<p style="color:#ef4444;">${error.message || "Could not load rental services."}</p>`;
+    rentNumberGrid.innerHTML = `<p style="color:#ef4444;">${
+      error.message || "Could not load rental services."
+    }</p>`;
   }
 };
 
@@ -272,6 +295,8 @@ const bindRentSelectButtons = () => {
 };
 
 const buySelectedRentService = async () => {
+  const token = getToken();
+
   if (!selectedRentService) return;
 
   if (!token) {
@@ -303,7 +328,11 @@ const buySelectedRentService = async () => {
       throw new Error(data.message || "Failed to rent number");
     }
 
-    showMessage("success", "Success", `Number rented successfully for ${formatPrice(selectedRentService.price)}.`);
+    showMessage(
+      "success",
+      "Success",
+      `Number rented successfully for ${formatPrice(selectedRentService.price)}.`
+    );
     window.location.href = "orders.html";
   } catch (error) {
     showMessage("error", "Rent failed", error.message || "Something went wrong.");
