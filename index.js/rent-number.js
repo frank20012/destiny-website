@@ -14,13 +14,49 @@ let allCountries = [];
 let currentServices = [];
 let selectedRentService = null;
 
+const DEFAULT_COUNTRIES = [
+  "UNITED STATES",
+  "UNITED KINGDOM",
+  "CANADA",
+  "NIGERIA",
+  "AUSTRALIA",
+  "GERMANY",
+  "FRANCE",
+  "NETHERLANDS",
+  "SWEDEN",
+  "INDIA"
+];
+
+const DEFAULT_RENT_SERVICES = [
+  "whatsapp",
+  "telegram",
+  "facebook",
+  "google",
+  "instagram",
+  "twitter",
+  "tiktok",
+  "gmail",
+  "discord",
+  "amazon",
+  "microsoft",
+  "linkedin",
+  "wechat",
+  "line",
+  "yahoo"
+];
+
 const getToken = () => getStoredToken();
 
-const formatPrice = (value) =>
-  `₦${Number(value || 0).toLocaleString("en-NG", {
+const formatPrice = (value) => {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return "Price unavailable";
+  }
+
+  return `₦${Number(value).toLocaleString("en-NG", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })}`;
+};
 
 const prettifyText = (value) => {
   if (!value) return "";
@@ -37,8 +73,17 @@ const showMessage = (type, title, message) => {
   }
 };
 
+const isOutOfStockMessage = (message) => {
+  const text = String(message || "").toLowerCase();
+  return (
+    text.includes("out of stock") ||
+    text.includes("no provider could supply") ||
+    text.includes("no number available")
+  );
+};
+
 const renderEmptySelectedService = (
-  message = "Select a country and service to see full details here."
+  message = "Select a country and service to see full rental details here."
 ) => {
   if (!selectedRentServiceBox) return;
 
@@ -57,7 +102,8 @@ const updateCounts = (visibleServices = []) => {
   }
 
   if (rentServicesCount) {
-    rentServicesCount.textContent = visibleServices.length || currentServices.length;
+    rentServicesCount.textContent =
+      visibleServices.length || currentServices.length;
   }
 };
 
@@ -68,9 +114,8 @@ const populateCountryDropdown = () => {
 
   allCountries.forEach((country) => {
     const option = document.createElement("option");
-    option.value = country.id;
-    option.dataset.name = country.name;
-    option.textContent = country.name;
+    option.value = country;
+    option.textContent = prettifyText(country);
     rentCountryFilter.appendChild(option);
   });
 };
@@ -80,15 +125,14 @@ const populateServiceDropdown = () => {
 
   rentServiceFilter.innerHTML = `<option value="">Select Service</option>`;
 
-  currentServices.forEach((service) => {
+  DEFAULT_RENT_SERVICES.forEach((service) => {
     const option = document.createElement("option");
-    option.value = service.id;
-    option.dataset.name = service.name;
-    option.textContent = `${prettifyText(service.name)} (${formatPrice(service.price)})`;
+    option.value = service;
+    option.textContent = prettifyText(service);
     rentServiceFilter.appendChild(option);
   });
 
-  rentServiceFilter.disabled = currentServices.length === 0;
+  rentServiceFilter.disabled = false;
 };
 
 const getVisibleServices = () => {
@@ -99,13 +143,16 @@ const getVisibleServices = () => {
   }
 
   return currentServices.filter(
-    (service) => String(service.id) === String(selectedServiceId)
+    (service) => String(service.id).toLowerCase() === String(selectedServiceId).toLowerCase()
   );
 };
 
-const getSelectedCountryName = () => {
-  const selectedOption = rentCountryFilter?.selectedOptions?.[0];
-  return selectedOption?.dataset?.name || "Selected Country";
+const getAvailabilityText = (service) => {
+  if (!service.available) return "Out of stock";
+  if (service.available && !service.hasValidPrice) {
+    return `${service.count || 0} in stock • price at checkout`;
+  }
+  return `${service.count || 0} in stock`;
 };
 
 const renderRentGrid = () => {
@@ -130,23 +177,32 @@ const renderRentGrid = () => {
     const card = document.createElement("div");
     card.className = "rent-card";
 
+    const isAvailable = Boolean(service.available);
+    const hasValidPrice = Boolean(service.hasValidPrice);
+
     card.innerHTML = `
       <div class="rent-card-top">
-        <span class="rent-tag">${getSelectedCountryName()}</span>
-        <strong class="rent-card-price">${formatPrice(service.price)}</strong>
+        <span class="rent-tag">${prettifyText(service.country)}</span>
+        <strong class="rent-card-price">${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</strong>
       </div>
 
       <h3>${prettifyText(service.name)}</h3>
-      <p>Temporary rental number service available through SMSPool.</p>
+      <p>Rental number service available through ${prettifyText(service.provider)}.</p>
 
       <div class="rent-meta">
-        <span>Country Rental</span>
-        <span>Fast OTP Flow</span>
-        <span>Provider: SMSPool</span>
+        <span>${prettifyText(service.country)}</span>
+        <span>${getAvailabilityText(service)}</span>
+        <span>Provider: ${prettifyText(service.provider)}</span>
       </div>
 
-      <button type="button" class="primary-btn rent-btn" data-id="${service.id}">
-        Select Service
+      <button
+        type="button"
+        class="primary-btn rent-btn ${isAvailable ? "" : "disabled-link"}"
+        data-id="${service.id}"
+        data-provider="${service.provider}"
+        ${isAvailable ? "" : "disabled"}
+      >
+        ${isAvailable ? "Select Service" : "Out of Stock"}
       </button>
     `;
 
@@ -161,20 +217,24 @@ const renderSelectedService = (service) => {
 
   selectedRentService = service;
 
+  const isAvailable = Boolean(service.available);
+  const hasValidPrice = Boolean(service.hasValidPrice);
+
   selectedRentServiceBox.innerHTML = `
     <div class="selected-rent-service-card">
       <div class="selected-rent-top">
         <div>
-          <span class="selected-rent-badge">${getSelectedCountryName()}</span>
+          <span class="selected-rent-badge">${prettifyText(service.country)}</span>
           <h3>${prettifyText(service.name)}</h3>
+          <small>${prettifyText(service.provider)}</small>
         </div>
-        <div class="selected-rent-price">${formatPrice(service.price)}</div>
+        <div class="selected-rent-price">${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</div>
       </div>
 
       <div class="selected-rent-meta">
         <div class="selected-rent-meta-box">
           <span>Country</span>
-          <strong>${getSelectedCountryName()}</strong>
+          <strong>${prettifyText(service.country)}</strong>
         </div>
 
         <div class="selected-rent-meta-box">
@@ -183,19 +243,34 @@ const renderSelectedService = (service) => {
         </div>
 
         <div class="selected-rent-meta-box">
-          <span>Billing</span>
-          <strong>Wallet deduction after successful rent</strong>
+          <span>Status</span>
+          <strong class="${isAvailable ? "text-success" : "text-danger"}">
+            ${isAvailable ? "Available" : "Out of stock"}
+          </strong>
         </div>
       </div>
 
       <div class="selected-rent-actions">
-        <button type="button" class="primary-btn" id="buyRentServiceBtn">
-          Rent for ${formatPrice(service.price)}
+        <button
+          type="button"
+          class="primary-btn ${isAvailable ? "" : "disabled-link"}"
+          id="buyRentServiceBtn"
+          ${isAvailable ? "" : "disabled"}
+        >
+          ${
+            !isAvailable
+              ? "Currently Out of Stock"
+              : hasValidPrice
+              ? `Rent for ${formatPrice(service.price)}`
+              : "Rent Number"
+          }
         </button>
 
-        <p class="selected-rent-note">
-          The displayed price already includes your live provider price plus markup.
-        </p>
+        ${
+          isAvailable && !hasValidPrice
+            ? `<p class="selected-rent-note">Provider stock is available. Final price will be resolved at checkout.</p>`
+            : `<p class="selected-rent-note">The displayed price already includes your provider price plus markup.</p>`
+        }
       </div>
     </div>
   `;
@@ -206,49 +281,24 @@ const renderSelectedService = (service) => {
 };
 
 const loadCountries = async () => {
-  const token = getToken();
-
-  if (!token) {
-    window.location.href = "signin.html";
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/rent/countries`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch countries");
-    }
-
-    allCountries = data.countries || [];
-    populateCountryDropdown();
-    updateCounts([]);
-  } catch (error) {
-    showMessage(
-      "error",
-      "Countries failed",
-      error.message || "Could not load countries."
-    );
-  }
+  allCountries = [...DEFAULT_COUNTRIES];
+  populateCountryDropdown();
+  updateCounts([]);
 };
 
-const loadServicesByCountry = async (countryId) => {
+const loadRentPricing = async (country, service) => {
   const token = getToken();
 
-  if (!token || !countryId) return;
+  if (!token || !country || !service) return;
 
   rentNumberGrid.innerHTML = `<p style="color: var(--muted);">Loading rental services...</p>`;
   renderEmptySelectedService();
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/api/rent/services?country=${encodeURIComponent(countryId)}`,
+      `${API_BASE_URL}/api/rent/services?country=${encodeURIComponent(
+        country
+      )}&service=${encodeURIComponent(service)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -263,11 +313,29 @@ const loadServicesByCountry = async (countryId) => {
     }
 
     currentServices = data.services || [];
-    populateServiceDropdown();
     renderRentGrid();
+
+    if (currentServices.length) {
+      const bestAvailablePriced = currentServices.find(
+        (item) => item.available && item.hasValidPrice
+      );
+
+      const bestAvailable = currentServices.find(
+        (item) => item.available
+      );
+
+      const selected =
+        bestAvailablePriced ||
+        bestAvailable ||
+        currentServices[0];
+
+      if (selected) {
+        renderSelectedService(selected);
+      }
+    }
   } catch (error) {
     currentServices = [];
-    populateServiceDropdown();
+    renderEmptySelectedService("Could not load rental services.");
     rentNumberGrid.innerHTML = `<p style="color:#ef4444;">${
       error.message || "Could not load rental services."
     }</p>`;
@@ -277,16 +345,18 @@ const loadServicesByCountry = async (countryId) => {
 const bindRentSelectButtons = () => {
   document.querySelectorAll(".rent-btn").forEach((button) => {
     button.addEventListener("click", () => {
+      if (button.disabled) return;
+
       const serviceId = button.dataset.id;
+      const providerName = button.dataset.provider;
+
       const selected = currentServices.find(
-        (service) => String(service.id) === String(serviceId)
+        (service) =>
+          String(service.id).toLowerCase() === String(serviceId).toLowerCase() &&
+          String(service.provider).toLowerCase() === String(providerName).toLowerCase()
       );
 
       if (!selected) return;
-
-      if (rentServiceFilter) {
-        rentServiceFilter.value = selected.id;
-      }
 
       renderRentGrid();
       renderSelectedService(selected);
@@ -299,6 +369,15 @@ const buySelectedRentService = async () => {
 
   if (!selectedRentService) return;
 
+  if (!selectedRentService.available) {
+    showMessage(
+      "error",
+      "Out of stock",
+      "This rental service is currently out of stock."
+    );
+    return;
+  }
+
   if (!token) {
     window.location.href = "signin.html";
     return;
@@ -306,11 +385,10 @@ const buySelectedRentService = async () => {
 
   try {
     const payload = {
-      countryId: rentCountryFilter.value,
-      countryName: getSelectedCountryName(),
+      countryId: selectedRentService.country,
+      countryName: selectedRentService.country,
       serviceId: selectedRentService.id,
-      serviceName: selectedRentService.name,
-      displayedPrice: selectedRentService.price
+      serviceName: selectedRentService.name
     };
 
     const response = await fetch(`${API_BASE_URL}/api/rent/buy`, {
@@ -325,13 +403,24 @@ const buySelectedRentService = async () => {
     const data = await response.json();
 
     if (!response.ok) {
+      if (isOutOfStockMessage(data.message)) {
+        showMessage(
+          "error",
+          "Out of stock",
+          data.message || "This rental service is currently out of stock."
+        );
+        return;
+      }
+
       throw new Error(data.message || "Failed to rent number");
     }
 
     showMessage(
       "success",
       "Success",
-      `Number rented successfully for ${formatPrice(selectedRentService.price)}.`
+      `Number rented successfully for ${formatPrice(
+        data.order?.price ?? selectedRentService.price
+      )}.`
     );
     window.location.href = "orders.html";
   } catch (error) {
@@ -340,46 +429,41 @@ const buySelectedRentService = async () => {
   }
 };
 
-rentCountryFilter?.addEventListener("change", () => {
-  const countryId = rentCountryFilter.value;
+rentCountryFilter?.addEventListener("change", async () => {
+  const country = rentCountryFilter.value;
+  const service = rentServiceFilter?.value || "";
 
+  currentServices = [];
   selectedRentService = null;
+  renderEmptySelectedService();
+  renderRentGrid();
+  updateCounts([]);
 
-  if (!countryId) {
-    currentServices = [];
-    populateServiceDropdown();
-    renderEmptySelectedService();
-    renderRentGrid();
-    updateCounts([]);
-    return;
+  if (country && service) {
+    await loadRentPricing(country, service);
   }
-
-  loadServicesByCountry(countryId);
 });
 
-rentServiceFilter?.addEventListener("change", () => {
-  const serviceId = rentServiceFilter.value;
+rentServiceFilter?.addEventListener("change", async () => {
+  const country = rentCountryFilter?.value || "";
+  const service = rentServiceFilter.value;
 
+  currentServices = [];
+  selectedRentService = null;
+  renderEmptySelectedService();
   renderRentGrid();
+  updateCounts([]);
 
-  if (!serviceId) {
-    selectedRentService = null;
-    renderEmptySelectedService();
+  if (!service) return;
+
+  if (!country) {
+    showMessage("error", "Country required", "Please select a country first.");
     return;
   }
 
-  const selected = currentServices.find(
-    (service) => String(service.id) === String(serviceId)
-  );
-
-  if (!selected) {
-    selectedRentService = null;
-    renderEmptySelectedService();
-    return;
-  }
-
-  renderSelectedService(selected);
+  await loadRentPricing(country, service);
 });
 
 renderEmptySelectedService();
+populateServiceDropdown();
 loadCountries();

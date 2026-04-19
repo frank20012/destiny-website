@@ -11,6 +11,8 @@ const ordersCompletedCount = document.getElementById("ordersCompletedCount");
 const ordersClosedCount = document.getElementById("ordersClosedCount");
 
 let orders = [];
+let currentPage = 1;
+const ROWS_PER_PAGE = 5;
 
 const getToken = () => getStoredToken();
 
@@ -32,33 +34,26 @@ const getStatusLabel = (status) => {
 };
 
 const getOrderType = (order) => {
-  if (order.provider === "smspool") return "rent";
-  return "otp";
+  return order.provider === "smspool" && order.serviceId ? "rent" : "otp";
 };
 
 const getOrderTypeLabel = (order) => {
   return getOrderType(order) === "rent" ? "Rent Order" : "OTP Order";
 };
 
-const getOrderProgressText = (order) => {
-  const status = getStatusLabel(order.status);
-  const type = getOrderType(order);
+const getPaginatedOrders = () => {
+  const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
+  const endIndex = startIndex + ROWS_PER_PAGE;
+  return orders.slice(startIndex, endIndex);
+};
 
-  if (status === "completed") return "OTP received successfully.";
-  if (status === "cancelled") return "Order cancelled.";
-  if (status === "expired") return "Order expired.";
-  if (status === "failed") return "Order failed.";
-  if (status === "active") {
-    return type === "rent"
-      ? "Waiting for SMSPool update or incoming OTP."
-      : "Waiting for OTP from provider.";
-  }
-  return "Preparing order...";
+const getTotalPages = () => {
+  return Math.max(1, Math.ceil(orders.length / ROWS_PER_PAGE));
 };
 
 const renderCounts = () => {
   const active = orders.filter(
-    (order) => ["active", "pending"].includes(getStatusLabel(order.status))
+    (order) => ["active", "pending", "waiting_sms"].includes(getStatusLabel(order.status))
   ).length;
 
   const completed = orders.filter(
@@ -91,8 +86,9 @@ const renderEmptyOrders = (
 };
 
 const copyText = async (text, successMessage) => {
-  if (!text || text === "Waiting..." || text === "Pending..." || text === "-")
+  if (!text || text === "Waiting..." || text === "Pending..." || text === "-") {
     return;
+  }
 
   try {
     await navigator.clipboard.writeText(String(text));
@@ -113,6 +109,56 @@ const sortOrdersByDate = (items = []) => {
   );
 };
 
+const renderPagination = () => {
+  const totalPages = getTotalPages();
+
+  if (totalPages <= 1) {
+    return "";
+  }
+
+  let pageButtons = "";
+
+  for (let page = 1; page <= totalPages; page += 1) {
+    pageButtons += `
+      <button
+        type="button"
+        class="pagination-btn ${page === currentPage ? "is-active" : ""}"
+        data-page="${page}"
+      >
+        ${page}
+      </button>
+    `;
+  }
+
+  return `
+    <div class="orders-pagination">
+      <button
+        type="button"
+        class="pagination-btn pagination-nav"
+        data-page="${currentPage - 1}"
+        ${currentPage === 1 ? "disabled" : ""}
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+        Prev
+      </button>
+
+      <div class="pagination-pages">
+        ${pageButtons}
+      </div>
+
+      <button
+        type="button"
+        class="pagination-btn pagination-nav"
+        data-page="${currentPage + 1}"
+        ${currentPage === totalPages ? "disabled" : ""}
+      >
+        Next
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  `;
+};
+
 const renderOrders = () => {
   if (!ordersContainer) return;
 
@@ -123,112 +169,151 @@ const renderOrders = () => {
     return;
   }
 
-  ordersContainer.innerHTML = "";
+  const visibleOrders = getPaginatedOrders();
 
-  orders.forEach((order) => {
-    const orderStatus = getStatusLabel(order.status);
-    const orderType = getOrderType(order);
-    const canCancel =
-      orderType === "otp" &&
-      !["completed", "cancelled", "expired", "failed"].includes(orderStatus);
+  const rows = visibleOrders
+    .map((order) => {
+      const orderStatus = getStatusLabel(order.status);
+      const orderType = getOrderType(order);
+      const canCancel =
+        orderType === "otp" &&
+        !["completed", "cancelled", "expired", "failed"].includes(orderStatus);
 
-    const hasOtp = Boolean(order.otpCode);
-    const hasNumber = Boolean(order.assignedNumber);
+      const hasOtp = Boolean(order.otpCode);
+      const hasNumber = Boolean(order.assignedNumber);
 
-    const div = document.createElement("div");
-    div.className = "order-card";
+      return `
+        <tr>
+          <td class="order-id-cell">
+            <span class="order-id-main">${order._id || "-"}</span>
+            <span class="order-id-sub">${formatDate(order.createdAt)}</span>
+          </td>
 
-    div.innerHTML = `
-      <div class="order-top">
-        <div class="order-title">
-          <h3>${(order.serviceName || "Service").toUpperCase()}</h3>
-          <p>${order.country || "-"} • ${formatDate(order.createdAt)}</p>
-          <span class="order-type-badge">
-            <i class="fa-solid ${
-              orderType === "rent" ? "fa-phone-volume" : "fa-bolt"
-            }"></i>
-            ${getOrderTypeLabel(order)}
-          </span>
-        </div>
+          <td class="order-service-cell">
+            <strong>${(order.serviceName || "Service").toUpperCase()}</strong>
+            <span class="order-type-badge">
+              <i class="fa-solid ${
+                orderType === "rent" ? "fa-phone-volume" : "fa-bolt"
+              }"></i>
+              ${getOrderTypeLabel(order)}
+            </span>
+          </td>
 
-        <div class="order-status">
-          <span class="status status-${orderStatus}">${orderStatus}</span>
-        </div>
+          <td class="order-country-cell">
+            <strong>${order.country || "-"}</strong>
+            <span>${order.providerOrderId || "-"}</span>
+          </td>
+
+          <td class="order-provider-cell">
+            <strong>${order.provider || "-"}</strong>
+            <span>${order.providerOperator || "any"}</span>
+          </td>
+
+          <td class="order-number-cell">
+            <strong>${order.assignedNumber || "Pending..."}</strong>
+            <button
+              class="copy-table-btn ${hasNumber ? "" : "is-disabled"}"
+              type="button"
+              data-copy-number="${order._id}"
+              ${hasNumber ? "" : "disabled"}
+            >
+              <i class="fa-regular fa-copy"></i>
+              Copy
+            </button>
+          </td>
+
+          <td class="order-otp-cell">
+            <strong class="${hasOtp ? "order-otp-live" : ""}">
+              ${order.otpCode || "Waiting..."}
+            </strong>
+            <button
+              class="copy-table-btn ${hasOtp ? "" : "is-disabled"}"
+              type="button"
+              data-copy-otp="${order._id}"
+              ${hasOtp ? "" : "disabled"}
+            >
+              <i class="fa-regular fa-copy"></i>
+              Copy
+            </button>
+          </td>
+
+          <td class="order-price-cell">
+            <strong>${formatMoney(order.price)}</strong>
+            <span>${orderStatus}</span>
+          </td>
+
+          <td>
+            <span class="status status-${orderStatus}">${orderStatus}</span>
+          </td>
+
+          <td>
+            <div class="table-actions">
+              <button
+                class="mini-table-btn"
+                data-id="${order._id}"
+                data-type="${orderType}"
+                type="button"
+              >
+                <i class="fa-solid fa-rotate-right"></i>
+                Refresh
+              </button>
+
+              ${
+                canCancel
+                  ? `
+                    <button
+                      class="cancel-table-btn"
+                      data-id="${order._id}"
+                      type="button"
+                    >
+                      <i class="fa-solid fa-ban"></i>
+                      Cancel
+                    </button>
+                  `
+                  : ""
+              }
+            </div>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  ordersContainer.innerHTML = `
+    <div class="orders-table-card">
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID / Date</th>
+              <th>Service / Type</th>
+              <th>Country / Provider ID</th>
+              <th>Provider / Operator</th>
+              <th>Assigned Number</th>
+              <th>OTP Code</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="order-progress-text">
-        ${getOrderProgressText(order)}
-      </div>
+    ${renderPagination()}
 
-      <div class="order-body">
-        <div class="order-meta">
-          <span>Assigned Number</span>
-          <strong>${order.assignedNumber || "Pending..."}</strong>
-          <button
-            class="mini-action-btn ${hasNumber ? "" : "is-disabled"}"
-            type="button"
-            data-copy-number="${order._id}"
-            ${hasNumber ? "" : "disabled"}
-          >
-            <i class="fa-regular fa-copy"></i>
-            <span>Copy Number</span>
-          </button>
-        </div>
-
-        <div class="order-meta">
-          <span>OTP Code</span>
-          <strong class="${hasOtp ? "order-otp" : ""}">
-            ${order.otpCode || "Waiting..."}
-          </strong>
-          <button
-            class="mini-action-btn ${hasOtp ? "" : "is-disabled"}"
-            type="button"
-            data-copy-otp="${order._id}"
-            ${hasOtp ? "" : "disabled"}
-          >
-            <i class="fa-regular fa-copy"></i>
-            <span>Copy OTP</span>
-          </button>
-        </div>
-
-        <div class="order-meta">
-          <span>Provider Order ID</span>
-          <strong>${order.providerOrderId || "-"}</strong>
-        </div>
-
-        <div class="order-meta">
-          <span>Price</span>
-          <strong>${formatMoney(order.price)}</strong>
-        </div>
-      </div>
-
-      <div class="order-actions">
-        <button class="refresh-btn" data-id="${order._id}" data-type="${orderType}" type="button">
-          Refresh OTP
-        </button>
-
-        ${
-          canCancel
-            ? `<button class="cancel-btn" data-id="${order._id}" type="button">Cancel Order</button>`
-            : ""
-        }
-
-        <span class="order-note">
-          ${
-            orderType === "rent"
-              ? "Use refresh to check the latest SMSPool update."
-              : "Use refresh to check the latest provider update."
-          }
-        </span>
-      </div>
-    `;
-
-    ordersContainer.appendChild(div);
-  });
+    <p class="orders-mobile-note">
+      Scroll sideways to view the full order table on smaller screens.
+    </p>
+  `;
 
   bindRefreshButtons();
   bindCancelButtons();
   bindCopyButtons();
+  bindPaginationButtons();
 };
 
 const fetchOtpOrders = async (token) => {
@@ -294,6 +379,12 @@ const fetchOrders = async () => {
     ]);
 
     orders = sortOrdersByDate([...otpOrders, ...rentOrders]);
+
+    const totalPages = getTotalPages();
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
     renderOrders();
   } catch (error) {
     if (ordersContainer) {
@@ -337,6 +428,7 @@ const fetchOrderStatus = async (orderId, type) => {
         ...orders[index],
         ...data.order
       };
+      orders = sortOrdersByDate(orders);
       renderOrders();
     }
   } catch (error) {
@@ -366,11 +458,18 @@ const cancelOrder = async (orderId) => {
 
     if (index !== -1) {
       orders[index] = data.order;
+      orders = sortOrdersByDate(orders);
       renderOrders();
     }
 
     if (typeof showToast === "function") {
-      showToast("success", "Cancelled", "Order cancelled successfully.");
+      showToast(
+        "success",
+        "Cancelled",
+        data.refunded
+          ? "Order cancelled and refunded successfully."
+          : "Order cancelled successfully."
+      );
     }
   } catch (error) {
     if (typeof showToast === "function") {
@@ -386,7 +485,7 @@ const cancelOrder = async (orderId) => {
 };
 
 const bindRefreshButtons = () => {
-  document.querySelectorAll(".refresh-btn").forEach((button) => {
+  document.querySelectorAll(".mini-table-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const orderId = button.dataset.id;
       const type = button.dataset.type;
@@ -396,7 +495,7 @@ const bindRefreshButtons = () => {
 };
 
 const bindCancelButtons = () => {
-  document.querySelectorAll(".cancel-btn").forEach((button) => {
+  document.querySelectorAll(".cancel-table-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const orderId = button.dataset.id;
       cancelOrder(orderId);
@@ -426,7 +525,24 @@ const bindCopyButtons = () => {
   });
 };
 
+const bindPaginationButtons = () => {
+  document.querySelectorAll(".pagination-btn[data-page]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextPage = Number(button.dataset.page || 1);
+      const totalPages = getTotalPages();
+
+      if (nextPage < 1 || nextPage > totalPages) {
+        return;
+      }
+
+      currentPage = nextPage;
+      renderOrders();
+    });
+  });
+};
+
 refreshOrdersBtn?.addEventListener("click", async () => {
+  currentPage = 1;
   await fetchOrders();
 
   if (typeof showToast === "function") {
