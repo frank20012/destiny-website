@@ -1,5 +1,7 @@
-const API_BASE_URL = CONFIG.API_BASE_URL;
+import { getStoredToken } from "./auth-storage";
 
+const API_BASE_URL = CONFIG.API_BASE_URL;
+const token = getStoredToken();
 const ticketForm = document.getElementById("ticketForm");
 const ticketSubject = document.getElementById("ticketSubject");
 const ticketPriority = document.getElementById("ticketPriority");
@@ -11,7 +13,7 @@ const ticketsTotalCount = document.getElementById("ticketsTotalCount");
 const ticketsOpenCount = document.getElementById("ticketsOpenCount");
 const ticketsResolvedCount = document.getElementById("ticketsResolvedCount");
 
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
 
 let tickets = [];
 
