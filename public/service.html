@@ -89,8 +89,8 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-copy">
-          <h1>Services</h1>
-          <p>Search any country, pick a service, and compare live providers</p>
+          <h1>Buy Service</h1>
+          <p>Select your country and service to continue to checkout</p>
         </div>
 
         <div class="topbar-actions">
@@ -98,7 +98,7 @@
             <i class="fas fa-bars"></i>
           </button>
           <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
-          <a href="dashboard.html" class="top-btn">Dashboard</a>
+          <a href="orders.html" class="top-btn">Orders</a>
           <div class="profile-box">
             <div class="avatar">U</div>
             <span>User</span>
@@ -106,136 +106,84 @@
         </div>
       </header>
 
-      <section class="services-hero-card reveal">
-        <div class="services-hero-copy">
-          <span class="hero-badge">Merged Provider Catalog</span>
-          <h2>Search all available countries and services from connected providers.</h2>
-          <p>
-            Browse a merged catalog from multiple OTP providers, compare stock and pricing,
-            and choose the best service for your preferred country.
-          </p>
-        </div>
-
-        <div class="services-summary-grid">
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-blue">
-              <i class="fa-solid fa-globe"></i>
-            </div>
-            <div>
-              <strong id="servicesCountriesCount">0</strong>
-              <span>Countries</span>
-            </div>
+      <section class="service-form-section reveal">
+        <div class="service-form-card">
+          <div class="service-form-header">
+            <span class="service-form-badge">New Order</span>
+            <h2>Choose your service</h2>
+            <p>Pick a country and service, see the final price, then continue.</p>
           </div>
 
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-purple">
-              <i class="fa-solid fa-layer-group"></i>
-            </div>
-            <div>
-              <strong id="servicesTotalCount">0</strong>
-              <span>Loaded Services</span>
-            </div>
-          </div>
+          <div class="service-form-body">
+            <div class="service-filter-group searchable-group" id="countrySearchGroup">
+              <label for="countrySearchInput">Country</label>
 
-          <div class="services-summary-card">
-            <div class="summary-icon summary-icon-green">
-              <i class="fa-solid fa-bolt"></i>
-            </div>
-            <div>
-              <strong>Live</strong>
-              <span>Merged Provider Feed</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="services-filter-section reveal">
-        <div class="service-filter-panel">
-
-          <div class="service-filter-group searchable-group" id="countrySearchGroup">
-            <label for="countrySearchInput">Search Country</label>
-
-            <div class="search-select-box">
-              <button type="button" class="search-select-trigger" id="countryTrigger">
-                <span class="search-trigger-left">
-                  <span class="country-flag-preview" id="selectedCountryFlag">🌍</span>
-                  <span class="search-trigger-text" id="selectedCountryText">Select Country</span>
-                </span>
-                <i class="fa-solid fa-chevron-down"></i>
-              </button>
-
-              <div class="search-select-dropdown" id="countryDropdown">
-                <div class="search-select-input-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input
-                    type="text"
-                    id="countrySearchInput"
-                    class="search-select-input"
-                    placeholder="Type country name..."
-                    autocomplete="off"
-                  />
-                </div>
-
-                <div class="search-select-list" id="countryOptionsList"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="service-filter-group searchable-group" id="serviceSearchGroup">
-            <label for="serviceSearchInput">Search Service</label>
-
-            <div class="search-select-box">
-              <button type="button" class="search-select-trigger" id="serviceTrigger">
-                <span class="search-trigger-left">
-                  <span class="service-icon-preview">
-                    <i class="fa-solid fa-layer-group"></i>
+              <div class="search-select-box">
+                <button type="button" class="search-select-trigger" id="countryTrigger">
+                  <span class="search-trigger-left">
+                    <span class="country-flag-preview" id="selectedCountryFlag">🌍</span>
+                    <span class="search-trigger-text" id="selectedCountryText">Select Country</span>
                   </span>
-                  <span class="search-trigger-text" id="selectedServiceText">Select Service</span>
-                </span>
-                <i class="fa-solid fa-chevron-down"></i>
-              </button>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
 
-              <div class="search-select-dropdown" id="serviceDropdown">
-                <div class="search-select-input-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input
-                    type="text"
-                    id="serviceSearchInput"
-                    class="search-select-input"
-                    placeholder="Type service name..."
-                    autocomplete="off"
-                  />
+                <div class="search-select-dropdown" id="countryDropdown">
+                  <div class="search-select-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                      type="text"
+                      id="countrySearchInput"
+                      class="search-select-input"
+                      placeholder="Type country name..."
+                      autocomplete="off"
+                    />
+                  </div>
+
+                  <div class="search-select-list" id="countryOptionsList"></div>
                 </div>
+              </div>
+            </div>
 
-                <div class="search-select-list" id="serviceOptionsList"></div>
+            <div class="service-filter-group searchable-group" id="serviceSearchGroup">
+              <label for="serviceSearchInput">Service</label>
+
+              <div class="search-select-box">
+                <button type="button" class="search-select-trigger" id="serviceTrigger">
+                  <span class="search-trigger-left">
+                    <span class="service-icon-preview">
+                      <i class="fa-solid fa-layer-group"></i>
+                    </span>
+                    <span class="search-trigger-text" id="selectedServiceText">Select Service</span>
+                  </span>
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
+
+                <div class="search-select-dropdown" id="serviceDropdown">
+                  <div class="search-select-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                      type="text"
+                      id="serviceSearchInput"
+                      class="search-select-input"
+                      placeholder="Type service name..."
+                      autocomplete="off"
+                    />
+                  </div>
+
+                  <div class="search-select-list" id="serviceOptionsList"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="checkout-preview-box" id="selectedServiceBox">
+              <div class="selected-service-empty">
+                <i class="fa-solid fa-hand-pointer"></i>
+                <h3>No service selected</h3>
+                <p>Select a country and service to see the final price here.</p>
               </div>
             </div>
           </div>
-
         </div>
-      </section>
-
-      <section class="service-preview-section reveal">
-        <div id="selectedServiceBox" class="selected-service-box">
-          <div class="selected-service-empty">
-            <i class="fa-solid fa-hand-pointer"></i>
-            <h3>No service selected</h3>
-            <p>Select a country and service to see the live provider details here.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="services-list-section reveal">
-        <div class="section-title">
-          <h2>Available Services</h2>
-          <p>Live provider comparison for your selected country and service</p>
-        </div>
-
-        <div class="services-grid" id="servicesGrid"></div>
-
-        <p class="table-empty-message" id="servicesEmptyMessage" style="display: none;">
-          No matching services found.
-        </p>
       </section>
     </main>
   </div>

@@ -5,11 +5,6 @@ const API_BASE_URL = CONFIG.API_BASE_URL;
 const ordersContainer = document.getElementById("ordersContainer");
 const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
 
-const ordersTotalCount = document.getElementById("ordersTotalCount");
-const ordersActiveCount = document.getElementById("ordersActiveCount");
-const ordersCompletedCount = document.getElementById("ordersCompletedCount");
-const ordersClosedCount = document.getElementById("ordersClosedCount");
-
 let orders = [];
 let currentPage = 1;
 const ROWS_PER_PAGE = 5;
@@ -49,26 +44,6 @@ const getPaginatedOrders = () => {
 
 const getTotalPages = () => {
   return Math.max(1, Math.ceil(orders.length / ROWS_PER_PAGE));
-};
-
-const renderCounts = () => {
-  const active = orders.filter(
-    (order) => ["active", "pending", "waiting_sms"].includes(getStatusLabel(order.status))
-  ).length;
-
-  const completed = orders.filter(
-    (order) => getStatusLabel(order.status) === "completed"
-  ).length;
-
-  const closed = orders.filter(
-    (order) =>
-      ["cancelled", "expired", "failed"].includes(getStatusLabel(order.status))
-  ).length;
-
-  if (ordersTotalCount) ordersTotalCount.textContent = orders.length;
-  if (ordersActiveCount) ordersActiveCount.textContent = active;
-  if (ordersCompletedCount) ordersCompletedCount.textContent = completed;
-  if (ordersClosedCount) ordersClosedCount.textContent = closed;
 };
 
 const renderEmptyOrders = (
@@ -161,8 +136,6 @@ const renderPagination = () => {
 
 const renderOrders = () => {
   if (!ordersContainer) return;
-
-  renderCounts();
 
   if (!orders.length) {
     renderEmptyOrders();
@@ -304,10 +277,6 @@ const renderOrders = () => {
     </div>
 
     ${renderPagination()}
-
-    <p class="orders-mobile-note">
-      Scroll sideways to view the full order table on smaller screens.
-    </p>
   `;
 
   bindRefreshButtons();

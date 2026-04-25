@@ -3,10 +3,6 @@ import { getStoredToken } from "./auth-storage.js";
 const API_BASE_URL = CONFIG.API_BASE_URL;
 
 const selectedServiceBox = document.getElementById("selectedServiceBox");
-const servicesGrid = document.getElementById("servicesGrid");
-const servicesEmptyMessage = document.getElementById("servicesEmptyMessage");
-const servicesCountriesCount = document.getElementById("servicesCountriesCount");
-const servicesTotalCount = document.getElementById("servicesTotalCount");
 
 const countryTrigger = document.getElementById("countryTrigger");
 const countryDropdown = document.getElementById("countryDropdown");
@@ -77,27 +73,13 @@ const normalizeText = (value) =>
 
 const formatPrice = (price) => {
   if (price === null || price === undefined || Number.isNaN(Number(price))) {
-    return "Price unavailable";
+    return "Price at checkout";
   }
 
   return `₦${Number(price).toLocaleString("en-NG", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })}`;
-};
-
-const formatRawProviderPrice = (service) => {
-  const price = Number(service?.providerPrice || 0);
-  const currency = String(service?.providerCurrency || "").toUpperCase();
-
-  if (!price || !currency) {
-    return "Not available";
-  }
-
-  return `${price.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })} ${currency}`;
 };
 
 const showMessage = (type, title, message) => {
@@ -136,14 +118,8 @@ const getFlagImg = (countryName, className = "flag-img") => {
   )} flag" loading="lazy" />`;
 };
 
-const openDropdown = (dropdown) => {
-  dropdown?.classList.add("is-open");
-};
-
-const closeDropdown = (dropdown) => {
-  dropdown?.classList.remove("is-open");
-};
-
+const openDropdown = (dropdown) => dropdown?.classList.add("is-open");
+const closeDropdown = (dropdown) => dropdown?.classList.remove("is-open");
 const closeAllDropdowns = () => {
   closeDropdown(countryDropdown);
   closeDropdown(serviceDropdown);
@@ -191,18 +167,8 @@ serviceTrigger?.addEventListener("click", (event) => {
   }
 });
 
-const updateSummaryCounts = (visibleServices = []) => {
-  if (servicesCountriesCount) {
-    servicesCountriesCount.textContent = allCountries.length;
-  }
-
-  if (servicesTotalCount) {
-    servicesTotalCount.textContent = visibleServices.length || currentServices.length;
-  }
-};
-
 const renderEmptySelection = (
-  message = "Select a country and service to see provider details here."
+  message = "Select a country and service to see the final price here."
 ) => {
   if (!selectedServiceBox) return;
 
@@ -246,7 +212,6 @@ const renderCountryOptions = (query = "") => {
               <span>${country.providers?.length || 0} provider(s)</span>
             </span>
           </span>
-          <span class="search-option-meta">${country.providers?.join(", ") || ""}</span>
         </button>
       `
     )
@@ -286,7 +251,6 @@ const renderServiceOptions = (query = "") => {
               <span>${service.providers?.length || 0} provider(s)</span>
             </span>
           </span>
-          <span class="search-option-meta">${service.providers?.join(", ") || ""}</span>
         </button>
       `
     )
@@ -336,7 +300,6 @@ const loadMergedCountries = async () => {
 
     allCountries = data.countries || [];
     renderCountryOptions("");
-    updateSummaryCounts([]);
   } catch (error) {
     console.error(error.message);
     if (countryOptionsList) {
@@ -397,9 +360,6 @@ const selectCountry = async (countryName) => {
   }
 
   renderEmptySelection("Country selected. Now choose a service.");
-  renderServicesGrid();
-  updateSummaryCounts([]);
-
   await loadMergedServices(countryName);
 };
 
@@ -422,94 +382,6 @@ const selectService = async (serviceName) => {
   await loadServicePricing(selectedCountry, selectedService);
 };
 
-const getVisibleServices = () => currentServices;
-
-const getServiceAvailabilityText = (service) => {
-  if (!service.available) return "Out of stock";
-  if (service.available && !service.hasValidPrice) {
-    return `${service.count || 0} available • price at checkout`;
-  }
-  return `${service.count || 0} available`;
-};
-
-const renderServicesGrid = () => {
-  if (!servicesGrid) return;
-
-  const visibleServices = getVisibleServices();
-
-  updateSummaryCounts(visibleServices);
-  servicesGrid.innerHTML = "";
-
-  if (!visibleServices.length) {
-    if (servicesEmptyMessage) {
-      servicesEmptyMessage.style.display = "block";
-    }
-    return;
-  }
-
-  if (servicesEmptyMessage) {
-    servicesEmptyMessage.style.display = "none";
-  }
-
-  visibleServices.forEach((service) => {
-    const article = document.createElement("article");
-    article.className = "service-card";
-
-    const isAvailable = Boolean(service.available);
-    const hasValidPrice = Boolean(service.hasValidPrice);
-
-    article.innerHTML = `
-      <div class="service-card-top">
-        <span class="service-tag">
-          ${getFlagImg(service.country, "service-flag-img")}
-          ${prettifyText(service.country)} • ${prettifyText(service.provider)}
-        </span>
-        <span class="service-price">${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</span>
-      </div>
-
-      <h3>${prettifyText(service.name)}</h3>
-      <p>Live provider service available for ${prettifyText(service.country)}.</p>
-
-      <div class="service-meta-list">
-        <div class="service-meta-item">
-          <span class="meta-label">Provider</span>
-          <strong>${prettifyText(service.provider)}</strong>
-        </div>
-
-        <div class="service-meta-item">
-          <span class="meta-label">Provider Price</span>
-          <strong>${formatRawProviderPrice(service)}</strong>
-        </div>
-
-        <div class="service-meta-item">
-          <span class="meta-label">Final Price</span>
-          <strong>${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</strong>
-        </div>
-
-        <div class="service-meta-item">
-          <span class="meta-label">Availability</span>
-          <strong class="service-status ${isAvailable ? "is-active" : "is-inactive"}">
-            ${getServiceAvailabilityText(service)}
-          </strong>
-        </div>
-      </div>
-
-      <button
-        class="service-card-btn ${isAvailable ? "" : "disabled-link"}"
-        data-provider="${service.provider}"
-        data-service="${service.name}"
-        ${isAvailable ? "" : "disabled"}
-      >
-        ${isAvailable ? "Select Service" : "Out of Stock"}
-      </button>
-    `;
-
-    servicesGrid.appendChild(article);
-  });
-
-  bindServiceSelectButtons();
-};
-
 const renderSelectedService = (service) => {
   if (!selectedServiceBox || !service) return;
 
@@ -529,7 +401,7 @@ const renderSelectedService = (service) => {
           <h3>${prettifyText(service.name)}</h3>
           <small>${prettifyText(service.provider)}</small>
         </div>
-        <div class="selected-service-price">${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</div>
+        <div class="selected-service-price">${formatPrice(service.price)}</div>
       </div>
 
       <div class="selected-service-meta">
@@ -546,13 +418,8 @@ const renderSelectedService = (service) => {
         </div>
 
         <div class="selected-meta-box">
-          <span>Provider Price</span>
-          <strong>${formatRawProviderPrice(service)}</strong>
-        </div>
-
-        <div class="selected-meta-box">
-          <span>Final Price</span>
-          <strong>${hasValidPrice ? formatPrice(service.price) : "Price unavailable"}</strong>
+          <span>Provider</span>
+          <strong>${prettifyText(service.provider)}</strong>
         </div>
       </div>
 
@@ -566,14 +433,16 @@ const renderSelectedService = (service) => {
             !isAvailable
               ? "Currently Out of Stock"
               : hasValidPrice
-              ? `Buy for ${formatPrice(service.price)}`
-              : "Buy Number"
+              ? `Continue to Checkout`
+              : "Continue to Checkout"
           }
         </button>
 
         ${
           isAvailable && !hasValidPrice
-            ? `<p class="selected-service-note">Provider stock is available. Final price will be resolved at checkout.</p>`
+            ? `<p class="selected-service-note">This provider has stock, but the exact price will be resolved at checkout.</p>`
+            : service.stockMode === "estimated_from_catalog"
+            ? `<p class="selected-service-note">This provider price/stock is currently estimated from catalog fallback.</p>`
             : ""
         }
       </div>
@@ -586,10 +455,7 @@ const renderSelectedService = (service) => {
 };
 
 const loadServicePricing = async (country, service) => {
-  if (!servicesGrid) return;
-
-  servicesGrid.innerHTML = `<p style="color: var(--muted);">Loading services...</p>`;
-  renderEmptySelection();
+  renderEmptySelection("Loading final price...");
 
   try {
     const response = await fetch(
@@ -605,8 +471,6 @@ const loadServicePricing = async (country, service) => {
     }
 
     currentServices = data.services || [];
-    updateSummaryCounts(currentServices);
-    renderServicesGrid();
 
     if (currentServices.length) {
       let selected = null;
@@ -627,49 +491,13 @@ const loadServicePricing = async (country, service) => {
       if (selected) {
         renderSelectedService(selected);
       }
+    } else {
+      renderEmptySelection("No available service found for this selection.");
     }
   } catch (error) {
     console.error(error.message);
-    servicesGrid.innerHTML = `<p style="color: #ef4444;">${
-      error.message || "Could not load services."
-    }</p>`;
-    currentServices = [];
-    selectedServiceData = null;
-    updateSummaryCounts([]);
+    renderEmptySelection(error.message || "Could not load final price.");
   }
-};
-
-const refreshCurrentSelection = async () => {
-  if (!selectedCountry || !selectedService) return;
-
-  selectedServiceData = null;
-  renderEmptySelection(
-    "Service availability has been refreshed. Please choose again."
-  );
-
-  await loadServicePricing(selectedCountry, selectedService);
-};
-
-const bindServiceSelectButtons = () => {
-  document.querySelectorAll(".service-card-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (button.disabled) return;
-
-      const serviceName = button.dataset.service;
-      const providerName = button.dataset.provider;
-
-      const selected = currentServices.find(
-        (service) =>
-          String(service.name).toLowerCase() === String(serviceName).toLowerCase() &&
-          String(service.provider).toLowerCase() === String(providerName).toLowerCase()
-      );
-
-      if (!selected) return;
-
-      renderServicesGrid();
-      renderSelectedService(selected);
-    });
-  });
 };
 
 const buySelectedService = async () => {
@@ -681,7 +509,6 @@ const buySelectedService = async () => {
       "Out of stock",
       "This service is currently out of stock."
     );
-    await refreshCurrentSelection();
     return;
   }
 
@@ -716,22 +543,13 @@ const buySelectedService = async () => {
           data.message ||
             "This service is currently out of stock. Please try another service or country."
         );
-
-        await refreshCurrentSelection();
         return;
       }
 
       throw new Error(data.message || "Failed to buy number");
     }
 
-    showMessage(
-      "success",
-      "Purchase successful",
-      `Number purchased for ${formatPrice(
-        data.order?.price ?? selectedServiceData.price
-      )}.`
-    );
-
+    showMessage("success", "Purchase successful", "Number purchased successfully.");
     window.location.href = "orders.html";
   } catch (error) {
     showMessage(
