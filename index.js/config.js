@@ -5,5 +5,5 @@ const isLocalhost =
 const CONFIG = {
   API_BASE_URL: isLocalhost
     ? "http://localhost:5000"
-    : "https://waveauth-backend.onrender.com"
+    : "https://api.deskotp.com"
 };
