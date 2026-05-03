@@ -7,3 +7,4 @@ const CONFIG = {
     ? "http://localhost:5000"
     : "https://api.deskotp.com"
 };
+window.CONFIG = CONFIG;

@@ -17,7 +17,7 @@ const settingsEmailAlerts = document.getElementById("settingsEmailAlerts");
 const settingsOrderRefresh = document.getElementById("settingsOrderRefresh");
 
 const token = localStorage.getItem("token");
-const SETTINGS_PREFS_KEY = "deskotp_settings_preferences";
+const SETTINGS_PREFS_KEY = "DESKOTP_settings_preferences";
 
 const showMessage = (element, text, type = "normal") => {
   if (!element) return;

@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Transactions - WaveAuth</title>
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/admin-sub.css" />
+  <title>Admin Transactions - DESKOTP</title>
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
+  <link rel="stylesheet" href="./style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/panel.css" />
+  <link rel="stylesheet" href="./style.css/admin-sub.css" />
 </head>
 <body>
   <div class="sidebar-overlay"></div>
 
   <div class="admin-layout">
     <aside class="sidebar">
-      <div class="sidebar-logo">WaveAuth</div>
+      <div class="sidebar-logo">DESKOTP</div>
 
       <nav class="sidebar-nav">
         <a href="admin.html"><span>Admin Overview</span></a>
@@ -82,7 +82,11 @@
             </div>
 
             <div class="table-actions">
-              <input type="text" id="adminTransactionSearchInput" placeholder="Search reference or description..." />
+              <input
+                type="text"
+                id="adminTransactionSearchInput"
+                placeholder="Search reference or description..."
+              />
               <select id="adminTransactionTypeFilter">
                 <option value="all">All Types</option>
                 <option value="credit">Credit</option>
@@ -115,7 +119,9 @@
             </table>
           </div>
 
-          <p class="table-empty-message" id="adminTransactionsEmptyMessage">No matching transactions found.</p>
+          <p class="table-empty-message" id="adminTransactionsEmptyMessage">
+            No matching transactions found.
+          </p>
 
           <div class="table-pagination" id="adminTransactionsPagination">
             <button type="button" id="adminTransactionsPrevBtn">Previous</button>
@@ -127,13 +133,13 @@
     </main>
   </div>
 
-  <script type="module" src="/index.js/require-admin.js"></script>
-  <script src="/index.js/config.js"></script>
-  <script src="/index.js/panel.js"></script>
-  <script src="/index.js/loader.js"></script>
-  <script src="/index.js/reveal.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script type="module" src="/index.js/admin-transactions.js"></script>
-  <script type="module" src="/index.js/session-ui.js"></script>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script src="./index.js/config.js"></script>
+  <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
+  <script src="./index.js/toast.js"></script>
+  <script type="module" src="./index.js/admin-transactions.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
 </body>
 </html>

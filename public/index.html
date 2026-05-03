@@ -9,16 +9,18 @@
     content="DESKOTP helps users access virtual numbers, OTP services, wallet funding, order tracking, and API-ready digital workflows from one modern platform."
   />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-  <link rel="stylesheet" href="/style.css/public.css" />
-  <link rel="stylesheet" href="/style.css/home.css" />
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/public.css" />
+  <link rel="stylesheet" href="./style.css/home.css" />
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
+  <link rel="stylesheet" href="./style.css/toast.css" />
 </head>
 <body>
   <div class="loader-wrapper">
     <div class="loader-box">
-      <div class="loader-logo">D</div>
+      <div class="loader-logo-image-wrap">
+        <img src="./assets/logo/logo-icon.jpg" alt="DESKOTP logo" class="loader-logo-image" />
+      </div>
       <div class="loader-dots">
         <span></span>
         <span></span>
@@ -30,7 +32,18 @@
 
   <header class="site-header">
     <div class="container nav-container">
-      <a href="index.html" class="logo">DESKOTP</a>
+      <a href="index.html" class="logo logo-brand" aria-label="DESKOTP home">
+        <img
+          src="./assets/logo/logo-light.jpg"
+          alt="DESKOTP"
+          class="logo-image logo-image-light"
+        />
+        <img
+          src="./assets/logo/logo-dark.jpg"
+          alt="DESKOTP"
+          class="logo-image logo-image-dark"
+        />
+      </a>
 
       <nav class="nav-links">
         <a href="#home">Home</a>
@@ -50,6 +63,19 @@
     </div>
 
     <div class="mobile-nav">
+      <div class="mobile-brand">
+        <img
+          src="./assets/logo/logo-light.jpg"
+          alt="DESKOTP"
+          class="mobile-brand-image mobile-brand-image-light"
+        />
+        <img
+          src="./assets/logo/logo-dark.jpg"
+          alt="DESKOTP"
+          class="mobile-brand-image mobile-brand-image-dark"
+        />
+      </div>
+
       <a href="#home">Home</a>
       <a href="#services">Services</a>
       <a href="#how-it-works">How It Works</a>
@@ -107,7 +133,13 @@
           <div class="brand-showcase-card floating-card">
             <div class="brand-showcase-logo-wrap">
               <div class="brand-showcase-ring"></div>
-              <div class="brand-showcase-logo">D</div>
+              <div class="brand-showcase-logo-image-shell">
+                <img
+                  src="./assets/logo/logo-icon.jpg"
+                  alt="DESKOTP icon"
+                  class="brand-showcase-logo-image"
+                />
+              </div>
             </div>
 
             <div class="brand-showcase-copy">
@@ -444,7 +476,19 @@
   <footer class="site-footer" id="contact">
     <div class="container wide-container footer-main">
       <div class="footer-brand-column">
-        <a href="index.html" class="footer-logo">DESKOTP</a>
+        <a href="index.html" class="footer-logo footer-logo-brand" aria-label="DESKOTP home">
+          <img
+            src="./assets/logo/logo-dark.jpg"
+            alt="DESKOTP"
+            class="footer-logo-image footer-logo-image-dark"
+          />
+          <img
+            src="./assets/logo/logo-light.jpg"
+            alt="DESKOTP"
+            class="footer-logo-image footer-logo-image-light"
+          />
+        </a>
+
         <p class="footer-brand-text">
           DESKOTP is a modern digital services platform for virtual numbers, OTP workflows,
           wallet funding, order tracking, and scalable user operations.
@@ -490,7 +534,7 @@
 
       <div class="footer-contact-column">
         <h4>Contact</h4>
-        <p><i class="fa-solid fa-envelope"></i> support@deskotp.com</p>
+        <p><i class="fa-solid fa-envelope"></i> support@DESKOTP.com</p>
         <p><i class="fa-solid fa-phone"></i> +234 000 000 0000</p>
         <p><i class="fa-solid fa-location-dot"></i> Imo, Nigeria</p>
         <p><i class="fa-solid fa-clock"></i> 24/7 Customer Support</p>
@@ -509,11 +553,11 @@
     </div>
   </footer>
 
-  <script src="/index.js/theme.js"></script>
-  <script src="/index.js/nav.js"></script>
-  <script src="/index.js/loader.js"></script>
-  <script src="/index.js/reveal.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script src="/index.js/home.js"></script>
+  <script src="./index.js/nav.js"></script>
+  <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
+  <script src="./index.js/toast.js"></script>
+  <script src="./index.js/home.js"></script>
 </body>
 </html>

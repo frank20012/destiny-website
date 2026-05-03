@@ -82,6 +82,12 @@ const formatPrice = (price) => {
   })}`;
 };
 
+const formatMoney = (value) =>
+  `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+
 const showMessage = (type, title, message) => {
   if (typeof showToast === "function") {
     showToast(type, title, message);
@@ -99,6 +105,11 @@ const isOutOfStockMessage = (message) => {
     text.includes("no provider could supply") ||
     text.includes("no numbers")
   );
+};
+
+const isInsufficientBalanceMessage = (message) => {
+  const text = String(message || "").toLowerCase();
+  return text.includes("insufficient wallet balance");
 };
 
 const getCountryCode = (countryName) => {
@@ -432,8 +443,6 @@ const renderSelectedService = (service) => {
           ${
             !isAvailable
               ? "Currently Out of Stock"
-              : hasValidPrice
-              ? `Continue to Checkout`
               : "Continue to Checkout"
           }
         </button>
@@ -500,6 +509,28 @@ const loadServicePricing = async (country, service) => {
   }
 };
 
+const buildInsufficientBalanceMessage = (data = {}) => {
+  const requiredAmount = Number(data.requiredAmount || 0);
+  const walletBalance = Number(data.walletBalance || 0);
+  const shortfall = Number(data.shortfall || 0);
+
+  const parts = ["Insufficient wallet balance."];
+
+  if (requiredAmount > 0) {
+    parts.push(`Required: ${formatMoney(requiredAmount)}`);
+  }
+
+  if (walletBalance >= 0) {
+    parts.push(`Wallet: ${formatMoney(walletBalance)}`);
+  }
+
+  if (shortfall > 0) {
+    parts.push(`Shortfall: ${formatMoney(shortfall)}`);
+  }
+
+  return parts.join(" ");
+};
+
 const buySelectedService = async () => {
   if (!selectedServiceData) return;
 
@@ -520,7 +551,15 @@ const buySelectedService = async () => {
     return;
   }
 
+  const buyButton = document.getElementById("buySelectedServiceBtn");
+  const originalButtonText = buyButton?.innerHTML || "Continue to Checkout";
+
   try {
+    if (buyButton) {
+      buyButton.disabled = true;
+      buyButton.innerHTML = "Processing...";
+    }
+
     const response = await fetch(`${API_BASE_URL}/api/orders/buy`, {
       method: "POST",
       headers: {
@@ -546,10 +585,24 @@ const buySelectedService = async () => {
         return;
       }
 
+      if (isInsufficientBalanceMessage(data.message)) {
+        showMessage(
+          "error",
+          "Low wallet balance",
+          buildInsufficientBalanceMessage(data)
+        );
+        return;
+      }
+
       throw new Error(data.message || "Failed to buy number");
     }
 
-    showMessage("success", "Purchase successful", "Number purchased successfully.");
+    showMessage(
+      "success",
+      "Purchase successful",
+      "Number purchased successfully."
+    );
+
     window.location.href = "orders.html";
   } catch (error) {
     showMessage(
@@ -557,6 +610,11 @@ const buySelectedService = async () => {
       "Purchase failed",
       error.message || "Something went wrong."
     );
+  } finally {
+    if (buyButton) {
+      buyButton.disabled = false;
+      buyButton.innerHTML = originalButtonText;
+    }
   }
 };
 

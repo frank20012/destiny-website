@@ -12,7 +12,7 @@ const contactsTotalCount = document.getElementById("contactsTotalCount");
 const contactsPhoneCount = document.getElementById("contactsPhoneCount");
 const contactsEmailCount = document.getElementById("contactsEmailCount");
 
-const CONTACTS_STORAGE_KEY = "deskotp_contacts";
+const CONTACTS_STORAGE_KEY = "DESKOTP_contacts";
 
 let contacts = [];
 

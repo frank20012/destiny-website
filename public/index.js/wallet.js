@@ -11,10 +11,15 @@ const fundAmountInput = document.getElementById("fundAmount");
 const fundMethodInput = document.getElementById("fundMethod");
 const walletMessage = document.getElementById("walletMessage");
 const walletSubtext = document.getElementById("walletSubtext");
+const walletAmountPreview = document.getElementById("walletAmountPreview");
+const quickAmountButtons = document.querySelectorAll(".quick-amount-btn");
 
 const walletCredits = document.getElementById("walletCredits");
 const walletDebits = document.getElementById("walletDebits");
 const walletTransactionCount = document.getElementById("walletTransactionCount");
+
+const MIN_FUND_AMOUNT = 100;
+const MAX_FUND_AMOUNT = 1000000;
 
 let balanceVisible = true;
 
@@ -25,6 +30,72 @@ const formatMoney = (amount) =>
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })}`;
+
+const formatTransactionTitle = (transaction) => {
+  const raw =
+    transaction.description ||
+    transaction.title ||
+    transaction.referenceType ||
+    "Transaction";
+
+  return String(raw)
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const getTransactionStatus = (transaction) => {
+  return String(transaction.status || "pending").toLowerCase();
+};
+
+const getTransactionStatusLabel = (status) => {
+  if (status === "completed") return "Completed";
+  if (status === "failed") return "Failed";
+  if (status === "cancelled") return "Cancelled";
+  if (status === "abandoned") return "Abandoned";
+  if (status === "pending") return "Pending";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
+
+const getTransactionAmountClass = (transaction) => {
+  const status = getTransactionStatus(transaction);
+  const type = String(transaction.type || "").toLowerCase();
+
+  if (status === "failed" || status === "cancelled" || status === "abandoned") {
+    return "failed";
+  }
+
+  if (status === "pending") {
+    return "pending";
+  }
+
+  if (type === "credit" || type === "refund") {
+    return "credit";
+  }
+
+  if (type === "debit") {
+    return "debit";
+  }
+
+  return "normal";
+};
+
+const getSignedAmountText = (transaction) => {
+  const type = String(transaction.type || "").toLowerCase();
+  const amount = formatMoney(transaction.amount || 0);
+
+  if (type === "credit" || type === "refund") {
+    return `+${amount}`;
+  }
+
+  if (type === "debit") {
+    return `-${amount}`;
+  }
+
+  return amount;
+};
 
 const showWalletMessage = (text, type = "normal") => {
   if (!walletMessage) return;
@@ -56,6 +127,37 @@ const clearReferenceFromUrl = () => {
   window.history.replaceState({}, document.title, url.pathname);
 };
 
+const updateAmountPreview = () => {
+  if (!walletAmountPreview) return;
+  const amount = Number(fundAmountInput?.value || 0);
+  walletAmountPreview.textContent = formatMoney(amount);
+};
+
+const setActiveQuickAmount = (amount) => {
+  quickAmountButtons.forEach((button) => {
+    button.classList.toggle(
+      "is-active",
+      Number(button.dataset.amount || 0) === Number(amount || 0)
+    );
+  });
+};
+
+const validateFundingAmount = (amount) => {
+  if (!amount || Number.isNaN(amount)) {
+    return "Enter a valid amount.";
+  }
+
+  if (amount < MIN_FUND_AMOUNT) {
+    return `Minimum funding amount is ${formatMoney(MIN_FUND_AMOUNT)}.`;
+  }
+
+  if (amount > MAX_FUND_AMOUNT) {
+    return `Maximum funding amount is ${formatMoney(MAX_FUND_AMOUNT)}.`;
+  }
+
+  return null;
+};
+
 toggleBtn?.addEventListener("click", () => {
   balanceVisible = !balanceVisible;
 
@@ -72,6 +174,23 @@ toggleBtn?.addEventListener("click", () => {
 
 fundBtn?.addEventListener("click", () => {
   fundAmountInput?.focus();
+});
+
+fundAmountInput?.addEventListener("input", () => {
+  updateAmountPreview();
+  setActiveQuickAmount(Number(fundAmountInput.value || 0));
+});
+
+quickAmountButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const amount = Number(button.dataset.amount || 0);
+    if (fundAmountInput) {
+      fundAmountInput.value = amount;
+      fundAmountInput.focus();
+    }
+    setActiveQuickAmount(amount);
+    updateAmountPreview();
+  });
 });
 
 const loadWallet = async () => {
@@ -135,14 +254,24 @@ const renderTransactions = (transactions) => {
     const item = document.createElement("div");
     item.className = "transaction-item";
 
+    const status = getTransactionStatus(transaction);
+    const amountClass = getTransactionAmountClass(transaction);
+    const statusLabel = getTransactionStatusLabel(status);
+
     item.innerHTML = `
       <div class="transaction-info">
-        <h4>${transaction.description || "Transaction"}</h4>
+        <h4>${formatTransactionTitle(transaction)}</h4>
         <p>${new Date(transaction.createdAt).toLocaleString()}</p>
       </div>
 
-      <div class="transaction-amount ${transaction.type}">
-        ${transaction.type === "credit" || transaction.type === "refund" ? "+" : "-"}${formatMoney(transaction.amount)}
+      <div class="transaction-side">
+        <span class="transaction-status status-${status}">
+          ${statusLabel}
+        </span>
+
+        <div class="transaction-amount ${amountClass}">
+          ${getSignedAmountText(transaction)}
+        </div>
       </div>
     `;
 
@@ -178,11 +307,19 @@ const loadTransactions = async () => {
     }
 
     const totalCredits = transactions
-      .filter((item) => item.type === "credit" && item.status === "completed")
+      .filter(
+        (item) =>
+          item.type === "credit" &&
+          String(item.status || "").toLowerCase() === "completed"
+      )
       .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
     const totalDebits = transactions
-      .filter((item) => item.type === "debit" && item.status === "completed")
+      .filter(
+        (item) =>
+          item.type === "debit" &&
+          String(item.status || "").toLowerCase() === "completed"
+      )
       .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
     if (walletCredits) {
@@ -283,8 +420,10 @@ fundWalletForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (!amount || amount <= 0) {
-    showWalletMessage("Enter a valid amount.", "error");
+  const amountError = validateFundingAmount(amount);
+  if (amountError) {
+    showWalletMessage(amountError, "error");
+    fundAmountInput?.focus();
     return;
   }
 
@@ -305,6 +444,7 @@ fundWalletForm?.addEventListener("submit", async (event) => {
 });
 
 const initWalletPage = async () => {
+  updateAmountPreview();
   await handlePaystackReturn();
   await loadWallet();
   await loadTransactions();

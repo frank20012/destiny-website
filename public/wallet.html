@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DeskOtp Wallet</title>
+  <title>DESKOTP Wallet</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-  <link rel="stylesheet" href="/style.css/panel.css" />
-  <link rel="stylesheet" href="/style.css/wallet.css" />
-  <link rel="stylesheet" href="/style.css/loader.css" />
-  <link rel="stylesheet" href="/style.css/reveal.css" />
-  <link rel="stylesheet" href="/style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/panel.css" />
+  <link rel="stylesheet" href="./style.css/wallet.css" />
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
+  <link rel="stylesheet" href="./style.css/toast.css" />
 </head>
 <body>
   <div class="loader-wrapper">
@@ -28,7 +28,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-logo">
         <span class="logo-mark"><i class="fa-solid fa-bolt"></i></span>
-        <span>DeskOtp</span>
+        <span>DESKOTP</span>
       </div>
 
       <nav class="sidebar-nav">
@@ -42,10 +42,10 @@
           <span>Services</span>
         </a>
 
-        <a href="Rent a number.html">
-          <i class="fa-solid fa-phone-volume"></i>
-          <span>Rent a Number</span>
-        </a>
+        <!-- <a href="Rent a number.html"> -->
+          <!-- <i class="fa-solid fa-phone-volume"></i> -->
+          <!-- <span>Rent a Number</span> -->
+        <!-- </a> -->
 
         <a href="orders.html">
           <i class="fa-solid fa-box-open"></i>
@@ -89,14 +89,12 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-copy">
-          <h1>Wallet</h1>
-          <p>Manage your balance and funding activity</p>
+                  <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+<i class="fas fa-bars"></i></button>
+          <span style="margin-left: 10px;">Wallet</span>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
-            <i class="fas fa-bars"></i>
-          </button>
           <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
           <a href="transactions.html" class="top-btn">Transactions</a>
           <div class="profile-box">
@@ -173,42 +171,136 @@
       </section>
 
       <section class="wallet-funding-card card reveal">
-        <div class="section-title">
-          <h2>Fund Wallet</h2>
-          <p>Add money to your balance securely</p>
+        <div class="wallet-funding-shell">
+          <div class="wallet-funding-left">
+            <div class="section-title wallet-section-title">
+              <h2>Fund Wallet</h2>
+              <p>Add money securely with Paystack and continue using services without interruption.</p>
+            </div>
+
+            <div class="paystack-brand-card">
+              <div class="paystack-brand-left">
+                <div class="paystack-logo-box" aria-hidden="true">
+                  <svg viewBox="0 0 64 64" class="paystack-logo-svg" role="img">
+                    <rect x="10" y="10" width="44" height="44" rx="12" fill="#0BA4DB"></rect>
+                    <rect x="20" y="18" width="8" height="28" rx="4" fill="#ffffff"></rect>
+                    <rect x="30" y="24" width="8" height="22" rx="4" fill="#CFF4FF"></rect>
+                    <rect x="40" y="30" width="8" height="16" rx="4" fill="#8EE7FF"></rect>
+                  </svg>
+                </div>
+
+                <div>
+                  <h3>Paystack</h3>
+                  <p>Secure online payment gateway for quick wallet funding</p>
+                </div>
+              </div>
+
+              <div class="paystack-brand-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Secure</span>
+              </div>
+            </div>
+
+            <div class="wallet-limit-strip">
+              <div class="wallet-limit-item">
+                <span>Minimum</span>
+                <strong>₦100</strong>
+              </div>
+
+              <div class="wallet-limit-divider"></div>
+
+              <div class="wallet-limit-item">
+                <span>Maximum</span>
+                <strong>₦1,000,000</strong>
+              </div>
+            </div>
+
+            <form id="fundWalletForm" class="wallet-form">
+              <div class="wallet-form-grid">
+                <div class="wallet-field wallet-amount-field">
+                  <label for="fundAmount">Amount</label>
+                  <div class="wallet-input-wrap">
+                    <span class="wallet-currency">₦</span>
+                    <input
+                      type="number"
+                      id="fundAmount"
+                      min="100"
+                      max="1000000"
+                      step="1"
+                      placeholder="Enter amount"
+                      required
+                    />
+                  </div>
+                  <small class="wallet-field-hint">You can fund from ₦100 up to ₦1,000,000.</small>
+                </div>
+
+                <div class="wallet-field">
+                  <label for="fundMethod">Payment Method</label>
+                  <div class="wallet-method-box">
+                    <select id="fundMethod">
+                      <option value="paystack">Paystack</option>
+                    </select>
+                    <span class="wallet-method-tag">Instant</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quick-amounts">
+                <button type="button" class="quick-amount-btn" data-amount="100">₦100</button>
+                <button type="button" class="quick-amount-btn" data-amount="500">₦500</button>
+                <button type="button" class="quick-amount-btn" data-amount="1000">₦1,000</button>
+                <button type="button" class="quick-amount-btn" data-amount="5000">₦5,000</button>
+                <button type="button" class="quick-amount-btn" data-amount="10000">₦10,000</button>
+                <button type="button" class="quick-amount-btn" data-amount="50000">₦50,000</button>
+              </div>
+
+              <div class="wallet-funding-preview">
+                <div class="wallet-preview-row">
+                  <span>Selected Amount</span>
+                  <strong id="walletAmountPreview">₦0.00</strong>
+                </div>
+                <div class="wallet-preview-row">
+                  <span>Payment Gateway</span>
+                  <strong>Paystack</strong>
+                </div>
+              </div>
+
+              <div class="wallet-form-actions">
+                <button type="submit" class="wallet-primary-btn form-wallet-btn">
+                  <i class="fa-solid fa-wallet"></i>
+                  <span>Proceed to Fund</span>
+                </button>
+              </div>
+
+              <p id="walletMessage" class="wallet-message"></p>
+            </form>
+          </div>
+
+          <div class="wallet-funding-right">
+            <div class="wallet-info-card">
+              <div class="wallet-info-icon">
+                <i class="fa-solid fa-circle-info"></i>
+              </div>
+              <h3>Funding Guide</h3>
+              <ul class="wallet-info-list">
+                <li>Minimum funding amount is ₦100.</li>
+                <li>Maximum funding amount is ₦1,000,000 per transaction.</li>
+                <li>You will be redirected securely to Paystack to complete payment.</li>
+                <li>After successful payment, your wallet balance updates automatically.</li>
+              </ul>
+            </div>
+
+            <div class="wallet-info-card wallet-security-card">
+              <div class="wallet-info-icon wallet-info-icon-green">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <h3>Safe & Protected</h3>
+              <p>
+                Your payment is processed through Paystack. DESKOTP does not handle your card details directly.
+              </p>
+            </div>
+          </div>
         </div>
-
-        <form id="fundWalletForm" class="wallet-form">
-          <div class="wallet-form-grid">
-            <div class="wallet-field">
-              <label for="fundAmount">Amount</label>
-              <input
-                type="number"
-                id="fundAmount"
-                min="1"
-                step="0.01"
-                placeholder="Enter amount"
-                required
-              />
-            </div>
-
-            <div class="wallet-field">
-              <label for="fundMethod">Payment Method</label>
-              <select id="fundMethod">
-                <option value="paystack">Paystack</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="wallet-form-actions">
-            <button type="submit" class="wallet-primary-btn form-wallet-btn">
-              <i class="fa-solid fa-wallet"></i>
-              <span>Proceed to Fund</span>
-            </button>
-          </div>
-
-          <p id="walletMessage" class="wallet-message"></p>
-        </form>
       </section>
 
       <section class="wallet-transactions card reveal">
@@ -222,13 +314,13 @@
     </main>
   </div>
 
-  <script src="/index.js/config.js"></script>
-  <script type="module" src="/index.js/require-user.js"></script>
-  <script type="module" src="/index.js/session-ui.js"></script>
-  <script src="/index.js/panel.js"></script>
-  <script src="/index.js/loader.js"></script>
-  <script src="/index.js/reveal.js"></script>
-  <script src="/index.js/toast.js"></script>
-  <script type="module" src="/index.js/wallet.js"></script>
+  <script src="./index.js/config.js"></script>
+  <script type="module" src="./index.js/require-user.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
+  <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
+  <script src="./index.js/toast.js"></script>
+  <script type="module" src="./index.js/wallet.js"></script>
 </body>
 </html>
