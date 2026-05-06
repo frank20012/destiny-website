@@ -4,6 +4,18 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+  const focusTicketSearchBtn = document.getElementById("focusTicketSearchBtn");
+  const showOpenTicketsBtn = document.getElementById("showOpenTicketsBtn");
+  const ticketSearchInput = document.getElementById("adminTicketSearchInput");
+  const ticketStatusFilter = document.getElementById("adminTicketStatusFilter");
+  focusTicketSearchBtn?.addEventListener("click", () => {
+    ticketSearchInput?.focus();
+  });
+  showOpenTicketsBtn?.addEventListener("click", () => {
+    if (!ticketStatusFilter) return;
+    ticketStatusFilter.value = "open";
+    ticketStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+  });
 const adminTicketSearchInput = document.getElementById("adminTicketSearchInput");
 const adminTicketStatusFilter = document.getElementById("adminTicketStatusFilter");
 const adminTicketsTableBody = document.getElementById("adminTicketsTableBody");

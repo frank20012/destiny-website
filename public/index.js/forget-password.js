@@ -57,7 +57,7 @@ if (forgotPasswordForm) {
       }
 
       showMessage(
-        "Reset link generated successfully. Please check the backend console for now.",
+        "Reset link generated successfully. Please check your email for link.",
         "success"
       );
 

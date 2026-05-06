@@ -3,44 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Reports - DESKOTP</title>
-   <link rel="stylesheet" href="../style.css/toast.css" />
-<link rel="stylesheet" href="./style.css/panel.css" />
-<link rel="stylesheet" href="./style.css/admin-sub.css" />
-<link rel="stylesheet" href="./style.css/admin-reports.css" />
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
+  <link rel="stylesheet" href="./style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/panel.css" />
+  <link rel="stylesheet" href="./style.css/admin-sub.css" />
+  <link rel="stylesheet" href="./style.css/admin-reports.css" />
 </head>
+
 <body>
-  <div class="sidebar-overlay"></div>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo-image-wrap">
+        <img
+          src="./assets/logo/logo-icon.png"
+          alt="DESKOTP logo"
+          class="loader-logo-image"
+        />
+      </div>
+
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="loader-text">Loading admin reports...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
+
       <nav class="sidebar-nav">
-        <a href="admin.html"><span>Admin Overview</span></a>
-        <a href="admin-users.html"><span>Users</span></a>
-        <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transaction.html"><span>Admin Transactions</span></a>
-        <a href="admin-services.html"><span>Admin Services</span></a>
-         <a href="admin-numbers.html"><span>Admin Numbers</span></a>
-        <a href="admin-reports.html" class="active"><span>Admin Reports</span></a>
-        <a href="admin-settings.html"><span>Admin Settings</span></a>
-        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
-        <a href="dashboard.html"><span>User Dashboard</span></a>
-        <a href="signin.html"><span>Logout</span></a>
+        <a href="admin.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Admin Overview</span>
+        </a>
+
+        <a href="admin-users.html">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+
+        <a href="admin-orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Admin Orders</span>
+        </a>
+
+        <a href="admin-transaction.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Admin Transactions</span>
+        </a>
+
+        <a href="admin-services.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Admin Services</span>
+        </a>
+
+        <a href="admin-numbers.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Admin Numbers</span>
+        </a>
+
+        <a href="admin-reports.html" class="active">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Admin Reports</span>
+        </a>
+
+        <a href="admin-settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Admin Settings</span>
+        </a>
+
+        <a href="admin-tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admin Tickets</span>
+        </a>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>User Dashboard</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Reports</h1>
-          <p>Revenue, service performance, user activity, and support overview</p>
+        <div class="topbar-copy">
+          <button
+            class="icon-btn mobile-menu-btn"
+            type="button"
+            id="menuToggle"
+            aria-label="Open admin menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-chart-line"></i>
+              Platform Analytics
+            </span>
+            <h1>Admin Reports</h1>
+            <p>Revenue, service performance, user activity, and support overview.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="refreshReportsBtn">Refresh</button>
+          <button
+            class="icon-btn theme-toggle-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+
+          <button class="top-btn" type="button" id="refreshReportsBtn">
+            <i class="fa-solid fa-rotate-right"></i>
+            Refresh
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -48,51 +154,112 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid">
-        <div class="overview-card highlight-card card">
-          <p>Total Revenue</p>
-          <h2 id="reportsTotalRevenue">₦0.00</h2>
-          <span>Completed debit transactions</span>
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card admin-metric-card">
+          <div class="metric-icon metric-icon-primary">
+            <i class="fa-solid fa-sack-dollar"></i>
+          </div>
+
+          <div>
+            <p>Total Revenue</p>
+            <h2 id="reportsTotalRevenue">₦0.00</h2>
+            <span>Completed debit transactions</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Total Credits</p>
-          <h3 id="reportsTotalCredits">₦0.00</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-success">
+            <i class="fa-solid fa-arrow-down"></i>
+          </div>
+
+          <div>
+            <p>Total Credits</p>
+            <h3 id="reportsTotalCredits">₦0.00</h3>
+            <span>Wallet funding</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Total Refunds</p>
-          <h3 id="reportsTotalRefunds">₦0.00</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-info">
+            <i class="fa-solid fa-rotate-left"></i>
+          </div>
+
+          <div>
+            <p>Total Refunds</p>
+            <h3 id="reportsTotalRefunds">₦0.00</h3>
+            <span>Returned balances</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Active Users</p>
-          <h3 id="reportsActiveUsers">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-warning">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+
+          <div>
+            <p>Active Users</p>
+            <h3 id="reportsActiveUsers">0</h3>
+            <span>Current active accounts</span>
+          </div>
         </div>
       </section>
 
-      <section class="reports-grid">
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Reports Dashboard
+          </span>
+
+          <h2>Understand growth, revenue, support load, and service demand.</h2>
+          <p>
+            Use this page to monitor platform health and identify where users,
+            orders, transactions, and tickets need attention.
+          </p>
+        </div>
+
+        <div class="support-command-actions">
+          <a class="support-action-pill" href="admin-transactions.html">
+            <i class="fa-solid fa-receipt"></i>
+            Transactions
+          </a>
+
+          <a class="support-action-pill" href="admin-tickets.html">
+            <i class="fa-solid fa-headset"></i>
+            Tickets
+          </a>
+        </div>
+      </section>
+
+      <section class="reports-grid reveal">
         <div class="report-card card">
           <div class="section-title">
+            <span class="table-kicker">
+              <i class="fa-solid fa-chart-pie"></i>
+              Platform Summary
+            </span>
             <h2>Platform Summary</h2>
-            <p>High-level report totals</p>
+            <p>High-level report totals.</p>
           </div>
 
           <div class="report-list">
             <div class="report-item">
-              <span>Total Users</span>
+              <span><i class="fa-solid fa-users"></i> Total Users</span>
               <strong id="reportsTotalUsers">0</strong>
             </div>
+
             <div class="report-item">
-              <span>Total Orders</span>
+              <span><i class="fa-solid fa-box-open"></i> Total Orders</span>
               <strong id="reportsTotalOrders">0</strong>
             </div>
+
             <div class="report-item">
-              <span>Total Transactions</span>
+              <span><i class="fa-solid fa-receipt"></i> Total Transactions</span>
               <strong id="reportsTotalTransactions">0</strong>
             </div>
+
             <div class="report-item">
-              <span>Total Services</span>
+              <span><i class="fa-solid fa-layer-group"></i> Total Services</span>
               <strong id="reportsTotalServices">0</strong>
             </div>
           </div>
@@ -100,36 +267,47 @@
 
         <div class="report-card card">
           <div class="section-title">
+            <span class="table-kicker">
+              <i class="fa-solid fa-headset"></i>
+              Support Report
+            </span>
             <h2>Support Report</h2>
-            <p>Ticket resolution summary</p>
+            <p>Ticket resolution summary.</p>
           </div>
 
           <div class="report-list">
             <div class="report-item">
-              <span>Open Tickets</span>
+              <span><i class="fa-solid fa-envelope-open-text"></i> Open Tickets</span>
               <strong id="reportsOpenTickets">0</strong>
             </div>
+
             <div class="report-item">
-              <span>In Review</span>
+              <span><i class="fa-solid fa-magnifying-glass-chart"></i> In Review</span>
               <strong id="reportsReviewTickets">0</strong>
             </div>
+
             <div class="report-item">
-              <span>Resolved</span>
+              <span><i class="fa-solid fa-circle-check"></i> Resolved</span>
               <strong id="reportsResolvedTickets">0</strong>
             </div>
+
             <div class="report-item">
-              <span>Total Tickets</span>
+              <span><i class="fa-solid fa-ticket"></i> Total Tickets</span>
               <strong id="reportsTotalTickets">0</strong>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="reports-grid">
+      <section class="reports-grid reveal">
         <div class="report-card card">
           <div class="section-title">
+            <span class="table-kicker">
+              <i class="fa-solid fa-ranking-star"></i>
+              Top Services
+            </span>
             <h2>Top Services</h2>
-            <p>Most ordered services</p>
+            <p>Most ordered services.</p>
           </div>
 
           <div class="service-performance-list" id="reportsTopServicesList"></div>
@@ -137,8 +315,12 @@
 
         <div class="report-card card">
           <div class="section-title">
+            <span class="table-kicker">
+              <i class="fa-solid fa-calendar-days"></i>
+              Monthly Breakdown
+            </span>
             <h2>Monthly Breakdown</h2>
-            <p>Recent transaction and revenue activity</p>
+            <p>Recent transaction and revenue activity.</p>
           </div>
 
           <div class="report-list" id="reportsMonthlyBreakdown"></div>
@@ -146,11 +328,14 @@
       </section>
     </main>
   </div>
+
   <script src="./index.js/config.js"></script>
-   <script type="module" src="./index.js/require-admin.js"></script>
- <script type="module" src="./index.js/session-ui.js"></script>
-<script src="./index.js/panel.js"></script>
-<script src="./index.js/toast.js"></script>
-<script type="module" src="./index.js/admin-reports.js"></script>  
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
+  <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
+  <script src="./index.js/toast.js"></script>
+  <script type="module" src="./index.js/admin-reports.js"></script>
 </body>
 </html>

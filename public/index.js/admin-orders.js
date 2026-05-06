@@ -4,6 +4,19 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+
+const focusOrderSearchBtn = document.getElementById("focusOrderSearchBtn");
+const showActiveOrdersBtn = document.getElementById("showActiveOrdersBtn");
+const orderSearchInput = document.getElementById("adminOrderSearchInput");
+const orderStatusFilter = document.getElementById("adminOrderStatusFilter");
+focusOrderSearchBtn?.addEventListener("click", () => {
+  orderSearchInput?.focus();
+});
+showActiveOrdersBtn?.addEventListener("click", () => {
+  if (!orderStatusFilter) return;
+  orderStatusFilter.value = "active";
+  orderStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+});
 const adminOrderSearchInput = document.getElementById("adminOrderSearchInput");
 const adminOrderStatusFilter = document.getElementById("adminOrderStatusFilter");
 const adminOrdersTableBody = document.getElementById("adminOrdersTableBody");

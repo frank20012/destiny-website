@@ -5,6 +5,18 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+const focusNumberSearchBtn = document.getElementById("focusNumberSearchBtn");
+const showAvailableNumbersBtn = document.getElementById("showAvailableNumbersBtn");
+const numberSearchInput = document.getElementById("adminNumberSearchInput");
+const numberStatusFilter = document.getElementById("adminNumberStatusFilter");
+focusNumberSearchBtn?.addEventListener("click", () => {
+  numberSearchInput?.focus();
+});
+showAvailableNumbersBtn?.addEventListener("click", () => {
+  if (!numberStatusFilter) return;
+  numberStatusFilter.value = "available";
+  numberStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+});
 const adminNumberSearchInput = document.getElementById("adminNumberSearchInput");
 const adminNumberTypeFilter = document.getElementById("adminNumberTypeFilter");
 const adminNumberStatusFilter = document.getElementById("adminNumberStatusFilter");

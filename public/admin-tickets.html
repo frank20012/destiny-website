@@ -3,43 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Tickets - DESKOTP</title>
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
   <link rel="stylesheet" href="./style.css/toast.css" />
   <link rel="stylesheet" href="./style.css/panel.css" />
   <link rel="stylesheet" href="./style.css/admin-sub.css" />
 </head>
+
 <body>
-  <div class="sidebar-overlay"></div>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo-image-wrap">
+        <img
+          src="./assets/logo/logo-icon.png"
+          alt="DESKOTP logo"
+          class="loader-logo-image"
+        />
+      </div>
+
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="loader-text">Loading admin tickets...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
+
       <nav class="sidebar-nav">
-        <a href="admin.html"><span>Admin Overview</span></a>
-        <a href="admin-users.html"><span>Users</span></a>
-        <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
-        <a href="admin-services.html"><span>Admin Services</span></a>
-        <a href="admin-numbers.html"><span>Admin Numbers</span></a>
-        <a href="admin-reports.html"><span>Admin Reports</span></a>
-        <a href="admin-settings.html"><span>Admin Settings</span></a>
-        <a href="admin-tickets.html" class="active"><span>Admin Tickets</span></a>
-        <a href="dashboard.html"><span>User Dashboard</span></a>
-        <a href="signin.html"><span>Logout</span></a>
+        <a href="admin.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Admin Overview</span>
+        </a>
+
+        <a href="admin-users.html">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+
+        <a href="admin-orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Admin Orders</span>
+        </a>
+
+        <a href="admin-transaction.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Admin Transactions</span>
+        </a>
+
+        <a href="admin-services.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Admin Services</span>
+        </a>
+
+        <a href="admin-numbers.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Admin Numbers</span>
+        </a>
+
+        <a href="admin-reports.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Admin Reports</span>
+        </a>
+
+        <a href="admin-settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Admin Settings</span>
+        </a>
+
+        <a href="admin-tickets.html" class="active">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admin Tickets</span>
+        </a>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>User Dashboard</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Tickets</h1>
-          <p>Review and update user support requests</p>
+        <div class="topbar-copy">
+          <button
+            class="icon-btn mobile-menu-btn"
+            type="button"
+            id="menuToggle"
+            aria-label="Open admin menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-headset"></i>
+              Support Center
+            </span>
+            <h1>Admin Tickets</h1>
+            <p>Review, filter, reply to, and update user support requests.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="refreshTicketsBtn">Refresh</button>
+          <button
+            class="icon-btn theme-toggle-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+
+          <button class="top-btn" type="button" id="refreshTicketsBtn">
+            <i class="fa-solid fa-rotate-right"></i>
+            Refresh
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -47,82 +153,198 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid">
-        <div class="overview-card highlight-card card">
-          <p>Total Tickets</p>
-          <h2 class="stat-number" id="ticketsTotalCount">0</h2>
-          <span>All support requests</span>
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card admin-metric-card">
+          <div class="metric-icon metric-icon-primary">
+            <i class="fa-solid fa-ticket"></i>
+          </div>
+
+          <div>
+            <p>Total Tickets</p>
+            <h2 class="stat-number" id="ticketsTotalCount">0</h2>
+            <span>All support requests</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Open</p>
-          <h3 class="stat-number" id="ticketsOpenCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-warning">
+            <i class="fa-solid fa-envelope-open-text"></i>
+          </div>
+
+          <div>
+            <p>Open</p>
+            <h3 class="stat-number" id="ticketsOpenCount">0</h3>
+            <span>Awaiting support</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>In Review</p>
-          <h3 class="stat-number" id="ticketsReviewCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-info">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+          </div>
+
+          <div>
+            <p>In Review</p>
+            <h3 class="stat-number" id="ticketsReviewCount">0</h3>
+            <span>Being investigated</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Resolved</p>
-          <h3 class="stat-number" id="ticketsResolvedCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-success">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <div>
+            <p>Resolved</p>
+            <h3 class="stat-number" id="ticketsResolvedCount">0</h3>
+            <span>Closed successfully</span>
+          </div>
         </div>
       </section>
 
-      <section class="admin-table-section">
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Admin Support Workflow
+          </span>
+
+          <h2>Keep user complaints organized and resolved quickly.</h2>
+          <p>
+            Search by subject, filter by status, add admin replies, and update
+            ticket progress directly from the table.
+          </p>
+        </div>
+
+        <div class="support-command-actions">
+          <button class="support-action-pill" type="button" id="focusTicketSearchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search Tickets
+          </button>
+
+          <button class="support-action-pill" type="button" id="showOpenTicketsBtn">
+            <i class="fa-solid fa-inbox"></i>
+            View Open
+          </button>
+        </div>
+      </section>
+
+      <section class="admin-table-section reveal">
         <div class="admin-table-card card">
           <div class="table-header">
             <div>
+              <span class="table-kicker">
+                <i class="fa-solid fa-list-check"></i>
+                Ticket Queue
+              </span>
               <h2>Tickets List</h2>
-              <p>Search, filter, and reply to tickets</p>
+              <p>Search, filter, reply to tickets, and update ticket status.</p>
             </div>
 
-            <div class="table-actions">
-              <input type="text" id="adminTicketSearchInput" placeholder="Search ticket subject..." />
-              <select id="adminTicketStatusFilter">
-                <option value="all">All Status</option>
-                <option value="open">Open</option>
-                <option value="review">In Review</option>
-                <option value="resolved">Resolved</option>
-              </select>
+            <div class="table-actions enhanced-table-actions">
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="adminTicketSearchInput"
+                  placeholder="Search ticket subject..."
+                />
+              </div>
+
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-filter"></i>
+                <select id="adminTicketStatusFilter">
+                  <option value="all">All Status</option>
+                  <option value="open">Open</option>
+                  <option value="review">In Review</option>
+                  <option value="resolved">Resolved</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-helper">
+            <div>
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Tip: Use the reply box in each row to respond before updating ticket status.</span>
+            </div>
+
+            <div class="admin-live-dot">
+              <span></span>
+              Live Admin View
             </div>
           </div>
 
           <div class="table-wrap">
-            <table>
+            <table class="admin-enhanced-table">
               <thead>
                 <tr>
-                  <th>Ticket ID</th>
-                  <th>User</th>
-                  <th>Subject</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Reply</th>
-                  <th>Action</th>
+                  <th>
+                    <i class="fa-solid fa-hashtag"></i>
+                    Ticket ID
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-user"></i>
+                    User
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-message"></i>
+                    Subject
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-folder-open"></i>
+                    Category
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-signal"></i>
+                    Status
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-reply"></i>
+                    Reply
+                  </th>
+                  <th>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Action
+                  </th>
                 </tr>
               </thead>
+
               <tbody id="adminTicketsTableBody"></tbody>
             </table>
           </div>
 
-          <p class="table-empty-message" id="adminTicketsEmptyMessage">No matching tickets found.</p>
+          <p class="table-empty-message" id="adminTicketsEmptyMessage">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            No matching tickets found.
+          </p>
 
           <div class="table-pagination" id="adminTicketsPagination">
-            <button type="button" id="adminTicketsPrevBtn">Previous</button>
+            <button type="button" id="adminTicketsPrevBtn">
+              <i class="fa-solid fa-chevron-left"></i>
+              Previous
+            </button>
+
             <span id="adminTicketsPageInfo">Page 1 of 1</span>
-            <button type="button" id="adminTicketsNextBtn">Next</button>
+
+            <button type="button" id="adminTicketsNextBtn">
+              Next
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <script type="module" src="./index.js/require-admin.js"></script>
   <script src="./index.js/config.js"></script>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
   <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
   <script src="./index.js/toast.js"></script>
   <script type="module" src="./index.js/admin-ticket.js"></script>
-  <script type="module" src="./index.js/session-ui.js"></script>
 </body>
 </html>

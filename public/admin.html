@@ -3,58 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Overview - DESKOTP</title>
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
   <link rel="stylesheet" href="./style.css/panel.css" />
   <link rel="stylesheet" href="./style.css/admin.css" />
   <link rel="stylesheet" href="./style.css/loader.css" />
   <link rel="stylesheet" href="./style.css/reveal.css" />
   <link rel="stylesheet" href="./style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/admin-sub.css" />
 </head>
+
 <body>
   <div class="loader-wrapper">
     <div class="loader-box">
-      <div class="loader-logo">W</div>
+      <div class="loader-logo-image-wrap">
+        <img
+          src="./assets/logo/logo-icon.png"
+          alt="DESKOTP logo"
+          class="loader-logo-image"
+        />
+      </div>
+
       <div class="loader-dots">
         <span></span>
         <span></span>
         <span></span>
       </div>
-      <div class="loader-text">Loading DESKOTP...</div>
+
+      <div class="loader-text">Loading admin overview...</div>
     </div>
   </div>
 
-  <div class="sidebar-overlay"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
 
       <nav class="sidebar-nav">
-        <a href="admin.html" class="active"><span>Admin Overview</span></a>
-        <a href="admin-users.html"><span>Users</span></a>
-        <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transactions.html"><span>Admin Transactions</span></a>
-        <a href="admin-services.html"><span>Admin Services</span></a>
-        <a href="admin-numbers.html"><span>Admin Numbers</span></a>
-        <a href="admin-reports.html"><span>Admin Reports</span></a>
-        <a href="admin-settings.html"><span>Admin Settings</span></a>
-        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
-        <a href="dashboard.html"><span>User Dashboard</span></a>
-        <a href="signin.html"><span>Logout</span></a>
+        <a href="admin.html" class="active">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Admin Overview</span>
+        </a>
+
+        <a href="admin-users.html">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+
+        <a href="admin-orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Admin Orders</span>
+        </a>
+
+        <a href="admin-transaction.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Admin Transactions</span>
+        </a>
+
+        <a href="admin-services.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Admin Services</span>
+        </a>
+
+        <a href="admin-numbers.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Admin Numbers</span>
+        </a>
+
+        <a href="admin-reports.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Admin Reports</span>
+        </a>
+
+        <a href="admin-settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Admin Settings</span>
+        </a>
+
+        <a href="admin-tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admin Tickets</span>
+        </a>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>User Dashboard</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p>Overview of the OTP and virtual number platform</p>
+        <div class="topbar-copy">
+          <button
+            class="icon-btn mobile-menu-btn"
+            type="button"
+            id="menuToggle"
+            aria-label="Open admin menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-chart-pie"></i>
+              Platform Control Center
+            </span>
+            <h1>Admin Dashboard</h1>
+            <p>Overview of users, orders, transactions, tickets, and platform activity.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="refreshAdminOverviewBtn">Refresh</button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">
+            🌙
+          </button>
+
+          <button class="top-btn" type="button" id="refreshAdminOverviewBtn">
+            <i class="fa-solid fa-rotate-right"></i>
+            Refresh
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -63,53 +151,115 @@
       </header>
 
       <section class="admin-stats reveal">
-        <div class="stat-card highlight-card card">
-          <p>Total Users</p>
-          <h2 id="adminUsersCount">0</h2>
-          <span>Registered accounts</span>
+        <div class="stat-card highlight-card card admin-metric-card">
+          <div class="metric-icon metric-icon-primary">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <p>Total Users</p>
+            <h2 id="adminUsersCount">0</h2>
+            <span>Registered accounts</span>
+          </div>
         </div>
 
-        <div class="stat-card card">
-          <p>Total Orders</p>
-          <h3 id="adminOrdersCount">0</h3>
+        <div class="stat-card card admin-metric-card">
+          <div class="metric-icon metric-icon-info">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <div>
+            <p>Total Orders</p>
+            <h3 id="adminOrdersCount">0</h3>
+            <span>All order records</span>
+          </div>
         </div>
 
-        <div class="stat-card card">
-          <p>Total Transactions</p>
-          <h3 id="adminTransactionsCount">0</h3>
+        <div class="stat-card card admin-metric-card">
+          <div class="metric-icon metric-icon-success">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </div>
+          <div>
+            <p>Total Transactions</p>
+            <h3 id="adminTransactionsCount">0</h3>
+            <span>Wallet activity</span>
+          </div>
         </div>
 
-        <div class="stat-card card">
-          <p>Total Tickets</p>
-          <h3 id="adminTicketsCount">0</h3>
+        <div class="stat-card card admin-metric-card">
+          <div class="metric-icon metric-icon-warning">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+          <div>
+            <p>Total Tickets</p>
+            <h3 id="adminTicketsCount">0</h3>
+            <span>Support requests</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Admin Operations
+          </span>
+
+          <h2>Manage the full DESKOTP platform from one control center.</h2>
+          <p>
+            Monitor user growth, OTP activity, wallet transactions, service health, and support workload.
+          </p>
+        </div>
+
+        <div class="support-command-actions">
+          <a class="support-action-pill" href="admin-orders.html">
+            <i class="fa-solid fa-box-open"></i>
+            Orders
+          </a>
+
+          <a class="support-action-pill" href="admin-tickets.html">
+            <i class="fa-solid fa-headset"></i>
+            Tickets
+          </a>
         </div>
       </section>
 
       <section class="admin-actions reveal">
         <div class="section-title">
           <h2>Quick Admin Actions</h2>
+          <p>Jump into the most important admin workflows.</p>
         </div>
 
         <div class="action-grid">
           <div class="action-card card">
+            <div class="metric-icon metric-icon-primary">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
             <h3>Manage Services</h3>
             <p>Create, review, and control OTP service availability.</p>
             <a href="admin-services.html">Open</a>
           </div>
 
           <div class="action-card card">
+            <div class="metric-icon metric-icon-info">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
             <h3>Monitor Orders</h3>
             <p>Review assigned numbers, OTP codes, and order status.</p>
             <a href="admin-orders.html">View Orders</a>
           </div>
 
           <div class="action-card card">
+            <div class="metric-icon metric-icon-success">
+              <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
             <h3>Track Transactions</h3>
             <p>See wallet funding, debits, and refunds across users.</p>
             <a href="admin-transactions.html">View Transactions</a>
           </div>
 
           <div class="action-card card">
+            <div class="metric-icon metric-icon-warning">
+              <i class="fa-solid fa-headset"></i>
+            </div>
             <h3>Support Tickets</h3>
             <p>Respond to user issues and update support status.</p>
             <a href="admin-tickets.html">Open Tickets</a>
@@ -181,21 +331,21 @@
           <div class="activity-list">
             <div class="activity-item">
               <div>
-                <h4>Service Catalog</h4>
+                <h4><i class="fa-solid fa-layer-group"></i> Service Catalog</h4>
                 <p>Review service availability and pricing regularly.</p>
               </div>
             </div>
 
             <div class="activity-item">
               <div>
-                <h4>Order Monitoring</h4>
+                <h4><i class="fa-solid fa-box-open"></i> Order Monitoring</h4>
                 <p>Keep track of active and expired OTP orders.</p>
               </div>
             </div>
 
             <div class="activity-item">
               <div>
-                <h4>Support Management</h4>
+                <h4><i class="fa-solid fa-headset"></i> Support Management</h4>
                 <p>Respond quickly to wallet and order complaints.</p>
               </div>
             </div>
@@ -205,13 +355,13 @@
     </main>
   </div>
 
-  <script type="module" src="./index.js/require-admin.js"></script>
   <script src="./index.js/config.js"></script>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
   <script src="./index.js/panel.js"></script>
   <script src="./index.js/loader.js"></script>
   <script src="./index.js/reveal.js"></script>
   <script src="./index.js/toast.js"></script>
   <script type="module" src="./index.js/admin.js"></script>
-  <script type="module" src="./index.js/session-ui.js"></script>
 </body>
 </html>

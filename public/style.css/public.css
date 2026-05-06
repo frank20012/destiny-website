@@ -45,10 +45,20 @@ body {
     linear-gradient(135deg, var(--bg), var(--bg-2));
   min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 
 a {
   text-decoration: none;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
 }
 
 .container {
@@ -78,6 +88,71 @@ a {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.3px;
+}
+
+.logo-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  line-height: 0;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.logo-image {
+  display: block;
+  width: auto;
+  height: 52px;
+  max-width: 220px;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.logo-image-dark {
+  display: none;
+}
+
+body.light-mode .logo-image-light {
+  display: none;
+}
+
+body.light-mode .logo-image-dark {
+  display: block;
+}
+
+.mobile-brand {
+  display: none;
+  padding: 0 0 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-brand-image {
+  display: block;
+  width: auto;
+  height: 44px;
+  max-width: 200px;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mobile-brand-image-dark {
+  display: none;
+}
+
+body.light-mode .mobile-brand-image-light {
+  display: none;
+}
+
+body.light-mode .mobile-brand-image-dark {
+  display: block;
 }
 
 .nav-links {
@@ -322,6 +397,20 @@ a {
     display: none;
   }
 
+  .mobile-brand {
+    display: block;
+  }
+
+  .logo-image {
+    height: 42px;
+    max-width: 170px;
+  }
+
+  .mobile-brand-image {
+    height: 40px;
+    max-width: 170px;
+  }
+
   .hero-content h1,
   .section-heading h2,
   .cta-box h2 {
@@ -336,5 +425,30 @@ a {
 @media (max-width: 640px) {
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-container {
+    min-height: 74px;
+    gap: 12px;
+  }
+
+  .logo-image {
+    height: 38px;
+    max-width: 150px;
+  }
+
+  .theme-toggle-btn,
+  .mobile-menu-btn {
+    min-width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 12px;
+  }
+
+  .mobile-brand-image {
+    height: 38px;
+    max-width: 150px;
   }
 }

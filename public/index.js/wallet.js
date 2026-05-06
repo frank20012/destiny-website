@@ -12,6 +12,11 @@ const fundMethodInput = document.getElementById("fundMethod");
 const walletMessage = document.getElementById("walletMessage");
 const walletSubtext = document.getElementById("walletSubtext");
 const walletAmountPreview = document.getElementById("walletAmountPreview");
+const walletPreviewGateway = document.getElementById("walletPreviewGateway");
+const walletMethodTag = document.getElementById("walletMethodTag");
+const gatewayTitle = document.getElementById("gatewayTitle");
+const gatewayDescription = document.getElementById("gatewayDescription");
+const gatewayBadge = document.getElementById("gatewayBadge");
 const quickAmountButtons = document.querySelectorAll(".quick-amount-btn");
 
 const walletCredits = document.getElementById("walletCredits");
@@ -120,10 +125,13 @@ const showEmptyTransactions = (message, icon = "fa-wallet") => {
   `;
 };
 
-const clearReferenceFromUrl = () => {
+const clearFundingParamsFromUrl = () => {
   const url = new URL(window.location.href);
   url.searchParams.delete("reference");
   url.searchParams.delete("trxref");
+  url.searchParams.delete("accessCode");
+  url.searchParams.delete("access_code");
+  url.searchParams.delete("gateway");
   window.history.replaceState({}, document.title, url.pathname);
 };
 
@@ -131,6 +139,34 @@ const updateAmountPreview = () => {
   if (!walletAmountPreview) return;
   const amount = Number(fundAmountInput?.value || 0);
   walletAmountPreview.textContent = formatMoney(amount);
+};
+
+const updateGatewayPreview = () => {
+  const method = fundMethodInput?.value || "paystack";
+
+  if (walletPreviewGateway) {
+    walletPreviewGateway.textContent =
+      method === "etegram" ? "Etegram" : "Paystack";
+  }
+
+  if (walletMethodTag) {
+    walletMethodTag.textContent = method === "etegram" ? "Bank Transfer" : "Instant";
+  }
+
+  if (gatewayTitle) {
+    gatewayTitle.textContent = method === "etegram" ? "Etegram" : "Paystack";
+  }
+
+  if (gatewayDescription) {
+    gatewayDescription.textContent =
+      method === "etegram"
+        ? "Alternative checkout gateway for wallet funding"
+        : "Secure online payment gateway for quick wallet funding";
+  }
+
+  if (gatewayBadge) {
+    gatewayBadge.textContent = method === "etegram" ? "Alternative" : "Secure";
+  }
 };
 
 const setActiveQuickAmount = (amount) => {
@@ -179,6 +215,10 @@ fundBtn?.addEventListener("click", () => {
 fundAmountInput?.addEventListener("input", () => {
   updateAmountPreview();
   setActiveQuickAmount(Number(fundAmountInput.value || 0));
+});
+
+fundMethodInput?.addEventListener("change", () => {
+  updateGatewayPreview();
 });
 
 quickAmountButtons.forEach((button) => {
@@ -364,6 +404,31 @@ const initializePaystackFunding = async (amount) => {
   return data;
 };
 
+const initializeEtegramFunding = async (amount) => {
+  const token = getToken();
+
+  const response = await fetch(`${API_BASE_URL}/api/payments/etegram/initialize`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ amount })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to initialize Etegram payment");
+  }
+
+  if (!data.authorization_url || !data.access_code) {
+    throw new Error("Etegram payment link was not returned by the server");
+  }
+
+  return data;
+};
+
 const verifyPaystackFunding = async (reference) => {
   const token = getToken();
 
@@ -383,26 +448,56 @@ const verifyPaystackFunding = async (reference) => {
   return data;
 };
 
-const handlePaystackReturn = async () => {
+const verifyEtegramFunding = async (reference, accessCode) => {
+  const token = getToken();
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/payments/etegram/verify/${reference}/${accessCode}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Etegram payment verification failed");
+  }
+
+  return data;
+};
+
+const handleFundingReturn = async () => {
   const token = getToken();
   const url = new URL(window.location.href);
   const reference =
     url.searchParams.get("reference") ||
     url.searchParams.get("trxref");
+  const accessCode =
+    url.searchParams.get("accessCode") ||
+    url.searchParams.get("access_code");
+  const gateway = url.searchParams.get("gateway");
 
-  if (!reference || !token) return;
+  if (!token || !reference) return;
 
   try {
     showWalletMessage("Verifying payment...", "normal");
 
-    await verifyPaystackFunding(reference);
+    if (gateway === "etegram" && accessCode) {
+      await verifyEtegramFunding(reference, accessCode);
+    } else {
+      await verifyPaystackFunding(reference);
+    }
 
     showWalletMessage("Wallet funded successfully.", "success");
 
     await loadWallet();
     await loadTransactions();
 
-    clearReferenceFromUrl();
+    clearFundingParamsFromUrl();
   } catch (error) {
     showWalletMessage(error.message || "Could not verify payment.", "error");
   }
@@ -428,14 +523,16 @@ fundWalletForm?.addEventListener("submit", async (event) => {
   }
 
   try {
-    if (method !== "paystack") {
-      throw new Error("Only Paystack is available right now");
-    }
-
     showWalletMessage("Initializing payment...");
 
-    const data = await initializePaystackFunding(amount);
+    if (method === "etegram") {
+      const data = await initializeEtegramFunding(amount);
+      showWalletMessage("Redirecting to Etegram...", "success");
+      window.location.href = data.authorization_url;
+      return;
+    }
 
+    const data = await initializePaystackFunding(amount);
     showWalletMessage("Redirecting to payment...", "success");
     window.location.href = data.authorization_url;
   } catch (error) {
@@ -445,7 +542,8 @@ fundWalletForm?.addEventListener("submit", async (event) => {
 
 const initWalletPage = async () => {
   updateAmountPreview();
-  await handlePaystackReturn();
+  updateGatewayPreview();
+  await handleFundingReturn();
   await loadWallet();
   await loadTransactions();
 };

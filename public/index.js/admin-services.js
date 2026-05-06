@@ -4,6 +4,18 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+ const focusServiceSearchBtn = document.getElementById("focusServiceSearchBtn");
+ const showActiveServicesBtn = document.getElementById("showActiveServicesBtn");
+ const serviceSearchInput = document.getElementById("adminServiceSearchInput");
+ const serviceStatusFilter = document.getElementById("adminServiceStatusFilter");
+ focusServiceSearchBtn?.addEventListener("click", () => {
+   serviceSearchInput?.focus();
+ });
+ showActiveServicesBtn?.addEventListener("click", () => {
+   if (!serviceStatusFilter) return;
+   serviceStatusFilter.value = "active";
+   serviceStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+ });
 const adminServiceSearchInput = document.getElementById("adminServiceSearchInput");
 const adminServiceCategoryFilter = document.getElementById("adminServiceCategoryFilter");
 const adminServiceStatusFilter = document.getElementById("adminServiceStatusFilter");

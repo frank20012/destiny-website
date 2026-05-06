@@ -4,6 +4,21 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+
+ const focusTransactionSearchBtn = document.getElementById("focusTransactionSearchBtn");
+    const showRefundTransactionsBtn = document.getElementById("showRefundTransactionsBtn");
+    const transactionSearchInput = document.getElementById("adminTransactionSearchInput");
+    const transactionTypeFilter = document.getElementById("adminTransactionTypeFilter");
+
+    focusTransactionSearchBtn?.addEventListener("click", () => {
+      transactionSearchInput?.focus();
+    });
+
+    showRefundTransactionsBtn?.addEventListener("click", () => {
+      if (!transactionTypeFilter) return;
+      transactionTypeFilter.value = "refund";
+      transactionTypeFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
 const adminTransactionSearchInput = document.getElementById("adminTransactionSearchInput");
 const adminTransactionTypeFilter = document.getElementById("adminTransactionTypeFilter");
 const adminTransactionStatusFilter = document.getElementById("adminTransactionStatusFilter");

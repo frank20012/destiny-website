@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/public/assets/logo/logo-icon.png">
   <title>DESKOTP Wallet</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="./style.css/panel.css" />
@@ -41,11 +42,6 @@
           <i class="fa-solid fa-layer-group"></i>
           <span>Services</span>
         </a>
-
-        <!-- <a href="Rent a number.html"> -->
-          <!-- <i class="fa-solid fa-phone-volume"></i> -->
-          <!-- <span>Rent a Number</span> -->
-        <!-- </a> -->
 
         <a href="orders.html">
           <i class="fa-solid fa-box-open"></i>
@@ -89,8 +85,9 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-copy">
-                  <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
-<i class="fas fa-bars"></i></button>
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
           <span style="margin-left: 10px;">Wallet</span>
         </div>
 
@@ -175,7 +172,7 @@
           <div class="wallet-funding-left">
             <div class="section-title wallet-section-title">
               <h2>Fund Wallet</h2>
-              <p>Add money securely with Paystack and continue using services without interruption.</p>
+              <p>Add money securely with Paystack or Etegram and continue using services without interruption.</p>
             </div>
 
             <div class="paystack-brand-card">
@@ -190,14 +187,14 @@
                 </div>
 
                 <div>
-                  <h3>Paystack</h3>
-                  <p>Secure online payment gateway for quick wallet funding</p>
+                  <h3 id="gatewayTitle">Paystack</h3>
+                  <p id="gatewayDescription">Secure online payment gateway for quick wallet funding</p>
                 </div>
               </div>
 
               <div class="paystack-brand-badge">
                 <i class="fa-solid fa-shield-halved"></i>
-                <span>Secure</span>
+                <span id="gatewayBadge">Secure</span>
               </div>
             </div>
 
@@ -239,8 +236,9 @@
                   <div class="wallet-method-box">
                     <select id="fundMethod">
                       <option value="paystack">Paystack</option>
+                      <!-- <option value="etegram">Etegram</option> -->
                     </select>
-                    <span class="wallet-method-tag">Instant</span>
+                    <span class="wallet-method-tag" id="walletMethodTag">Instant</span>
                   </div>
                 </div>
               </div>
@@ -261,7 +259,7 @@
                 </div>
                 <div class="wallet-preview-row">
                   <span>Payment Gateway</span>
-                  <strong>Paystack</strong>
+                  <strong id="walletPreviewGateway">Paystack</strong>
                 </div>
               </div>
 
@@ -285,7 +283,7 @@
               <ul class="wallet-info-list">
                 <li>Minimum funding amount is ₦100.</li>
                 <li>Maximum funding amount is ₦1,000,000 per transaction.</li>
-                <li>You will be redirected securely to Paystack to complete payment.</li>
+                <li>You will be redirected securely to the selected payment gateway to complete payment.</li>
                 <li>After successful payment, your wallet balance updates automatically.</li>
               </ul>
             </div>
@@ -296,7 +294,7 @@
               </div>
               <h3>Safe & Protected</h3>
               <p>
-                Your payment is processed through Paystack. DESKOTP does not handle your card details directly.
+                Your payment is processed through the selected gateway. DESKOTP does not handle your card details directly.
               </p>
             </div>
           </div>

@@ -7,7 +7,11 @@ const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
 
 let orders = [];
 let currentPage = 1;
+let autoPollingTimer = null;
+let isAutoChecking = false;
+
 const ROWS_PER_PAGE = 5;
+const AUTO_POLL_INTERVAL = 12000;
 
 const getToken = () => getStoredToken();
 
@@ -34,6 +38,17 @@ const getOrderType = (order) => {
 
 const getOrderTypeLabel = (order) => {
   return getOrderType(order) === "rent" ? "Rent Order" : "OTP Order";
+};
+
+const isActiveOtpOrder = (order) => {
+  const status = getStatusLabel(order.status);
+  const orderType = getOrderType(order);
+
+  return (
+    orderType === "otp" &&
+    !order.otpCode &&
+    ["pending", "active", "waiting_sms"].includes(status)
+  );
 };
 
 const getPaginatedOrders = () => {
@@ -154,6 +169,7 @@ const renderOrders = () => {
 
       const hasOtp = Boolean(order.otpCode);
       const hasNumber = Boolean(order.assignedNumber);
+      const isAutoWaiting = isActiveOtpOrder(order);
 
       return `
         <tr>
@@ -227,8 +243,8 @@ const renderOrders = () => {
                 data-type="${orderType}"
                 type="button"
               >
-                <i class="fa-solid fa-rotate-right"></i>
-                Refresh
+                <i class="fa-solid fa-rotate-right ${isAutoWaiting ? "fa-spin" : ""}"></i>
+                ${isAutoWaiting ? "Checking" : "Refresh"}
               </button>
 
               ${
@@ -322,6 +338,8 @@ const fetchOrders = async () => {
     const token = getToken();
 
     if (!token) {
+      stopAutoPolling();
+
       if (ordersContainer) {
         ordersContainer.innerHTML = `
           <div class="empty-orders-box">
@@ -331,6 +349,7 @@ const fetchOrders = async () => {
           </div>
         `;
       }
+
       return;
     }
 
@@ -350,12 +369,16 @@ const fetchOrders = async () => {
     orders = sortOrdersByDate([...otpOrders, ...rentOrders]);
 
     const totalPages = getTotalPages();
+
     if (currentPage > totalPages) {
       currentPage = totalPages;
     }
 
     renderOrders();
+    startAutoPolling();
   } catch (error) {
+    stopAutoPolling();
+
     if (ordersContainer) {
       ordersContainer.innerHTML = `
         <div class="empty-orders-box">
@@ -368,7 +391,7 @@ const fetchOrders = async () => {
   }
 };
 
-const fetchOrderStatus = async (orderId, type) => {
+const fetchOrderStatus = async (orderId, type, options = {}) => {
   try {
     const token = getToken();
     if (!token) return;
@@ -393,16 +416,84 @@ const fetchOrderStatus = async (orderId, type) => {
     const index = orders.findIndex((order) => order._id === orderId);
 
     if (index !== -1) {
+      const previousOtpCode = orders[index].otpCode;
+      const previousStatus = orders[index].status;
+
       orders[index] = {
         ...orders[index],
         ...data.order
       };
+
       orders = sortOrdersByDate(orders);
       renderOrders();
+
+      const newOtpCode = data.order?.otpCode;
+      const newStatus = data.order?.status;
+
+      if (!previousOtpCode && newOtpCode && typeof showToast === "function") {
+        showToast("success", "OTP received", "Your OTP code has arrived.");
+      }
+
+      if (
+        !options.silent &&
+        previousStatus !== newStatus &&
+        newStatus &&
+        typeof showToast === "function"
+      ) {
+        showToast("info", "Order updated", `Order status is now ${newStatus}.`);
+      }
     }
   } catch (error) {
     console.log("Status check error:", error.message);
   }
+};
+
+const autoCheckActiveOrders = async () => {
+  if (isAutoChecking) return;
+
+  const activeOrders = orders.filter(isActiveOtpOrder);
+
+  if (!activeOrders.length) {
+    return;
+  }
+
+  isAutoChecking = true;
+
+  try {
+    await Promise.all(
+      activeOrders.map((order) =>
+        fetchOrderStatus(order._id, "otp", { silent: true })
+      )
+    );
+  } finally {
+    isAutoChecking = false;
+  }
+};
+
+const startAutoPolling = () => {
+  if (autoPollingTimer) {
+    clearInterval(autoPollingTimer);
+  }
+
+  const hasActiveOrders = orders.some(isActiveOtpOrder);
+
+  if (!hasActiveOrders) {
+    autoPollingTimer = null;
+    return;
+  }
+
+  autoPollingTimer = setInterval(() => {
+    autoCheckActiveOrders();
+  }, AUTO_POLL_INTERVAL);
+};
+
+const stopAutoPolling = () => {
+  if (autoPollingTimer) {
+    clearInterval(autoPollingTimer);
+    autoPollingTimer = null;
+  }
+
+  isAutoChecking = false;
 };
 
 const cancelOrder = async (orderId) => {
@@ -429,6 +520,7 @@ const cancelOrder = async (orderId) => {
       orders[index] = data.order;
       orders = sortOrdersByDate(orders);
       renderOrders();
+      startAutoPolling();
     }
 
     if (typeof showToast === "function") {
@@ -517,6 +609,19 @@ refreshOrdersBtn?.addEventListener("click", async () => {
   if (typeof showToast === "function") {
     showToast("success", "Refreshed", "Orders refreshed successfully.");
   }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopAutoPolling();
+    return;
+  }
+
+  startAutoPolling();
+});
+
+window.addEventListener("beforeunload", () => {
+  stopAutoPolling();
 });
 
 fetchOrders();

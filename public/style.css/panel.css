@@ -93,22 +93,48 @@ iframe {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 22px;
+  text-decoration: none;
+  font-size: 21px;
   font-weight: 800;
   color: var(--text);
   margin-bottom: 28px;
   padding: 8px 10px;
+  letter-spacing: -0.03em;
+}
+
+.sidebar-logo-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .logo-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #ffffff;
-  box-shadow: 0 8px 18px rgba(22, 119, 255, 0.28);
+  background: transparent;
+  color: var(--primary);
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .sidebar-nav {

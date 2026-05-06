@@ -5,6 +5,28 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+
+
+
+    const focusAdminProfileBtn = document.getElementById("focusAdminProfileBtn");
+    const focusPlatformControlsBtn = document.getElementById("focusPlatformControlsBtn");
+    const adminProfileCard = document.getElementById("adminProfileCard");
+    const adminPlatformControlsCard = document.getElementById("adminPlatformControlsCard");
+    const firstNameInput = document.getElementById("adminSettingsFirstName");
+
+
+    focusAdminProfileBtn?.addEventListener("click", () => {
+      adminProfileCard?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => firstNameInput?.focus(), 400);
+    });
+
+
+    focusPlatformControlsBtn?.addEventListener("click", () => {
+      adminPlatformControlsCard?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
 const adminProfileForm = document.getElementById("adminProfileForm");
 const adminPlatformSettingsForm = document.getElementById("adminPlatformSettingsForm");
 

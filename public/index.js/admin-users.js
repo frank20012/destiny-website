@@ -5,6 +5,19 @@ import { getStoredToken, getStoredUser } from "./auth-storage.js";
 const token = getStoredToken();
 const user = getStoredUser();
 
+
+  const focusUserSearchBtn = document.getElementById("focusUserSearchBtn");
+  const showAdminUsersBtn = document.getElementById("showAdminUsersBtn");
+  const userSearchInput = document.getElementById("adminUserSearchInput");
+  const userRoleFilter = document.getElementById("adminUserRoleFilter");
+  focusUserSearchBtn?.addEventListener("click", () => {
+    userSearchInput?.focus();
+  });
+  showAdminUsersBtn?.addEventListener("click", () => {
+    if (!userRoleFilter) return;
+    userRoleFilter.value = "admin";
+    userRoleFilter.dispatchEvent(new Event("change", { bubbles: true }));
+  });
 const adminUserSearchInput = document.getElementById("adminUserSearchInput");
 const adminUserRoleFilter = document.getElementById("adminUserRoleFilter");
 const adminUserStatusFilter = document.getElementById("adminUserStatusFilter");

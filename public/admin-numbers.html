@@ -3,44 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Numbers - DESKOTP</title>
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
   <link rel="stylesheet" href="./style.css/toast.css" />
   <link rel="stylesheet" href="./style.css/panel.css" />
   <link rel="stylesheet" href="./style.css/admin-sub.css" />
 </head>
+
 <body>
-  <div class="sidebar-overlay"></div>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo-image-wrap">
+        <img
+          src="./assets/logo/logo-icon.png"
+          alt="DESKOTP logo"
+          class="loader-logo-image"
+        />
+      </div>
+
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="loader-text">Loading admin numbers...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
 
       <nav class="sidebar-nav">
-        <a href="admin.html"><span>Admin Overview</span></a>
-        <a href="admin-users.html"><span>Users</span></a>
-        <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transaction.html"><span>Admin Transactions</span></a>
-        <a href="admin-services.html"><span>Admin Services</span></a>
-        <a href="admin-numbers.html" class="active"><span>Admin Numbers</span></a>
-        <a href="admin-reports.html"><span>Admin Reports</span></a>
-        <a href="admin-settings.html"><span>Admin Settings</span></a>
-        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
-        <a href="dashboard.html"><span>User Dashboard</span></a>
-        <a href="signin.html"><span>Logout</span></a>
+        <a href="admin.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Admin Overview</span>
+        </a>
+
+        <a href="admin-users.html">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+
+        <a href="admin-orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Admin Orders</span>
+        </a>
+
+        <a href="admin-transaction.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Admin Transactions</span>
+        </a>
+
+        <a href="admin-services.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Admin Services</span>
+        </a>
+
+        <a href="admin-numbers.html" class="active">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Admin Numbers</span>
+        </a>
+
+        <a href="admin-reports.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Admin Reports</span>
+        </a>
+
+        <a href="admin-settings.html">
+          <i class="fa-solid fa-gear"></i>
+          <span>Admin Settings</span>
+        </a>
+
+        <a href="admin-tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admin Tickets</span>
+        </a>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>User Dashboard</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Numbers</h1>
-          <p>Manage virtual number inventory and availability</p>
+        <div class="topbar-copy">
+          <button
+            class="icon-btn mobile-menu-btn"
+            type="button"
+            id="menuToggle"
+            aria-label="Open admin menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-phone-volume"></i>
+              Number Inventory
+            </span>
+            <h1>Admin Numbers</h1>
+            <p>Manage virtual number inventory, service type, provider, and availability.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="openAddNumberFormBtn">Add Number</button>
+          <button
+            class="icon-btn theme-toggle-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+
+          <button class="top-btn" type="button" id="openAddNumberFormBtn">
+            <i class="fa-solid fa-plus"></i>
+            Add Number
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -48,54 +153,132 @@
         </div>
       </header>
 
-      <section class="admin-overview-grid">
-        <div class="overview-card highlight-card card">
-          <p>Total Numbers</p>
-          <h2 class="stat-number" id="numbersTotalCount">0</h2>
-          <span>All stored inventory</span>
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card admin-metric-card">
+          <div class="metric-icon metric-icon-primary">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+
+          <div>
+            <p>Total Numbers</p>
+            <h2 class="stat-number" id="numbersTotalCount">0</h2>
+            <span>All stored inventory</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Available</p>
-          <h3 class="stat-number" id="numbersAvailableCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-success">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <div>
+            <p>Available</p>
+            <h3 class="stat-number" id="numbersAvailableCount">0</h3>
+            <span>Ready for assignment</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Assigned</p>
-          <h3 class="stat-number" id="numbersAssignedCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-info">
+            <i class="fa-solid fa-user-clock"></i>
+          </div>
+
+          <div>
+            <p>Assigned</p>
+            <h3 class="stat-number" id="numbersAssignedCount">0</h3>
+            <span>Currently with users</span>
+          </div>
         </div>
 
-        <div class="overview-card card">
-          <p>Used / Disabled</p>
-          <h3 class="stat-number" id="numbersClosedCount">0</h3>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-warning">
+            <i class="fa-solid fa-ban"></i>
+          </div>
+
+          <div>
+            <p>Used / Disabled</p>
+            <h3 class="stat-number" id="numbersClosedCount">0</h3>
+            <span>Closed inventory</span>
+          </div>
         </div>
       </section>
 
-      <section class="admin-table-section">
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Inventory Control
+          </span>
+
+          <h2>Track internal numbers and keep number availability accurate.</h2>
+          <p>
+            Add internal numbers, filter by type or status, and monitor assigned,
+            available, used, or disabled inventory records.
+          </p>
+        </div>
+
+        <div class="support-command-actions">
+          <button class="support-action-pill" type="button" id="focusNumberSearchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search Numbers
+          </button>
+
+          <button class="support-action-pill" type="button" id="showAvailableNumbersBtn">
+            <i class="fa-solid fa-circle-check"></i>
+            View Available
+          </button>
+        </div>
+      </section>
+
+      <section class="admin-table-section reveal">
         <div class="admin-form-card card" id="adminNumberFormCard" style="display: none;">
           <div class="form-card-head">
             <div>
+              <span class="table-kicker">
+                <i class="fa-solid fa-plus"></i>
+                New Number
+              </span>
               <h2>Add Number</h2>
-              <p>Add a new number to inventory</p>
+              <p>Add a new virtual number to internal inventory.</p>
             </div>
-            <button type="button" class="close-form-btn" id="closeAddNumberFormBtn">✕</button>
+
+            <button
+              type="button"
+              class="close-form-btn"
+              id="closeAddNumberFormBtn"
+              aria-label="Close add number form"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
 
           <form id="adminNumberForm" class="admin-service-form">
             <div class="form-grid">
               <div class="input-group">
                 <label for="adminNumberCountry">Country</label>
-                <input type="text" id="adminNumberCountry" placeholder="e.g. United Kingdom" />
+                <input
+                  type="text"
+                  id="adminNumberCountry"
+                  placeholder="e.g. United Kingdom"
+                />
               </div>
 
               <div class="input-group">
                 <label for="adminNumberValue">Number</label>
-                <input type="text" id="adminNumberValue" placeholder="e.g. +447900000111" />
+                <input
+                  type="text"
+                  id="adminNumberValue"
+                  placeholder="e.g. +447900000111"
+                />
               </div>
 
               <div class="input-group">
                 <label for="adminNumberProvider">Provider</label>
-                <input type="text" id="adminNumberProvider" placeholder="e.g. internal" />
+                <input
+                  type="text"
+                  id="adminNumberProvider"
+                  placeholder="e.g. internal"
+                />
               </div>
 
               <div class="input-group">
@@ -119,8 +302,14 @@
             </div>
 
             <div class="form-actions-row">
-              <button type="button" class="secondary-btn" id="cancelAddNumberFormBtn">Cancel</button>
-              <button type="submit" class="primary-btn">Create Number</button>
+              <button type="button" class="secondary-btn" id="cancelAddNumberFormBtn">
+                Cancel
+              </button>
+
+              <button type="submit" class="primary-btn">
+                <i class="fa-solid fa-plus"></i>
+                Create Number
+              </button>
             </div>
 
             <p class="form-message" id="adminNumberMessage"></p>
@@ -130,59 +319,105 @@
         <div class="admin-table-card card">
           <div class="table-header">
             <div>
+              <span class="table-kicker">
+                <i class="fa-solid fa-list-check"></i>
+                Inventory Table
+              </span>
               <h2>Numbers List</h2>
-              <p>Search and filter inventory numbers</p>
+              <p>Search and filter inventory numbers.</p>
             </div>
 
-            <div class="table-actions">
-              <input type="text" id="adminNumberSearchInput" placeholder="Search country or number..." />
-              <select id="adminNumberTypeFilter">
-                <option value="all">All Types</option>
-                <option value="otp">OTP</option>
-                <option value="sms">SMS</option>
-                <option value="voice">Voice</option>
-              </select>
-              <select id="adminNumberStatusFilter">
-                <option value="all">All Status</option>
-                <option value="available">Available</option>
-                <option value="assigned">Assigned</option>
-                <option value="used">Used</option>
-                <option value="disabled">Disabled</option>
-              </select>
+            <div class="table-actions enhanced-table-actions">
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                  type="text"
+                  id="adminNumberSearchInput"
+                  placeholder="Search country or number..."
+                />
+              </div>
+
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-tags"></i>
+                <select id="adminNumberTypeFilter">
+                  <option value="all">All Types</option>
+                  <option value="otp">OTP</option>
+                  <option value="sms">SMS</option>
+                  <option value="voice">Voice</option>
+                </select>
+              </div>
+
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-signal"></i>
+                <select id="adminNumberStatusFilter">
+                  <option value="all">All Status</option>
+                  <option value="available">Available</option>
+                  <option value="assigned">Assigned</option>
+                  <option value="used">Used</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-helper">
+            <div>
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Tip: Most live provider numbers are external; use this section for internal inventory only.</span>
+            </div>
+
+            <div class="admin-live-dot">
+              <span></span>
+              Live Admin View
             </div>
           </div>
 
           <div class="table-wrap">
-            <table>
+            <table class="admin-enhanced-table">
               <thead>
                 <tr>
-                  <th>Number ID</th>
-                  <th>Country</th>
-                  <th>Number</th>
-                  <th>Provider</th>
-                  <th>Type</th>
-                  <th>Status</th>
+                  <th><i class="fa-solid fa-hashtag"></i>Number ID</th>
+                  <th><i class="fa-solid fa-globe"></i>Country</th>
+                  <th><i class="fa-solid fa-phone"></i>Number</th>
+                  <th><i class="fa-solid fa-server"></i>Provider</th>
+                  <th><i class="fa-solid fa-tags"></i>Type</th>
+                  <th><i class="fa-solid fa-signal"></i>Status</th>
                 </tr>
               </thead>
+
               <tbody id="adminNumbersTableBody"></tbody>
             </table>
           </div>
 
-          <p class="table-empty-message" id="adminNumbersEmptyMessage">No matching numbers found.</p>
+          <p class="table-empty-message" id="adminNumbersEmptyMessage">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            No matching numbers found.
+          </p>
 
           <div class="table-pagination" id="adminNumbersPagination">
-            <button type="button" id="adminNumbersPrevBtn">Previous</button>
+            <button type="button" id="adminNumbersPrevBtn">
+              <i class="fa-solid fa-chevron-left"></i>
+              Previous
+            </button>
+
             <span id="adminNumbersPageInfo">Page 1 of 1</span>
-            <button type="button" id="adminNumbersNextBtn">Next</button>
+
+            <button type="button" id="adminNumbersNextBtn">
+              Next
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </section>
     </main>
   </div>
+
   <script src="./index.js/config.js"></script>
- <script type="module" src="./index.js/require-admin.js"></script>
- <script type="module" src="./index.js/session-ui.js"></script>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
   <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
   <script src="./index.js/toast.js"></script>
   <script type="module" src="./index.js/admin-numbers.js"></script>
 </body>

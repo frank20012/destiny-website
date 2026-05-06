@@ -3,202 +3,331 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Services - DESKOTP</title>
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
   <link rel="stylesheet" href="./style.css/toast.css" />
   <link rel="stylesheet" href="./style.css/panel.css" />
   <link rel="stylesheet" href="./style.css/admin-sub.css" />
 </head>
+
 <body>
-  <div class="sidebar-overlay"></div>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo-image-wrap">
+        <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" class="loader-logo-image" />
+      </div>
+      <div class="loader-dots"><span></span><span></span><span></span></div>
+      <div class="loader-text">Loading admin services...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
+
       <nav class="sidebar-nav">
-  <a href="admin.html"><span>Admin Overview</span></a>
-  <a href="admin-users.html"><span>Users</span></a>
-  <a href="admin-orders.html"><span>Admin Orders</span></a>
-  <a href="admin-transaction.html"><span>Admin Transactions</span></a>
-  <a href="admin-services.html" class="active"><span>Admin Services</span></a>
-  <a href="admin-numbers.html"><span>Admin Numbers</span></a>
-  <a href="admin-reports.html"><span>Admin Reports</span></a>
-  <a href="admin-settings.html"><span>Admin Settings</span></a>
-  <a href="admin-tickets.html"><span>Admin Tickets</span></a>
-  <a href="dashboard.html"><span>User Dashboard</span></a>
-  <a href="signin.html"><span>Logout</span></a>
-</nav>
+        <a href="admin.html"><i class="fa-solid fa-chart-pie"></i><span>Admin Overview</span></a>
+        <a href="admin-users.html"><i class="fa-solid fa-users"></i><span>Users</span></a>
+        <a href="admin-orders.html"><i class="fa-solid fa-box-open"></i><span>Admin Orders</span></a>
+        <a href="admin-transaction.html"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Admin Transactions</span></a>
+        <a href="admin-services.html" class="active"><i class="fa-solid fa-layer-group"></i><span>Admin Services</span></a>
+        <a href="admin-numbers.html"><i class="fa-solid fa-phone-volume"></i><span>Admin Numbers</span></a>
+        <a href="admin-reports.html"><i class="fa-solid fa-chart-line"></i><span>Admin Reports</span></a>
+        <a href="admin-settings.html"><i class="fa-solid fa-gear"></i><span>Admin Settings</span></a>
+        <a href="admin-tickets.html"><i class="fa-solid fa-headset"></i><span>Admin Tickets</span></a>
+        <a href="dashboard.html"><i class="fa-solid fa-table-columns"></i><span>User Dashboard</span></a>
+        <a href="signin.html" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
+      </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Services</h1>
-          <p>Manage service offerings, pricing, and service status</p>
+        <div class="topbar-copy">
+          <button class="icon-btn mobile-menu-btn" type="button" id="menuToggle" aria-label="Open admin menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-layer-group"></i>
+              Service Management
+            </span>
+            <h1>Admin Services</h1>
+            <p>Manage service offerings, pricing, categories, and service status.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
-          <button class="top-btn" type="button" id="openAddServiceFormBtn">Add Service</button>
+          <button class="icon-btn theme-toggle-btn" type="button" aria-label="Toggle theme">🌙</button>
+
+          <button class="top-btn" type="button" id="openAddServiceFormBtn">
+            <i class="fa-solid fa-plus"></i>
+            Add Service
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
           </div>
         </div>
       </header>
-<section class="admin-overview-grid">
-  <div class="overview-card highlight-card card">
-    <p>Total Services</p>
-    <h2 class="stat-number" id="servicesTotalCount">0</h2>
-    <span>All available platform services</span>
-  </div>
 
-  <div class="overview-card card">
-    <p>Active Services</p>
-    <h3 class="stat-number" id="servicesActiveCount">0</h3>
-  </div>
+      <section class="admin-overview-grid reveal">
+        <div class="overview-card highlight-card card admin-metric-card">
+          <div class="metric-icon metric-icon-primary">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div>
+            <p>Total Services</p>
+            <h2 class="stat-number" id="servicesTotalCount">0</h2>
+            <span>All platform services</span>
+          </div>
+        </div>
 
-  <div class="overview-card card">
-    <p>Draft Services</p>
-    <h3 class="stat-number" id="servicesDraftCount">0</h3>
-  </div>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-success">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <p>Active Services</p>
+            <h3 class="stat-number" id="servicesActiveCount">0</h3>
+            <span>Available to users</span>
+          </div>
+        </div>
 
-  <div class="overview-card card">
-    <p>Disabled Services</p>
-    <h3 class="stat-number" id="servicesDisabledCount">0</h3>
-  </div>
-</section>
-       <div class="admin-form-card card" id="adminServiceFormCard" style="display: none;">
-  <div class="form-card-head">
-    <div>
-      <h2>Create Service</h2>
-      <p>Add a new OTP / virtual number service</p>
-    </div>
-    <button type="button" class="close-form-btn" id="closeAddServiceFormBtn">✕</button>
-  </div>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-info">
+            <i class="fa-solid fa-file-lines"></i>
+          </div>
+          <div>
+            <p>Draft Services</p>
+            <h3 class="stat-number" id="servicesDraftCount">0</h3>
+            <span>Not yet published</span>
+          </div>
+        </div>
 
-  <form id="adminServiceForm" class="admin-service-form">
-    <div class="form-grid">
-      <div class="input-group">
-        <label for="adminServiceName">Service Name</label>
-        <input type="text" id="adminServiceName" placeholder="e.g. WhatsApp OTP - UK" />
-      </div>
+        <div class="overview-card card admin-metric-card">
+          <div class="metric-icon metric-icon-warning">
+            <i class="fa-solid fa-ban"></i>
+          </div>
+          <div>
+            <p>Disabled Services</p>
+            <h3 class="stat-number" id="servicesDisabledCount">0</h3>
+            <span>Hidden from users</span>
+          </div>
+        </div>
+      </section>
 
-      <div class="input-group">
-        <label for="adminServiceCode">Service Code</label>
-        <input type="text" id="adminServiceCode" placeholder="e.g. whatsapp" />
-      </div>
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Service Catalog Control
+          </span>
 
-      <div class="input-group">
-        <label for="adminServiceCountry">Country</label>
-        <input type="text" id="adminServiceCountry" placeholder="e.g. United Kingdom" />
-      </div>
+          <h2>Control visible services, categories, prices, and delivery type.</h2>
+          <p>Create new services, search existing records, and filter by category or availability status.</p>
+        </div>
 
-      <div class="input-group">
-        <label for="adminServicePrice">Price</label>
-        <input type="number" id="adminServicePrice" min="0" step="0.01" placeholder="e.g. 2.50" />
-      </div>
+        <div class="support-command-actions">
+          <button class="support-action-pill" type="button" id="focusServiceSearchBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search Services
+          </button>
 
-      <div class="input-group">
-        <label for="adminServiceCategory">Category</label>
-        <select id="adminServiceCategory">
-          <option value="otp">OTP</option>
-          <option value="sms">SMS</option>
-          <option value="voice">Voice</option>
-          <option value="renewal">Renewal</option>
-          <option value="replacement">Replacement</option>
-        </select>
-      </div>
+          <button class="support-action-pill" type="button" id="showActiveServicesBtn">
+            <i class="fa-solid fa-circle-check"></i>
+            View Active
+          </button>
+        </div>
+      </section>
 
-      <div class="input-group">
-        <label for="adminServiceDeliveryType">Delivery Type</label>
-        <select id="adminServiceDeliveryType">
-          <option value="sms">SMS</option>
-          <option value="voice">Voice</option>
-        </select>
-      </div>
+      <div class="admin-form-card card reveal" id="adminServiceFormCard" style="display: none;">
+        <div class="form-card-head">
+          <div>
+            <span class="table-kicker"><i class="fa-solid fa-plus"></i> New Service</span>
+            <h2>Create Service</h2>
+            <p>Add a new OTP / virtual number service.</p>
+          </div>
+          <button type="button" class="close-form-btn" id="closeAddServiceFormBtn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
 
-      <div class="input-group">
-        <label for="adminServiceStatus">Status</label>
-        <select id="adminServiceStatus">
-          <option value="active">Active</option>
-          <option value="draft">Draft</option>
-          <option value="disabled">Disabled</option>
-        </select>
-      </div>
-
-      <div class="input-group full-width">
-        <label for="adminServiceDescription">Description</label>
-        <textarea id="adminServiceDescription" rows="4" placeholder="Short service description"></textarea>
-      </div>
-    </div>
-
-    <div class="form-actions-row">
-      <button type="button" class="secondary-btn" id="cancelAddServiceFormBtn">Cancel</button>
-      <button type="submit" class="primary-btn">Create Service</button>
-    </div>
-
-    <p class="form-message" id="adminServiceMessage"></p>
-  </form>
-</div>
-
-      <section class="admin-table-section reveal">
-        <div class="admin-table-card card">
-          <div class="table-header">
-            <div>
-              <h2>Services List</h2>
-              <p>Search and filter all platform services</p>
+        <form id="adminServiceForm" class="admin-service-form">
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="adminServiceName">Service Name</label>
+              <input type="text" id="adminServiceName" placeholder="e.g. WhatsApp OTP - UK" />
             </div>
 
-            <div class="table-actions">
-              <input type="text" id="adminServiceSearchInput" placeholder="Search service name..." />
-              <select id="adminServiceCategoryFilter">
-                <option value="all">All Categories</option>
-                <option value="standard">Standard</option>
-                <option value="popular">Popular</option>
-                <option value="business">Business</option>
-                <option value="api">API</option>
-                <option value="advanced">Advanced</option>
+            <div class="input-group">
+              <label for="adminServiceCode">Service Code</label>
+              <input type="text" id="adminServiceCode" placeholder="e.g. whatsapp" />
+            </div>
+
+            <div class="input-group">
+              <label for="adminServiceCountry">Country</label>
+              <input type="text" id="adminServiceCountry" placeholder="e.g. United Kingdom" />
+            </div>
+
+            <div class="input-group">
+              <label for="adminServicePrice">Price</label>
+              <input type="number" id="adminServicePrice" min="0" step="0.01" placeholder="e.g. 2.50" />
+            </div>
+
+            <div class="input-group">
+              <label for="adminServiceCategory">Category</label>
+              <select id="adminServiceCategory">
+                <option value="otp">OTP</option>
+                <option value="sms">SMS</option>
+                <option value="voice">Voice</option>
+                <option value="renewal">Renewal</option>
+                <option value="replacement">Replacement</option>
               </select>
-              <select id="adminServiceStatusFilter">
-                <option value="all">All Status</option>
+            </div>
+
+            <div class="input-group">
+              <label for="adminServiceDeliveryType">Delivery Type</label>
+              <select id="adminServiceDeliveryType">
+                <option value="sms">SMS</option>
+                <option value="voice">Voice</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="adminServiceStatus">Status</label>
+              <select id="adminServiceStatus">
                 <option value="active">Active</option>
                 <option value="draft">Draft</option>
                 <option value="disabled">Disabled</option>
               </select>
             </div>
+
+            <div class="input-group full-width">
+              <label for="adminServiceDescription">Description</label>
+              <textarea id="adminServiceDescription" rows="4" placeholder="Short service description"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions-row">
+            <button type="button" class="secondary-btn" id="cancelAddServiceFormBtn">Cancel</button>
+            <button type="submit" class="primary-btn">
+              <i class="fa-solid fa-plus"></i>
+              Create Service
+            </button>
+          </div>
+
+          <p class="form-message" id="adminServiceMessage"></p>
+        </form>
+      </div>
+
+      <section class="admin-table-section reveal">
+        <div class="admin-table-card card">
+          <div class="table-header">
+            <div>
+              <span class="table-kicker"><i class="fa-solid fa-list-check"></i> Services Catalog</span>
+              <h2>Services List</h2>
+              <p>Search and filter all platform services.</p>
+            </div>
+
+            <div class="table-actions enhanced-table-actions">
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="adminServiceSearchInput" placeholder="Search service name..." />
+              </div>
+
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-tags"></i>
+                <select id="adminServiceCategoryFilter">
+                  <option value="all">All Categories</option>
+                  <option value="standard">Standard</option>
+                  <option value="popular">Popular</option>
+                  <option value="business">Business</option>
+                  <option value="api">API</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+
+              <div class="admin-filter-field">
+                <i class="fa-solid fa-signal"></i>
+                <select id="adminServiceStatusFilter">
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-table-helper">
+            <div>
+              <i class="fa-solid fa-circle-info"></i>
+              <span>Tip: Keep service names and codes consistent with provider API service names.</span>
+            </div>
+            <div class="admin-live-dot"><span></span>Live Admin View</div>
           </div>
 
           <div class="table-wrap">
-            <table>
+            <table class="admin-enhanced-table">
               <thead>
                 <tr>
-                  <th>Service ID</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Status</th>
+                  <th><i class="fa-solid fa-hashtag"></i>Service ID</th>
+                  <th><i class="fa-solid fa-layer-group"></i>Name</th>
+                  <th><i class="fa-solid fa-tags"></i>Category</th>
+                  <th><i class="fa-solid fa-money-bill-wave"></i>Price</th>
+                  <th><i class="fa-solid fa-signal"></i>Status</th>
                 </tr>
               </thead>
               <tbody id="adminServicesTableBody"></tbody>
             </table>
           </div>
 
-          <p class="table-empty-message" id="adminServicesEmptyMessage">No matching services found.</p>
+          <p class="table-empty-message" id="adminServicesEmptyMessage">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            No matching services found.
+          </p>
 
           <div class="table-pagination" id="adminServicesPagination">
-            <button type="button" id="adminServicesPrevBtn">Previous</button>
+            <button type="button" id="adminServicesPrevBtn">
+              <i class="fa-solid fa-chevron-left"></i>
+              Previous
+            </button>
             <span id="adminServicesPageInfo">Page 1 of 1</span>
-            <button type="button" id="adminServicesNextBtn">Next</button>
+            <button type="button" id="adminServicesNextBtn">
+              Next
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </section>
     </main>
   </div>
+
   <script src="./index.js/config.js"></script>
- <script type="module" src="./index.js/require-admin.js"></script>
- <script type="module" src="./index.js/session-ui.js"></script>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
   <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
   <script src="./index.js/toast.js"></script>
   <script type="module" src="./index.js/admin-services.js"></script>
 </body>

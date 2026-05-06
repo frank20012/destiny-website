@@ -3,43 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Admin Settings - DESKOTP</title>
- <link rel="stylesheet" href="./style.css/toast.css" />
- <link rel="stylesheet" href="./style.css/panel.css" />
- <link rel="stylesheet" href="./style.css/admin-sub.css" />
- <link rel="stylesheet" href="./style.css/admin-settings.css" />
+
+  <link rel="icon" href="./assets/logo/logo-icon.png" />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="./style.css/loader.css" />
+  <link rel="stylesheet" href="./style.css/reveal.css" />
+  <link rel="stylesheet" href="./style.css/toast.css" />
+  <link rel="stylesheet" href="./style.css/panel.css" />
+  <link rel="stylesheet" href="./style.css/admin-sub.css" />
+  <link rel="stylesheet" href="./style.css/admin-settings.css" />
 </head>
+
 <body>
-  <div class="sidebar-overlay"></div>
+  <div class="loader-wrapper">
+    <div class="loader-box">
+      <div class="loader-logo-image-wrap">
+        <img
+          src="./assets/logo/logo-icon.png"
+          alt="DESKOTP logo"
+          class="loader-logo-image"
+        />
+      </div>
+
+      <div class="loader-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="loader-text">Loading admin settings...</div>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="admin-layout">
-    <aside class="sidebar">
-      <div class="sidebar-logo">DESKOTP</div>
+    <aside class="sidebar" id="sidebar">
+      <a href="admin.html" class="sidebar-logo">
+        <span class="logo-mark">
+          <img src="./assets/logo/logo-icon.png" alt="DESKOTP logo" />
+        </span>
+        <span>DeskOTP</span>
+      </a>
+
       <nav class="sidebar-nav">
-        <a href="admin.html"><span>Admin Overview</span></a>
-        <a href="admin-users.html"><span>Users</span></a>
-        <a href="admin-orders.html"><span>Admin Orders</span></a>
-        <a href="admin-transaction.html"><span>Admin Transactions</span></a>
-        <a href="admin-services.html"><span>Admin Services</span></a>
-         <a href="admin-numbers.html"><span>Admin Numbers</span></a>
-        <a href="admin-reports.html"><span>Admin Reports</span></a>
-        <a href="admin-settings.html" class="active"><span>Admin Settings</span></a>
-        <a href="admin-tickets.html"><span>Admin Tickets</span></a>
-        <a href="dashboard.html"><span>User Dashboard</span></a>
-        <a href="signin.html"><span>Logout</span></a>
+        <a href="admin.html">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Admin Overview</span>
+        </a>
+
+        <a href="admin-users.html">
+          <i class="fa-solid fa-users"></i>
+          <span>Users</span>
+        </a>
+
+        <a href="admin-orders.html">
+          <i class="fa-solid fa-box-open"></i>
+          <span>Admin Orders</span>
+        </a>
+
+        <a href="admin-transaction.html">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Admin Transactions</span>
+        </a>
+
+        <a href="admin-services.html">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Admin Services</span>
+        </a>
+
+        <a href="admin-numbers.html">
+          <i class="fa-solid fa-phone-volume"></i>
+          <span>Admin Numbers</span>
+        </a>
+
+        <a href="admin-reports.html">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Admin Reports</span>
+        </a>
+
+        <a href="admin-settings.html" class="active">
+          <i class="fa-solid fa-gear"></i>
+          <span>Admin Settings</span>
+        </a>
+
+        <a href="admin-tickets.html">
+          <i class="fa-solid fa-headset"></i>
+          <span>Admin Tickets</span>
+        </a>
+
+        <a href="dashboard.html">
+          <i class="fa-solid fa-table-columns"></i>
+          <span>User Dashboard</span>
+        </a>
+
+        <a href="signin.html" class="logout-link">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
       </nav>
     </aside>
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <h1>Admin Settings</h1>
-          <p>Manage admin profile and platform preferences</p>
+        <div class="topbar-copy">
+          <button
+            class="icon-btn mobile-menu-btn"
+            type="button"
+            id="menuToggle"
+            aria-label="Open admin menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <span class="admin-page-kicker">
+              <i class="fa-solid fa-gear"></i>
+              Platform Preferences
+            </span>
+            <h1>Admin Settings</h1>
+            <p>Manage admin profile, platform controls, and protected admin actions.</p>
+          </div>
         </div>
 
         <div class="topbar-actions">
-          <button class="icon-btn mobile-menu-btn" type="button">☰</button>
-          <button class="icon-btn theme-toggle-btn" type="button">🌙</button>
+          <button
+            class="icon-btn theme-toggle-btn"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            🌙
+          </button>
+
           <div class="profile-box">
             <div class="avatar">A</div>
             <span>Admin</span>
@@ -47,71 +149,137 @@
         </div>
       </header>
 
-      <section class="settings-grid">
+      <section class="support-command-card card reveal">
+        <div class="support-command-copy">
+          <span class="support-command-badge">
+            <i class="fa-solid fa-shield-halved"></i>
+            Admin Security Area
+          </span>
+
+          <h2>Keep admin profile and platform controls organized.</h2>
+          <p>
+            Update admin account details and prepare operational controls like
+            registration access, maintenance mode, and notifications.
+          </p>
+        </div>
+
+        <div class="support-command-actions">
+          <button class="support-action-pill" type="button" id="focusAdminProfileBtn">
+            <i class="fa-solid fa-user-gear"></i>
+            Edit Profile
+          </button>
+
+          <button class="support-action-pill" type="button" id="focusPlatformControlsBtn">
+            <i class="fa-solid fa-sliders"></i>
+            Platform Controls
+          </button>
+        </div>
+      </section>
+
+      <section class="settings-grid reveal">
         <div class="left-column">
-          <div class="card form-card">
+          <div class="card form-card" id="adminProfileCard">
             <div class="section-title">
+              <span class="table-kicker">
+                <i class="fa-solid fa-user-gear"></i>
+                Admin Profile
+              </span>
               <h2>Admin Profile</h2>
-              <p>Update the logged-in admin account details</p>
+              <p>Update the logged-in admin account details.</p>
             </div>
 
             <form class="settings-form" id="adminProfileForm">
               <div class="form-row">
                 <div class="input-group">
                   <label for="adminSettingsFirstName">First Name</label>
-                  <input type="text" id="adminSettingsFirstName" placeholder="First name" />
+                  <input
+                    type="text"
+                    id="adminSettingsFirstName"
+                    placeholder="First name"
+                  />
                 </div>
 
                 <div class="input-group">
                   <label for="adminSettingsLastName">Last Name</label>
-                  <input type="text" id="adminSettingsLastName" placeholder="Last name" />
+                  <input
+                    type="text"
+                    id="adminSettingsLastName"
+                    placeholder="Last name"
+                  />
                 </div>
               </div>
 
               <div class="input-group">
                 <label for="adminSettingsEmail">Email Address</label>
-                <input type="email" id="adminSettingsEmail" placeholder="Email address" />
+                <input
+                  type="email"
+                  id="adminSettingsEmail"
+                  placeholder="Email address"
+                />
               </div>
 
-              <button type="submit" class="primary-btn">Save Profile</button>
+              <button type="submit" class="primary-btn">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Profile
+              </button>
+
               <p class="form-message" id="adminSettingsMessage"></p>
             </form>
           </div>
 
-          <div class="card form-card">
+          <div class="card form-card" id="adminPlatformControlsCard">
             <div class="section-title">
+              <span class="table-kicker">
+                <i class="fa-solid fa-sliders"></i>
+                Platform Controls
+              </span>
               <h2>Platform Controls</h2>
-              <p>UI-only controls for now, ready for future backend settings</p>
+              <p>UI-only controls for now, ready for future backend settings.</p>
             </div>
 
             <form class="settings-form" id="adminPlatformSettingsForm">
               <div class="toggle-list">
                 <label class="toggle-item">
                   <div>
-                    <h4>Maintenance Mode</h4>
+                    <h4>
+                      <i class="fa-solid fa-screwdriver-wrench"></i>
+                      Maintenance Mode
+                    </h4>
                     <p>Temporarily limit public access.</p>
                   </div>
+
                   <input type="checkbox" id="maintenanceModeToggle" />
                 </label>
 
                 <label class="toggle-item">
                   <div>
-                    <h4>New User Registration</h4>
+                    <h4>
+                      <i class="fa-solid fa-user-plus"></i>
+                      New User Registration
+                    </h4>
                     <p>Allow or pause new signups.</p>
                   </div>
+
                   <input type="checkbox" id="newUserRegistrationToggle" checked />
                 </label>
 
                 <label class="toggle-item">
                   <div>
-                    <h4>Email Notifications</h4>
+                    <h4>
+                      <i class="fa-solid fa-envelope-circle-check"></i>
+                      Email Notifications
+                    </h4>
                     <p>Send admin alerts and platform notices.</p>
                   </div>
+
                   <input type="checkbox" id="emailNotificationsToggle" checked />
                 </label>
               </div>
 
-              <button type="submit" class="primary-btn">Save Platform Settings</button>
+              <button type="submit" class="primary-btn">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Save Platform Settings
+              </button>
             </form>
           </div>
         </div>
@@ -119,20 +287,26 @@
         <div class="right-column">
           <div class="card summary-card">
             <div class="section-title">
+              <span class="table-kicker">
+                <i class="fa-solid fa-id-badge"></i>
+                Admin Summary
+              </span>
               <h2>Admin Summary</h2>
             </div>
 
             <div class="summary-list">
               <div class="summary-item">
-                <span>Role</span>
+                <span><i class="fa-solid fa-user-shield"></i> Role</span>
                 <strong id="adminSummaryRole">admin</strong>
               </div>
+
               <div class="summary-item">
-                <span>Status</span>
+                <span><i class="fa-solid fa-signal"></i> Status</span>
                 <strong id="adminSummaryStatus">active</strong>
               </div>
+
               <div class="summary-item">
-                <span>Profile Email</span>
+                <span><i class="fa-solid fa-envelope"></i> Profile Email</span>
                 <strong id="adminSummaryEmail">-</strong>
               </div>
             </div>
@@ -140,24 +314,47 @@
 
           <div class="card danger-card">
             <div class="section-title">
+              <span class="table-kicker">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Danger Zone
+              </span>
               <h2>Danger Zone</h2>
-              <p>Protected actions placeholder</p>
+              <p>Protected actions placeholder.</p>
             </div>
 
             <div class="danger-actions">
-              <button class="secondary-btn" type="button" id="adminRestartSystemBtn">Restart System</button>
-              <button class="danger-btn" type="button" id="adminDisablePublicBtn">Disable Public Access</button>
+              <button
+                class="secondary-btn"
+                type="button"
+                id="adminRestartSystemBtn"
+              >
+                <i class="fa-solid fa-rotate"></i>
+                Restart System
+              </button>
+
+              <button
+                class="danger-btn"
+                type="button"
+                id="adminDisablePublicBtn"
+              >
+                <i class="fa-solid fa-lock"></i>
+                Disable Public Access
+              </button>
             </div>
           </div>
         </div>
       </section>
     </main>
   </div>
+
   <script src="./index.js/config.js"></script>
-   <script type="module"  src="./index.js/require-admin.js"></script>
- <script   type="module" src="./index.js/session-ui.js"></script>
- <script src="./index.js/panel.js"></script>
- <script src="./index.js/toast.js"></script>
- <script type="module" src="./index.js/admin-settings.js"></script>
-</body>
+  <script type="module" src="./index.js/require-admin.js"></script>
+  <script type="module" src="./index.js/session-ui.js"></script>
+  <script src="./index.js/panel.js"></script>
+  <script src="./index.js/loader.js"></script>
+  <script src="./index.js/reveal.js"></script>
+  <script src="./index.js/toast.js"></script>
+  <script type="module" src="./index.js/admin-settings.js"></script>
+
+  </body>
 </html>
