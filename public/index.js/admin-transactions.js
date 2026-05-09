@@ -40,7 +40,7 @@ let adminTransactionsCurrentPage = 1;
 let allAdminTransactions = [];
 let filteredAdminTransactions = [];
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+const formatPrice = (value) => `₦${Number(value || 0).toFixed(2)}`;
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";

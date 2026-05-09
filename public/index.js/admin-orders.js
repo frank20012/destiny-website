@@ -1,22 +1,11 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
-import { getStoredToken, getStoredUser } from "./auth-storage.js";
 
-const token = getStoredToken();
-const user = getStoredUser();
-
+const getToken = () => getStoredToken();
 
 const focusOrderSearchBtn = document.getElementById("focusOrderSearchBtn");
 const showActiveOrdersBtn = document.getElementById("showActiveOrdersBtn");
-const orderSearchInput = document.getElementById("adminOrderSearchInput");
-const orderStatusFilter = document.getElementById("adminOrderStatusFilter");
-focusOrderSearchBtn?.addEventListener("click", () => {
-  orderSearchInput?.focus();
-});
-showActiveOrdersBtn?.addEventListener("click", () => {
-  if (!orderStatusFilter) return;
-  orderStatusFilter.value = "active";
-  orderStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
-});
 const adminOrderSearchInput = document.getElementById("adminOrderSearchInput");
 const adminOrderStatusFilter = document.getElementById("adminOrderStatusFilter");
 const adminOrdersTableBody = document.getElementById("adminOrdersTableBody");
@@ -33,43 +22,104 @@ const ordersCompletedCount = document.getElementById("ordersCompletedCount");
 const ordersClosedCount = document.getElementById("ordersClosedCount");
 
 const ADMIN_ORDERS_PER_PAGE = 6;
+
 let adminOrdersCurrentPage = 1;
 let allAdminOrders = [];
 let filteredAdminOrders = [];
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+const escapeHtml = (value = "") => {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+};
 
-const formatDateTime = (dateString) => {
-  if (!dateString) return "-";
-  const date = new Date(dateString);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit"
+const normalizeStatus = (status = "pending") => {
+  return String(status || "pending").trim().toLowerCase();
+};
+
+const formatPrice = (value) => {
+  return `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   })}`;
 };
 
+const formatDateTime = (dateString) => {
+  if (!dateString) return "-";
+
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleString();
+};
+
+const getUserName = (order) => {
+  if (order.userDisplayName) return order.userDisplayName;
+
+  if (!order.user) return "-";
+
+  const firstName = order.user.firstName || "";
+  const lastName = order.user.lastName || "";
+  const fullName = `${firstName} ${lastName}`.trim();
+
+  return fullName || order.user.email || "-";
+};
+
+const getServiceName = (order) => {
+  return (
+    order.serviceName ||
+    order.service?.name ||
+    order.service ||
+    "Service"
+  );
+};
+
+const getOrderNumber = (order) => {
+  return (
+    order.assignedNumber ||
+    order.phoneNumber ||
+    order.numberInventory?.number ||
+    "-"
+  );
+};
+
 const getStatusClass = (status) => {
+  const normalizedStatus = normalizeStatus(status);
+
   const map = {
     pending: "pending",
     active: "processing",
+    waiting_sms: "processing",
     completed: "completed",
     cancelled: "cancelled",
-    expired: "cancelled"
+    expired: "cancelled",
+    failed: "failed"
   };
-  return map[status] || "pending";
+
+  return map[normalizedStatus] || "pending";
 };
 
 const getTimeLeft = (order) => {
   if (!order.expiresAt) return "-";
 
-  if (order.status === "expired") return "Expired";
-  if (order.status === "completed") return "Completed";
-  if (order.status === "cancelled") return "Cancelled";
+  const status = normalizeStatus(order.status);
+
+  if (status === "expired") return "Expired";
+  if (status === "completed") return "Completed";
+  if (status === "cancelled") return "Cancelled";
+  if (status === "failed") return "Failed";
 
   const now = new Date();
   const expiresAt = new Date(order.expiresAt);
   const diffMs = expiresAt - now;
 
+  if (Number.isNaN(expiresAt.getTime())) return "-";
   if (diffMs <= 0) return "Expired";
 
   const totalMinutes = Math.floor(diffMs / (1000 * 60));
@@ -82,16 +132,36 @@ const getTimeLeft = (order) => {
 };
 
 const renderCounts = () => {
-  const activeCount = allAdminOrders.filter((o) => o.status === "active").length;
-  const completedCount = allAdminOrders.filter((o) => o.status === "completed").length;
-  const closedCount = allAdminOrders.filter(
-    (o) => o.status === "cancelled" || o.status === "expired"
+  const activeCount = allAdminOrders.filter((order) =>
+    ["active", "waiting_sms", "pending"].includes(normalizeStatus(order.status))
+  ).length;
+
+  const completedCount = allAdminOrders.filter(
+    (order) => normalizeStatus(order.status) === "completed"
+  ).length;
+
+  const closedCount = allAdminOrders.filter((order) =>
+    ["cancelled", "expired", "failed"].includes(normalizeStatus(order.status))
   ).length;
 
   if (ordersTotalCount) ordersTotalCount.textContent = allAdminOrders.length;
   if (ordersActiveCount) ordersActiveCount.textContent = activeCount;
   if (ordersCompletedCount) ordersCompletedCount.textContent = completedCount;
   if (ordersClosedCount) ordersClosedCount.textContent = closedCount;
+};
+
+const showTableMessage = (message, type = "normal") => {
+  if (!adminOrdersTableBody) return;
+
+  const color = type === "error" ? "#ef4444" : "var(--muted)";
+
+  adminOrdersTableBody.innerHTML = `
+    <tr>
+      <td colspan="10" style="text-align:center; color:${color}; padding: 24px;">
+        ${escapeHtml(message)}
+      </td>
+    </tr>
+  `;
 };
 
 const renderAdminOrdersPage = () => {
@@ -101,7 +171,10 @@ const renderAdminOrdersPage = () => {
     1,
     Math.ceil(filteredAdminOrders.length / ADMIN_ORDERS_PER_PAGE)
   );
-  if (adminOrdersCurrentPage > totalPages) adminOrdersCurrentPage = totalPages;
+
+  if (adminOrdersCurrentPage > totalPages) {
+    adminOrdersCurrentPage = totalPages;
+  }
 
   const start = (adminOrdersCurrentPage - 1) * ADMIN_ORDERS_PER_PAGE;
   const end = start + ADMIN_ORDERS_PER_PAGE;
@@ -110,40 +183,60 @@ const renderAdminOrdersPage = () => {
   adminOrdersTableBody.innerHTML = "";
 
   currentOrders.forEach((order) => {
+    const orderId = String(order._id || "");
+    const status = normalizeStatus(order.status);
+    const serviceName = getServiceName(order);
+    const userName = getUserName(order);
+    const number = getOrderNumber(order);
+    const otpCode = order.otpCode || "";
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>#${order._id.slice(-6).toUpperCase()}</td>
-      <td>${order.user ? `${order.user.firstName} ${order.user.lastName}` : "-"}</td>
-      <td>${order.service?.name || "-"}</td>
-      <td>${order.assignedNumber || order.numberInventory?.number || "-"}</td>
-      <td><span class="status ${getStatusClass(order.status)}">${order.status}</span></td>
-      <td>${formatPrice(order.price)}</td>
-      <td>${order.otpCode || "-"}</td>
+      <td>#${escapeHtml(orderId.slice(-6).toUpperCase())}</td>
+      <td>${escapeHtml(userName)}</td>
+      <td>${escapeHtml(serviceName)}</td>
+      <td>${escapeHtml(number)}</td>
+      <td>
+        <span class="status ${getStatusClass(status)}">
+          ${escapeHtml(status)}
+        </span>
+      </td>
+      <td>${formatPrice(order.price || order.chargedAmount)}</td>
+      <td>${escapeHtml(otpCode || "-")}</td>
       <td>${formatDateTime(order.expiresAt)}</td>
-      <td>${getTimeLeft(order)}</td>
+      <td>${escapeHtml(getTimeLeft(order))}</td>
       <td>
         <div class="admin-order-action-box">
-          <select class="order-status-select" data-id="${order._id}">
-            <option value="pending" ${order.status === "pending" ? "selected" : ""}>Pending</option>
-            <option value="active" ${order.status === "active" ? "selected" : ""}>Active</option>
-            <option value="completed" ${order.status === "completed" ? "selected" : ""}>Completed</option>
-            <option value="cancelled" ${order.status === "cancelled" ? "selected" : ""}>Cancelled</option>
-            <option value="expired" ${order.status === "expired" ? "selected" : ""}>Expired</option>
+          <select class="order-status-select" data-id="${escapeHtml(orderId)}">
+            <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
+            <option value="active" ${status === "active" ? "selected" : ""}>Active</option>
+            <option value="waiting_sms" ${status === "waiting_sms" ? "selected" : ""}>Waiting SMS</option>
+            <option value="completed" ${status === "completed" ? "selected" : ""}>Completed</option>
+            <option value="cancelled" ${status === "cancelled" ? "selected" : ""}>Cancelled</option>
+            <option value="expired" ${status === "expired" ? "selected" : ""}>Expired</option>
+            <option value="failed" ${status === "failed" ? "selected" : ""}>Failed</option>
           </select>
 
-          <div class="otp-action-wrap ${order.status === "active" || order.status === "completed" ? "show" : ""}" data-id="${order._id}">
+          <div class="otp-action-wrap ${
+            status === "active" ||
+            status === "waiting_sms" ||
+            status === "completed"
+              ? "show"
+              : ""
+          }" data-id="${escapeHtml(orderId)}">
             <input
               type="text"
               class="order-otp-input"
-              data-id="${order._id}"
-              value="${order.otpCode || ""}"
+              data-id="${escapeHtml(orderId)}"
+              value="${escapeHtml(otpCode)}"
               placeholder="Enter OTP"
             />
+
             <button
               type="button"
               class="save-order-update-btn"
-              data-id="${order._id}"
+              data-id="${escapeHtml(orderId)}"
             >
               Save
             </button>
@@ -185,9 +278,21 @@ const filterAdminOrders = () => {
   const statusValue = adminOrderStatusFilter?.value || "all";
 
   filteredAdminOrders = allAdminOrders.filter((order) => {
-    const text = `${order.service?.name || ""} ${order.user?.firstName || ""} ${order.user?.lastName || ""} ${order.assignedNumber || order.numberInventory?.number || ""} ${order.otpCode || ""}`.toLowerCase();
-    const matchesSearch = text.includes(searchValue);
-    const matchesStatus = statusValue === "all" || order.status === statusValue;
+    const searchableText = `
+      ${getServiceName(order)}
+      ${getUserName(order)}
+      ${order.user?.email || ""}
+      ${getOrderNumber(order)}
+      ${order.otpCode || ""}
+      ${order.provider || ""}
+      ${order.providerOrderId || ""}
+      ${order.country || ""}
+    `.toLowerCase();
+
+    const matchesSearch = searchableText.includes(searchValue);
+    const matchesStatus =
+      statusValue === "all" || normalizeStatus(order.status) === statusValue;
+
     return matchesSearch && matchesStatus;
   });
 
@@ -196,18 +301,17 @@ const filterAdminOrders = () => {
 };
 
 const fetchAdminOrders = async () => {
-  if (!token) return;
+  const token = getToken();
 
-  if (adminOrdersTableBody) {
-    adminOrdersTableBody.innerHTML = `
-      <tr>
-        <td colspan="10" style="text-align:center; color: var(--muted);">Loading orders...</td>
-      </tr>
-    `;
+  if (!token) {
+    showTableMessage("Admin login required.", "error");
+    return;
   }
 
+  showTableMessage("Loading orders...");
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/orders/admin/all`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/orders`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -219,18 +323,16 @@ const fetchAdminOrders = async () => {
       throw new Error(data.message || "Failed to fetch orders");
     }
 
-    allAdminOrders = data.orders || [];
+    allAdminOrders = Array.isArray(data.orders) ? data.orders : [];
     filteredAdminOrders = [...allAdminOrders];
+
     renderCounts();
     renderAdminOrdersPage();
   } catch (error) {
-    if (adminOrdersTableBody) {
-      adminOrdersTableBody.innerHTML = `
-        <tr>
-          <td colspan="10" style="text-align:center; color: #ef4444;">${error.message || "Could not load orders."}</td>
-        </tr>
-      `;
-    }
+    console.error("Admin orders fetch error:", error.message);
+
+    showTableMessage(error.message || "Could not load orders.", "error");
+
     if (adminOrdersPagination) {
       adminOrdersPagination.style.display = "none";
     }
@@ -238,8 +340,17 @@ const fetchAdminOrders = async () => {
 };
 
 const updateOrderStatus = async (orderId, status, otpCode) => {
+  const token = getToken();
+
+  if (!token) {
+    if (typeof showToast === "function") {
+      showToast("error", "Login required", "Admin login is required.");
+    }
+    return;
+  }
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/orders/admin/${orderId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/orders/${orderId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -263,8 +374,14 @@ const updateOrderStatus = async (orderId, status, otpCode) => {
 
     await fetchAdminOrders();
   } catch (error) {
+    console.error("Admin order update error:", error.message);
+
     if (typeof showToast === "function") {
-      showToast("error", "Update failed", error.message || "Could not update order.");
+      showToast(
+        "error",
+        "Update failed",
+        error.message || "Could not update order."
+      );
     }
   }
 };
@@ -275,14 +392,20 @@ const bindOrderStatusEvents = () => {
       const orderId = select.dataset.id;
       const selectedStatus = select.value;
 
-      const otpWrap = document.querySelector(`.otp-action-wrap[data-id="${orderId}"]`);
+      const otpWrap = document.querySelector(
+        `.otp-action-wrap[data-id="${orderId}"]`
+      );
 
-      if (otpWrap) {
-        if (selectedStatus === "active" || selectedStatus === "completed") {
-          otpWrap.classList.add("show");
-        } else {
-          otpWrap.classList.remove("show");
-        }
+      if (!otpWrap) return;
+
+      if (
+        selectedStatus === "active" ||
+        selectedStatus === "waiting_sms" ||
+        selectedStatus === "completed"
+      ) {
+        otpWrap.classList.add("show");
+      } else {
+        otpWrap.classList.remove("show");
       }
     });
   });
@@ -291,8 +414,12 @@ const bindOrderStatusEvents = () => {
     button.addEventListener("click", () => {
       const orderId = button.dataset.id;
 
-      const statusSelect = document.querySelector(`.order-status-select[data-id="${orderId}"]`);
-      const otpInput = document.querySelector(`.order-otp-input[data-id="${orderId}"]`);
+      const statusSelect = document.querySelector(
+        `.order-status-select[data-id="${orderId}"]`
+      );
+      const otpInput = document.querySelector(
+        `.order-otp-input[data-id="${orderId}"]`
+      );
 
       const status = statusSelect ? statusSelect.value : "pending";
       const otpCode = otpInput ? otpInput.value.trim() : "";
@@ -302,20 +429,34 @@ const bindOrderStatusEvents = () => {
   });
 };
 
+focusOrderSearchBtn?.addEventListener("click", () => {
+  adminOrderSearchInput?.focus();
+});
+
+showActiveOrdersBtn?.addEventListener("click", () => {
+  if (!adminOrderStatusFilter) return;
+
+  adminOrderStatusFilter.value = "active";
+  adminOrderStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+});
+
 adminOrderSearchInput?.addEventListener("input", filterAdminOrders);
 adminOrderStatusFilter?.addEventListener("change", filterAdminOrders);
 
 adminOrdersPrevBtn?.addEventListener("click", () => {
   if (adminOrdersCurrentPage > 1) {
-    adminOrdersCurrentPage--;
+    adminOrdersCurrentPage -= 1;
     renderAdminOrdersPage();
   }
 });
 
 adminOrdersNextBtn?.addEventListener("click", () => {
-  const totalPages = Math.ceil(filteredAdminOrders.length / ADMIN_ORDERS_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredAdminOrders.length / ADMIN_ORDERS_PER_PAGE
+  );
+
   if (adminOrdersCurrentPage < totalPages) {
-    adminOrdersCurrentPage++;
+    adminOrdersCurrentPage += 1;
     renderAdminOrdersPage();
   }
 });

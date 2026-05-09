@@ -1,21 +1,12 @@
+import { getStoredToken } from "./auth-storage.js";
+
 const API_BASE_URL = CONFIG.API_BASE_URL;
-import { getStoredToken, getStoredUser } from "./auth-storage.js";
 
-const token = getStoredToken();
-const user = getStoredUser();
+const getToken = () => getStoredToken();
 
- const focusServiceSearchBtn = document.getElementById("focusServiceSearchBtn");
- const showActiveServicesBtn = document.getElementById("showActiveServicesBtn");
- const serviceSearchInput = document.getElementById("adminServiceSearchInput");
- const serviceStatusFilter = document.getElementById("adminServiceStatusFilter");
- focusServiceSearchBtn?.addEventListener("click", () => {
-   serviceSearchInput?.focus();
- });
- showActiveServicesBtn?.addEventListener("click", () => {
-   if (!serviceStatusFilter) return;
-   serviceStatusFilter.value = "active";
-   serviceStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
- });
+const focusServiceSearchBtn = document.getElementById("focusServiceSearchBtn");
+const showActiveServicesBtn = document.getElementById("showActiveServicesBtn");
+
 const adminServiceSearchInput = document.getElementById("adminServiceSearchInput");
 const adminServiceCategoryFilter = document.getElementById("adminServiceCategoryFilter");
 const adminServiceStatusFilter = document.getElementById("adminServiceStatusFilter");
@@ -41,72 +32,112 @@ const adminServiceCategory = document.getElementById("adminServiceCategory");
 const adminServiceDeliveryType = document.getElementById("adminServiceDeliveryType");
 const adminServiceStatus = document.getElementById("adminServiceStatus");
 const adminServiceDescription = document.getElementById("adminServiceDescription");
+
 const servicesTotalCount = document.getElementById("servicesTotalCount");
 const servicesActiveCount = document.getElementById("servicesActiveCount");
 const servicesDraftCount = document.getElementById("servicesDraftCount");
 const servicesDisabledCount = document.getElementById("servicesDisabledCount");
 
 const ADMIN_SERVICES_PER_PAGE = 6;
+
 let adminServicesCurrentPage = 1;
 let allAdminServices = [];
 let filteredAdminServices = [];
 
+const escapeHtml = (value = "") => {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+};
+
+const normalizeStatus = (status = "draft") => {
+  return String(status || "draft").trim().toLowerCase();
+};
+
+const normalizeCategory = (category = "otp") => {
+  return String(category || "otp").trim().toLowerCase();
+};
+
 const showMessage = (text, type = "error") => {
   if (!adminServiceMessage) return;
+
   adminServiceMessage.textContent = text;
   adminServiceMessage.className = `form-message ${type}`;
 };
-const renderServiceCounts = () => {
-  const activeCount = allAdminServices.filter(
-    (service) => service.status === "active"
-  ).length;
 
-  const draftCount = allAdminServices.filter(
-    (service) => service.status === "draft"
-  ).length;
-
-  const disabledCount = allAdminServices.filter(
-    (service) => service.status === "disabled"
-  ).length;
-
-  if (servicesTotalCount) {
-    servicesTotalCount.textContent = allAdminServices.length;
-  }
-
-  if (servicesActiveCount) {
-    servicesActiveCount.textContent = activeCount;
-  }
-
-  if (servicesDraftCount) {
-    servicesDraftCount.textContent = draftCount;
-  }
-
-  if (servicesDisabledCount) {
-    servicesDisabledCount.textContent = disabledCount;
-  }
-};
 const clearMessage = () => {
   if (!adminServiceMessage) return;
+
   adminServiceMessage.textContent = "";
   adminServiceMessage.className = "form-message";
 };
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+const showTableMessage = (message, type = "normal") => {
+  if (!adminServicesTableBody) return;
+
+  const color = type === "error" ? "#ef4444" : "var(--muted)";
+
+  adminServicesTableBody.innerHTML = `
+    <tr>
+      <td colspan="6" style="text-align:center; color:${color}; padding: 24px;">
+        ${escapeHtml(message)}
+      </td>
+    </tr>
+  `;
+};
+
+const formatPrice = (value) => {
+  return `₦${Number(value || 0).toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+};
 
 const getStatusClass = (status) => {
+  const normalizedStatus = normalizeStatus(status);
+
   const map = {
     active: "completed",
     draft: "pending",
     disabled: "cancelled"
   };
-  return map[status] || "pending";
+
+  return map[normalizedStatus] || "pending";
+};
+
+const renderServiceCounts = () => {
+  const activeCount = allAdminServices.filter(
+    (service) => normalizeStatus(service.status) === "active"
+  ).length;
+
+  const draftCount = allAdminServices.filter(
+    (service) => normalizeStatus(service.status) === "draft"
+  ).length;
+
+  const disabledCount = allAdminServices.filter(
+    (service) => normalizeStatus(service.status) === "disabled"
+  ).length;
+
+  if (servicesTotalCount) servicesTotalCount.textContent = allAdminServices.length;
+  if (servicesActiveCount) servicesActiveCount.textContent = activeCount;
+  if (servicesDraftCount) servicesDraftCount.textContent = draftCount;
+  if (servicesDisabledCount) servicesDisabledCount.textContent = disabledCount;
 };
 
 const renderAdminServicesPage = () => {
   if (!adminServicesTableBody) return;
 
-  const totalPages = Math.max(1, Math.ceil(filteredAdminServices.length / ADMIN_SERVICES_PER_PAGE));
-  if (adminServicesCurrentPage > totalPages) adminServicesCurrentPage = totalPages;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredAdminServices.length / ADMIN_SERVICES_PER_PAGE)
+  );
+
+  if (adminServicesCurrentPage > totalPages) {
+    adminServicesCurrentPage = totalPages;
+  }
 
   const start = (adminServicesCurrentPage - 1) * ADMIN_SERVICES_PER_PAGE;
   const end = start + ADMIN_SERVICES_PER_PAGE;
@@ -116,16 +147,26 @@ const renderAdminServicesPage = () => {
 
   currentServices.forEach((service) => {
     const tr = document.createElement("tr");
-    tr.dataset.category = service.category;
-    tr.dataset.status = service.status;
+
+    const serviceId = String(service._id || "");
+    const status = normalizeStatus(service.status);
+    const category = normalizeCategory(service.category);
 
     tr.innerHTML = `
-      <td>#${service._id.slice(-6).toUpperCase()}</td>
-      <td>${service.name}</td>
-      <td>${service.country}</td>
-      <td>${service.category}</td>
+      <td>#${escapeHtml(serviceId.slice(-6).toUpperCase())}</td>
+      <td>
+        <strong>${escapeHtml(service.name || "Service")}</strong>
+        <br />
+        <small>${escapeHtml(service.serviceCode || "-")}</small>
+      </td>
+      <td>${escapeHtml(service.country || "-")}</td>
+      <td>${escapeHtml(category)}</td>
       <td>${formatPrice(service.price)}</td>
-      <td><span class="status ${getStatusClass(service.status)}">${service.status}</span></td>
+      <td>
+        <span class="status ${getStatusClass(status)}">
+          ${escapeHtml(status)}
+        </span>
+      </td>
     `;
 
     adminServicesTableBody.appendChild(tr);
@@ -144,11 +185,13 @@ const renderAdminServicesPage = () => {
   }
 
   if (adminServicesEmptyMessage) {
-    adminServicesEmptyMessage.style.display = filteredAdminServices.length === 0 ? "block" : "none";
+    adminServicesEmptyMessage.style.display =
+      filteredAdminServices.length === 0 ? "block" : "none";
   }
 
   if (adminServicesPagination) {
-    adminServicesPagination.style.display = filteredAdminServices.length === 0 ? "none" : "flex";
+    adminServicesPagination.style.display =
+      filteredAdminServices.length === 0 ? "none" : "flex";
   }
 };
 
@@ -158,10 +201,23 @@ const filterAdminServices = () => {
   const statusValue = adminServiceStatusFilter?.value || "all";
 
   filteredAdminServices = allAdminServices.filter((service) => {
-    const text = `${service.name} ${service.country} ${service.serviceCode}`.toLowerCase();
+    const text = `
+      ${service.name || ""}
+      ${service.country || ""}
+      ${service.serviceCode || ""}
+      ${service.category || ""}
+      ${service.status || ""}
+    `.toLowerCase();
+
     const matchesSearch = text.includes(searchValue);
-    const matchesCategory = categoryValue === "all" || service.category === categoryValue;
-    const matchesStatus = statusValue === "all" || service.status === statusValue;
+
+    const matchesCategory =
+      categoryValue === "all" ||
+      normalizeCategory(service.category) === categoryValue;
+
+    const matchesStatus =
+      statusValue === "all" ||
+      normalizeStatus(service.status) === statusValue;
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -171,18 +227,17 @@ const filterAdminServices = () => {
 };
 
 const fetchAdminServices = async () => {
-  if (!token) return;
+  const token = getToken();
 
-  if (adminServicesTableBody) {
-    adminServicesTableBody.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align:center; color: var(--muted);">Loading services...</td>
-      </tr>
-    `;
+  if (!token) {
+    showTableMessage("Admin login required.", "error");
+    return;
   }
 
+  showTableMessage("Loading services...");
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/services/admin/all`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/services`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -194,18 +249,16 @@ const fetchAdminServices = async () => {
       throw new Error(data.message || "Failed to fetch admin services");
     }
 
-    allAdminServices = data.services || [];
+    allAdminServices = Array.isArray(data.services) ? data.services : [];
     filteredAdminServices = [...allAdminServices];
+
     renderServiceCounts();
     renderAdminServicesPage();
   } catch (error) {
-    if (adminServicesTableBody) {
-      adminServicesTableBody.innerHTML = `
-        <tr>
-          <td colspan="6" style="text-align:center; color: #ef4444;">${error.message || "Could not load services."}</td>
-        </tr>
-      `;
-    }
+    console.error("Admin services fetch error:", error.message);
+
+    showTableMessage(error.message || "Could not load services.", "error");
+
     if (adminServicesPagination) {
       adminServicesPagination.style.display = "none";
     }
@@ -213,71 +266,127 @@ const fetchAdminServices = async () => {
 };
 
 const openForm = () => {
-  if (adminServiceFormCard) adminServiceFormCard.style.display = "block";
+  if (adminServiceFormCard) {
+    adminServiceFormCard.style.display = "block";
+    adminServiceFormCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 };
 
 const closeForm = () => {
-  if (adminServiceFormCard) adminServiceFormCard.style.display = "none";
+  if (adminServiceFormCard) {
+    adminServiceFormCard.style.display = "none";
+  }
+
   clearMessage();
+};
+
+const setSubmitLoading = (isLoading) => {
+  const submitButton = adminServiceForm?.querySelector('button[type="submit"]');
+
+  if (!submitButton) return;
+
+  if (isLoading) {
+    submitButton.disabled = true;
+    submitButton.dataset.originalText = submitButton.innerHTML;
+    submitButton.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Creating...
+    `;
+    return;
+  }
+
+  submitButton.disabled = false;
+
+  if (submitButton.dataset.originalText) {
+    submitButton.innerHTML = submitButton.dataset.originalText;
+  }
 };
 
 openAddServiceFormBtn?.addEventListener("click", openForm);
 closeAddServiceFormBtn?.addEventListener("click", closeForm);
 cancelAddServiceFormBtn?.addEventListener("click", closeForm);
 
-if (adminServiceForm) {
-  adminServiceForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    clearMessage();
+focusServiceSearchBtn?.addEventListener("click", () => {
+  adminServiceSearchInput?.focus();
+});
 
-    const payload = {
-      name: adminServiceName?.value.trim(),
-      serviceCode: adminServiceCode?.value.trim(),
-      country: adminServiceCountry?.value.trim(),
-      price: Number(adminServicePrice?.value),
-      category: adminServiceCategory?.value,
-      deliveryType: adminServiceDeliveryType?.value,
-      status: adminServiceStatus?.value,
-      description: adminServiceDescription?.value.trim()
-    };
+showActiveServicesBtn?.addEventListener("click", () => {
+  if (!adminServiceStatusFilter) return;
 
-    if (!payload.name || !payload.serviceCode || !payload.country || Number.isNaN(payload.price) || payload.price <= 0) {
-      showMessage("Name, service code, country, and valid price are required.");
-      return;
+  adminServiceStatusFilter.value = "active";
+  adminServiceStatusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+});
+
+adminServiceForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const token = getToken();
+
+  if (!token) {
+    showMessage("Admin login required.");
+    return;
+  }
+
+  clearMessage();
+
+  const payload = {
+    name: adminServiceName?.value.trim() || "",
+    serviceCode: adminServiceCode?.value.trim() || "",
+    country: adminServiceCountry?.value.trim() || "",
+    price: Number(adminServicePrice?.value || 0),
+    category: adminServiceCategory?.value || "otp",
+    deliveryType: adminServiceDeliveryType?.value || "sms",
+    status: adminServiceStatus?.value || "active",
+    description: adminServiceDescription?.value.trim() || ""
+  };
+
+  if (!payload.name || !payload.serviceCode || !payload.country || payload.price <= 0) {
+    showMessage("Name, service code, country, and valid price are required.");
+    return;
+  }
+
+  try {
+    setSubmitLoading(true);
+
+    const response = await fetch(`${API_BASE_URL}/api/admin/services`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create service");
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+    showMessage("Service created successfully.", "success");
+    adminServiceForm.reset();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to create service");
-      }
-
-      showMessage("Service created successfully.", "success");
-      adminServiceForm.reset();
-      await fetchAdminServices();
-
-      if (typeof showToast === "function") {
-        showToast("success", "Service created", "New OTP service added successfully.");
-      }
-
-      setTimeout(() => {
-        closeForm();
-      }, 800);
-    } catch (error) {
-      showMessage(error.message || "Something went wrong.");
+    if (typeof showToast === "function") {
+      showToast("success", "Service created", "New service added successfully.");
     }
-  });
-}
+
+    await fetchAdminServices();
+
+    setTimeout(() => {
+      closeForm();
+    }, 700);
+  } catch (error) {
+    console.error("Admin service create error:", error.message);
+
+    showMessage(error.message || "Something went wrong.");
+
+    if (typeof showToast === "function") {
+      showToast("error", "Create failed", error.message || "Could not create service.");
+    }
+  } finally {
+    setSubmitLoading(false);
+  }
+});
 
 adminServiceSearchInput?.addEventListener("input", filterAdminServices);
 adminServiceCategoryFilter?.addEventListener("change", filterAdminServices);
@@ -285,15 +394,18 @@ adminServiceStatusFilter?.addEventListener("change", filterAdminServices);
 
 adminServicesPrevBtn?.addEventListener("click", () => {
   if (adminServicesCurrentPage > 1) {
-    adminServicesCurrentPage--;
+    adminServicesCurrentPage -= 1;
     renderAdminServicesPage();
   }
 });
 
 adminServicesNextBtn?.addEventListener("click", () => {
-  const totalPages = Math.ceil(filteredAdminServices.length / ADMIN_SERVICES_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredAdminServices.length / ADMIN_SERVICES_PER_PAGE
+  );
+
   if (adminServicesCurrentPage < totalPages) {
-    adminServicesCurrentPage++;
+    adminServicesCurrentPage += 1;
     renderAdminServicesPage();
   }
 });

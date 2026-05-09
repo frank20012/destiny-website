@@ -25,7 +25,7 @@ const reportsTotalTickets = document.getElementById("reportsTotalTickets");
 const reportsTopServicesList = document.getElementById("reportsTopServicesList");
 const reportsMonthlyBreakdown = document.getElementById("reportsMonthlyBreakdown");
 
-const formatPrice = (value) => `$${Number(value || 0).toFixed(2)}`;
+const formatPrice = (value) => `₦${Number(value || 0).toFixed(2)}`;
 
 const renderTopServices = (services) => {
   if (!reportsTopServicesList) return;

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap");
 
 :root {
   --bg: #f5f7fb;
@@ -510,4 +511,37 @@ table {
     height: 40px;
     min-width: 40px;
   }
+}
+.brand-text {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  font-family: "Sora", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.brand-main {
+  color: var(--text);
+}
+
+.brand-accent {
+  margin-left: 2px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar-logo:hover .brand-accent {
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.35));
+}
+.names {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  margin-left: 10px;
 }

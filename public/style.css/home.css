@@ -1167,3 +1167,28 @@ body.light-mode .footer-bottom {
     padding: 0 18px 18px;
   }
 }
+.brand-showcase-badge {
+  font-family: "Sora", "Inter", system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.brand-showcase-badge {
+  font-size: 0;
+}
+
+.brand-showcase-badge::before {
+  content: "Desk";
+  color: var(--text);
+  font-size: 13px;
+}
+
+.brand-showcase-badge::after {
+  content: "OTP";
+  margin-left: 2px;
+  font-size: 13px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
