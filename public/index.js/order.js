@@ -7,17 +7,23 @@ const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
 
 let orders = [];
 let currentPage = 1;
+
 let autoPollingTimer = null;
 let isAutoChecking = false;
+let isFetchingOrders = false;
 
 const ROWS_PER_PAGE = 5;
-const AUTO_POLL_INTERVAL = 12000;
+
+const ACTIVE_POLL_INTERVAL = 10000;
+const IDLE_POLL_INTERVAL = 30000;
 
 const getToken = () => getStoredToken();
 
 const formatDate = (dateString) => {
   if (!dateString) return "-";
+
   const date = new Date(dateString);
+
   return date.toLocaleString();
 };
 
@@ -29,6 +35,7 @@ const formatMoney = (value) =>
 
 const getStatusLabel = (status) => {
   if (!status) return "pending";
+
   return String(status).toLowerCase();
 };
 
@@ -37,11 +44,14 @@ const getOrderType = (order) => {
 };
 
 const getOrderTypeLabel = (order) => {
-  return getOrderType(order) === "rent" ? "Rent Order" : "OTP Order";
+  return getOrderType(order) === "rent"
+    ? "Rent Order"
+    : "OTP Order";
 };
 
 const isActiveOtpOrder = (order) => {
   const status = getStatusLabel(order.status);
+
   const orderType = getOrderType(order);
 
   return (
@@ -51,10 +61,16 @@ const isActiveOtpOrder = (order) => {
   );
 };
 
+const sortOrdersByDate = (items = []) => {
+  return [...items].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+};
+
 const getPaginatedOrders = () => {
   const startIndex = (currentPage - 1) * ROWS_PER_PAGE;
-  const endIndex = startIndex + ROWS_PER_PAGE;
-  return orders.slice(startIndex, endIndex);
+
+  return orders.slice(startIndex, startIndex + ROWS_PER_PAGE);
 };
 
 const getTotalPages = () => {
@@ -85,26 +101,16 @@ const copyText = async (text, successMessage) => {
 
     if (typeof showToast === "function") {
       showToast("success", "Copied", successMessage);
-    } else {
-      alert(successMessage);
     }
   } catch (error) {
     console.log("Copy failed:", error.message);
   }
 };
 
-const sortOrdersByDate = (items = []) => {
-  return [...items].sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
-};
-
 const renderPagination = () => {
   const totalPages = getTotalPages();
 
-  if (totalPages <= 1) {
-    return "";
-  }
+  if (totalPages <= 1) return "";
 
   let pageButtons = "";
 
@@ -122,6 +128,7 @@ const renderPagination = () => {
 
   return `
     <div class="orders-pagination">
+
       <button
         type="button"
         class="pagination-btn pagination-nav"
@@ -145,6 +152,7 @@ const renderPagination = () => {
         Next
         <i class="fa-solid fa-chevron-right"></i>
       </button>
+
     </div>
   `;
 };
@@ -162,17 +170,22 @@ const renderOrders = () => {
   const rows = visibleOrders
     .map((order) => {
       const orderStatus = getStatusLabel(order.status);
+
       const orderType = getOrderType(order);
+
       const canCancel =
         orderType === "otp" &&
         !["completed", "cancelled", "expired", "failed"].includes(orderStatus);
 
       const hasOtp = Boolean(order.otpCode);
+
       const hasNumber = Boolean(order.assignedNumber);
+
       const isAutoWaiting = isActiveOtpOrder(order);
 
       return `
         <tr>
+
           <td class="order-id-cell">
             <span class="order-id-main">${order._id || "-"}</span>
             <span class="order-id-sub">${formatDate(order.createdAt)}</span>
@@ -180,10 +193,14 @@ const renderOrders = () => {
 
           <td class="order-service-cell">
             <strong>${(order.serviceName || "Service").toUpperCase()}</strong>
+
             <span class="order-type-badge">
               <i class="fa-solid ${
-                orderType === "rent" ? "fa-phone-volume" : "fa-bolt"
+                orderType === "rent"
+                  ? "fa-phone-volume"
+                  : "fa-bolt"
               }"></i>
+
               ${getOrderTypeLabel(order)}
             </span>
           </td>
@@ -200,6 +217,7 @@ const renderOrders = () => {
 
           <td class="order-number-cell">
             <strong>${order.assignedNumber || "Pending..."}</strong>
+
             <button
               class="copy-table-btn ${hasNumber ? "" : "is-disabled"}"
               type="button"
@@ -215,6 +233,7 @@ const renderOrders = () => {
             <strong class="${hasOtp ? "order-otp-live" : ""}">
               ${order.otpCode || "Waiting..."}
             </strong>
+
             <button
               class="copy-table-btn ${hasOtp ? "" : "is-disabled"}"
               type="button"
@@ -232,18 +251,24 @@ const renderOrders = () => {
           </td>
 
           <td>
-            <span class="status status-${orderStatus}">${orderStatus}</span>
+            <span class="status status-${orderStatus}">
+              ${orderStatus}
+            </span>
           </td>
 
           <td>
             <div class="table-actions">
+
               <button
                 class="mini-table-btn"
                 data-id="${order._id}"
                 data-type="${orderType}"
                 type="button"
               >
-                <i class="fa-solid fa-rotate-right ${isAutoWaiting ? "fa-spin" : ""}"></i>
+                <i class="fa-solid fa-rotate-right ${
+                  isAutoWaiting ? "fa-spin" : ""
+                }"></i>
+
                 ${isAutoWaiting ? "Checking" : "Refresh"}
               </button>
 
@@ -261,8 +286,10 @@ const renderOrders = () => {
                   `
                   : ""
               }
+
             </div>
           </td>
+
         </tr>
       `;
     })
@@ -270,8 +297,11 @@ const renderOrders = () => {
 
   ordersContainer.innerHTML = `
     <div class="orders-table-card">
+
       <div class="orders-table-wrap">
+
         <table class="orders-table">
+
           <thead>
             <tr>
               <th>Order ID / Date</th>
@@ -285,11 +315,15 @@ const renderOrders = () => {
               <th>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             ${rows}
           </tbody>
+
         </table>
+
       </div>
+
     </div>
 
     ${renderPagination()}
@@ -333,40 +367,41 @@ const fetchRentOrders = async (token) => {
   return data.orders || [];
 };
 
-const fetchOrders = async () => {
+const fetchOrders = async (silent = false) => {
+  if (isFetchingOrders) return;
+
+  isFetchingOrders = true;
+
   try {
     const token = getToken();
 
     if (!token) {
       stopAutoPolling();
 
-      if (ordersContainer) {
-        ordersContainer.innerHTML = `
-          <div class="empty-orders-box">
-            <i class="fa-solid fa-lock"></i>
-            <h3>Login required</h3>
-            <p>You need to sign in before viewing your orders.</p>
-          </div>
-        `;
-      }
+      renderEmptyOrders("You need to sign in before viewing orders.");
 
       return;
     }
 
-    ordersContainer.innerHTML = `
-      <div class="empty-orders-box">
-        <i class="fa-solid fa-spinner fa-spin"></i>
-        <h3>Loading orders</h3>
-        <p>Please wait while we fetch your latest orders.</p>
-      </div>
-    `;
+    if (!silent && ordersContainer) {
+      ordersContainer.innerHTML = `
+        <div class="empty-orders-box">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <h3>Loading orders</h3>
+          <p>Please wait while we fetch your latest orders.</p>
+        </div>
+      `;
+    }
 
     const [otpOrders, rentOrders] = await Promise.all([
       fetchOtpOrders(token).catch(() => []),
       fetchRentOrders(token).catch(() => [])
     ]);
 
-    orders = sortOrdersByDate([...otpOrders, ...rentOrders]);
+    orders = sortOrdersByDate([
+      ...otpOrders,
+      ...rentOrders
+    ]);
 
     const totalPages = getTotalPages();
 
@@ -375,25 +410,28 @@ const fetchOrders = async () => {
     }
 
     renderOrders();
+
     startAutoPolling();
+
   } catch (error) {
     stopAutoPolling();
 
-    if (ordersContainer) {
-      ordersContainer.innerHTML = `
-        <div class="empty-orders-box">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-          <h3>Could not load orders</h3>
-          <p>${error.message || "Something went wrong."}</p>
-        </div>
-      `;
-    }
+    renderEmptyOrders(
+      error.message || "Could not load orders."
+    );
+  } finally {
+    isFetchingOrders = false;
   }
 };
 
-const fetchOrderStatus = async (orderId, type, options = {}) => {
+const fetchOrderStatus = async (
+  orderId,
+  type,
+  options = {}
+) => {
   try {
     const token = getToken();
+
     if (!token) return;
 
     const url =
@@ -409,40 +447,39 @@ const fetchOrderStatus = async (orderId, type, options = {}) => {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      return;
+    if (!response.ok) return;
+
+    const index = orders.findIndex(
+      (order) => order._id === orderId
+    );
+
+    if (index === -1) return;
+
+    const previousOtpCode = orders[index].otpCode;
+
+    orders[index] = {
+      ...orders[index],
+      ...data.order
+    };
+
+    orders = sortOrdersByDate(orders);
+
+    renderOrders();
+
+    const newOtpCode = data.order?.otpCode;
+
+    if (
+      !previousOtpCode &&
+      newOtpCode &&
+      typeof showToast === "function"
+    ) {
+      showToast(
+        "success",
+        "OTP Received",
+        "Your OTP code has arrived."
+      );
     }
 
-    const index = orders.findIndex((order) => order._id === orderId);
-
-    if (index !== -1) {
-      const previousOtpCode = orders[index].otpCode;
-      const previousStatus = orders[index].status;
-
-      orders[index] = {
-        ...orders[index],
-        ...data.order
-      };
-
-      orders = sortOrdersByDate(orders);
-      renderOrders();
-
-      const newOtpCode = data.order?.otpCode;
-      const newStatus = data.order?.status;
-
-      if (!previousOtpCode && newOtpCode && typeof showToast === "function") {
-        showToast("success", "OTP received", "Your OTP code has arrived.");
-      }
-
-      if (
-        !options.silent &&
-        previousStatus !== newStatus &&
-        newStatus &&
-        typeof showToast === "function"
-      ) {
-        showToast("info", "Order updated", `Order status is now ${newStatus}.`);
-      }
-    }
   } catch (error) {
     console.log("Status check error:", error.message);
   }
@@ -453,16 +490,16 @@ const autoCheckActiveOrders = async () => {
 
   const activeOrders = orders.filter(isActiveOtpOrder);
 
-  if (!activeOrders.length) {
-    return;
-  }
+  if (!activeOrders.length) return;
 
   isAutoChecking = true;
 
   try {
     await Promise.all(
       activeOrders.map((order) =>
-        fetchOrderStatus(order._id, "otp", { silent: true })
+        fetchOrderStatus(order._id, "otp", {
+          silent: true
+        })
       )
     );
   } finally {
@@ -471,20 +508,23 @@ const autoCheckActiveOrders = async () => {
 };
 
 const startAutoPolling = () => {
-  if (autoPollingTimer) {
-    clearInterval(autoPollingTimer);
-  }
+  stopAutoPolling();
 
   const hasActiveOrders = orders.some(isActiveOtpOrder);
 
-  if (!hasActiveOrders) {
-    autoPollingTimer = null;
-    return;
-  }
+  const pollInterval = hasActiveOrders
+    ? ACTIVE_POLL_INTERVAL
+    : IDLE_POLL_INTERVAL;
 
   autoPollingTimer = setInterval(() => {
-    autoCheckActiveOrders();
-  }, AUTO_POLL_INTERVAL);
+    if (document.hidden) return;
+
+    if (hasActiveOrders) {
+      autoCheckActiveOrders();
+    } else {
+      fetchOrders(true);
+    }
+  }, pollInterval);
 };
 
 const stopAutoPolling = () => {
@@ -499,14 +539,18 @@ const stopAutoPolling = () => {
 const cancelOrder = async (orderId) => {
   try {
     const token = getToken();
+
     if (!token) return;
 
-    const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/cancel`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await fetch(
+      `${API_BASE_URL}/api/orders/${orderId}/cancel`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    });
+    );
 
     const data = await response.json();
 
@@ -514,12 +558,17 @@ const cancelOrder = async (orderId) => {
       throw new Error(data.message || "Failed to cancel order");
     }
 
-    const index = orders.findIndex((order) => order._id === orderId);
+    const index = orders.findIndex(
+      (order) => order._id === orderId
+    );
 
     if (index !== -1) {
       orders[index] = data.order;
+
       orders = sortOrdersByDate(orders);
+
       renderOrders();
+
       startAutoPolling();
     }
 
@@ -528,10 +577,11 @@ const cancelOrder = async (orderId) => {
         "success",
         "Cancelled",
         data.refunded
-          ? "Order cancelled and refunded successfully."
+          ? "Order cancelled and refunded."
           : "Order cancelled successfully."
       );
     }
+
   } catch (error) {
     if (typeof showToast === "function") {
       showToast(
@@ -539,18 +589,26 @@ const cancelOrder = async (orderId) => {
         "Cancel failed",
         error.message || "Could not cancel order."
       );
-    } else {
-      alert(error.message || "Could not cancel order.");
     }
   }
 };
 
 const bindRefreshButtons = () => {
   document.querySelectorAll(".mini-table-btn").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+      if (button.disabled) return;
+
+      button.disabled = true;
+
       const orderId = button.dataset.id;
+
       const type = button.dataset.type;
-      fetchOrderStatus(orderId, type);
+
+      await fetchOrderStatus(orderId, type);
+
+      setTimeout(() => {
+        button.disabled = false;
+      }, 1000);
     });
   });
 };
@@ -559,6 +617,7 @@ const bindCancelButtons = () => {
   document.querySelectorAll(".cancel-table-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const orderId = button.dataset.id;
+
       cancelOrder(orderId);
     });
   });
@@ -567,21 +626,31 @@ const bindCancelButtons = () => {
 const bindCopyButtons = () => {
   document.querySelectorAll("[data-copy-number]").forEach((button) => {
     button.addEventListener("click", () => {
-      const orderId = button.dataset.copyNumber;
-      const order = orders.find((item) => item._id === orderId);
+      const order = orders.find(
+        (item) => item._id === button.dataset.copyNumber
+      );
+
       if (!order) return;
 
-      copyText(order.assignedNumber, "Number copied successfully.");
+      copyText(
+        order.assignedNumber,
+        "Number copied successfully."
+      );
     });
   });
 
   document.querySelectorAll("[data-copy-otp]").forEach((button) => {
     button.addEventListener("click", () => {
-      const orderId = button.dataset.copyOtp;
-      const order = orders.find((item) => item._id === orderId);
+      const order = orders.find(
+        (item) => item._id === button.dataset.copyOtp
+      );
+
       if (!order) return;
 
-      copyText(order.otpCode, "OTP copied successfully.");
+      copyText(
+        order.otpCode,
+        "OTP copied successfully."
+      );
     });
   });
 };
@@ -590,6 +659,7 @@ const bindPaginationButtons = () => {
   document.querySelectorAll(".pagination-btn[data-page]").forEach((button) => {
     button.addEventListener("click", () => {
       const nextPage = Number(button.dataset.page || 1);
+
       const totalPages = getTotalPages();
 
       if (nextPage < 1 || nextPage > totalPages) {
@@ -597,27 +667,41 @@ const bindPaginationButtons = () => {
       }
 
       currentPage = nextPage;
+
       renderOrders();
     });
   });
 };
 
 refreshOrdersBtn?.addEventListener("click", async () => {
+  if (refreshOrdersBtn.disabled) return;
+
+  refreshOrdersBtn.disabled = true;
+
   currentPage = 1;
+
   await fetchOrders();
 
   if (typeof showToast === "function") {
-    showToast("success", "Refreshed", "Orders refreshed successfully.");
+    showToast(
+      "success",
+      "Refreshed",
+      "Orders refreshed successfully."
+    );
   }
+
+  setTimeout(() => {
+    refreshOrdersBtn.disabled = false;
+  }, 1200);
 });
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     stopAutoPolling();
-    return;
+  } else {
+    fetchOrders(true);
+    startAutoPolling();
   }
-
-  startAutoPolling();
 });
 
 window.addEventListener("beforeunload", () => {
